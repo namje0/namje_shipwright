@@ -1,0 +1,15 @@
+{
+  "itemName" : "shiplicense_test",
+  "shortdescription" : "Test License",
+  "description" : "Test",
+  "price" : 1000,
+  "tooltipKind" : "base",
+  "rarity" : "essential",
+  "category" : "tool",
+  "itemTags" : [],
+  "inventoryIcon" : "shiplicense.png",
+  "twoHanded" : true,
+  "maxStack" : 1,
+  "animation" : "animation.animation",
+  "scripts" : ["shiplicense.lua"]
+}
