@@ -1,0 +1,14 @@
+[
+  {
+    "op": "add",
+    "path": "/namje_testship",
+    "value": {
+      "ship": "namje_testship",
+      "name": "Test namje BYOS Ship",
+      "racialiserOverride" : "human",
+      "offset": [-13, 16],
+      "icon": "/interface/ai/shippreviews/byosgenericicon.png",
+      "previewImage": "/interface/ai/shippreviews/namje_testship.png"
+    }
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "version" : "1.00",
+  "author" : "namje",
+  "description" : "test",
+  "name" : "test",
+  "friendlyName" : "test",
+  "includes" : ["FrackinUniverse" ]
+}
