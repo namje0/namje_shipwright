@@ -13,7 +13,7 @@ function swap_ship(_, _, ply, ship_type)
     sb.logInfo("start ship swapping process")
     local ship_items = get_ship_items()
     create_ship(ply, ship_type)
-    stock_ship(ship_items)
+    give_cargo(ply, ship_items)
 
     local players = world.players()
     for _, player in ipairs (players) do
@@ -55,20 +55,10 @@ function get_ship_items()
     return items
 end
 
-function stock_ship(items)
-    local shiplocker
-    local objects = world.objectQuery(entity.position(), 500)
-    for _, v in ipairs (objects) do
-        shiplocker = string.find(world.entityName(v), "shiplocker")
-        if shiplocker then
-            for _, i in ipairs (items) do
-                world.containerAddItems(v, i)
-            end
-        end
-    end
-    if not shiplocker then
-        sb.logInfo("no shiplocker found")
-    end
+function give_cargo(ply, items)
+    --Honestly I have no clue if i can get the player from their id and give it normally, this is defeat
+    --ply.giveItem(cargo_box)
+    world.sendEntityMessage(ply, "namje_give_cargo", items)
 end
 
 function create_ship(ply, ship_type)
