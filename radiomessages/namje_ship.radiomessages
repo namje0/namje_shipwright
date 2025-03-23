@@ -1,0 +1,6 @@
+{
+  "namje_invalid_ship_swap" : {
+    "unique" : false,
+    "text" : "You must be on your ship and have BYOS enabled in order to use this license."
+  }
+}

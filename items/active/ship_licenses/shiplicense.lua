@@ -10,6 +10,11 @@ function activate()
 			return
 		end
 
+		if not world.getProperty("fu_byos") then
+			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_invalid_ship_swap", 5.0)
+			return
+		end
+
 		local ship_type = config.getParameter("shipType")
 
 		animator.playSound("activate")
