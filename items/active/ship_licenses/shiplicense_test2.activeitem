@@ -1,6 +1,6 @@
 {
-  "itemName" : "shiplicense_test",
-  "shortdescription" : "Test License",
+  "itemName" : "shiplicense_test2",
+  "shortdescription" : "Test License 2",
   "description" : "Test",
   "price" : 1000,
   "tooltipKind" : "base",
@@ -13,5 +13,5 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_testship"
+  "shipType" : "fu_byosuros"
 }
