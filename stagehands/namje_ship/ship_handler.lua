@@ -3,10 +3,7 @@ require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 
 function init()
-    sb.logInfo("stagehand created")
     message.setHandler("swap_ship", swap_ship)
-    --create_ship()
-    --stagehand.die()
 end
 
 function swap_ship(_, _, ply, ship_type)
@@ -42,16 +39,6 @@ function get_ship_items()
             end
         end
     end
-
-    --temp test
-    --[[
-    sb.logInfo("items in ship: " .. #items)
-    if locker then
-        for _, i in ipairs (items) do
-            world.containerAddItems(locker, i)
-        end
-    end
-    ]]
     return items
 end
 

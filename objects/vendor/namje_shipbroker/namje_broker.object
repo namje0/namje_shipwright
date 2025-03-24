@@ -1,0 +1,64 @@
+{
+  "objectName" : "namje_broker",
+  "rarity" : "Common",
+  "category" : "other",
+  "printable" : false,
+
+  "description" : "A shady looking ship broker... Where does she even get those ships from?",
+  "shortdescription" : "Ship Broker",
+
+  "lightColor" : [152, 158, 190],
+  
+  "inventoryIcon" : "namje_brokericon.png",
+  "orientations" : [
+    {
+      "image" : "namje_broker.png:<color>.<frame>",
+
+      "imagePosition" : [-8, 0],
+      "frames" : 40,
+      "animationCycle" : 8,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ],
+
+      "lightPosition" : [0, 0]
+    }
+  ],
+
+  "scripts" : [ "/objects/outpost/repairo/repairo.lua" ],
+  "scriptDelta" : 20,
+
+  "chatRadius" : 5,
+  "chatCooldown" : 25,
+  "chatOptions" : [
+    "You look like you own a raggedy-ass ship. I can fix that.",
+    "Busted FTL drive? Sucks to suck.",
+    "Wow you smell like shit.",
+    "All of our ships are ethically sourced, trust me.",
+    "What're ya buyin'?",
+    "Got some rare ships on sale, stranger!",
+    "Don't ask where we get our ships.",
+    "I really hope you didn't pick vanilla ships.",
+    "'Why is ship buying not basegame?' What do you mean?",
+    "Short on pixels? Try our STL options!"
+  ],
+
+  "interactAction" : "OpenMerchantInterface",
+  "interactData" : {
+    "config" : "/interface/windowconfig/merchant.config",
+    "paneLayoutOverride" : {
+      "windowtitle" : {
+        "title" : "Outpost Shipbroking Services",
+        "subtitle" : "Ship trade-ins! No refunds!"
+      }
+    },
+    "buyFactor" : 1.0,
+    "sellFactor" : 0.2,
+    "items" : [
+      { "item" : "shiplicense_test" },
+      { "item" : "shiplicense_test2" },
+      { "item" : "fixerdusterchest" },
+      { "item" : "fixerdusterlegs" }
+    ]
+  }
+}

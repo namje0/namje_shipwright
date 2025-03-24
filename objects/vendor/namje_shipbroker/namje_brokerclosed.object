@@ -1,0 +1,25 @@
+{
+  "objectName" : "namje_brokerclosed",
+  "rarity" : "Common",
+  "category" : "other",
+  "printable" : false,
+
+  "description" : "There's a note: 'Still waiting on those fuel shipments, pete. -F'",
+  "shortdescription" : "Ship Broker [Closed]",
+  
+  "inventoryIcon" : "namje_brokerclosed.png",
+  "orientations" : [
+    {
+      "dualImage" : "namje_brokerclosed.png:<color>",
+
+      "imagePosition" : [-8, 0],
+      "frames" : 1,
+      "animationCycle" : 0.4,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ]
+
+    }
+  ]
+
+}
