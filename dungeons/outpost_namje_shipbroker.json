@@ -5,7 +5,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJx7w8DA8GYYYgBmAzHJ",
+         "data":"eJx7w8DA8GYU48QA3gtCYQ==",
          "encoding":"base64",
          "height":6,
          "id":1,
@@ -13,13 +13,13 @@
          "opacity":0.5,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":12,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBieAAAA2AAB",
+         "data":"eJxjYBgF+AAAASAAAQ==",
          "encoding":"base64",
          "height":6,
          "id":2,
@@ -27,7 +27,7 @@
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":12,
          "x":0,
          "y":0
         }, 
@@ -50,7 +50,7 @@
          "name":"objects",
          "objects":[
                 {
-                 "gid":7670,
+                 "gid":7672,
                  "height":48,
                  "id":679,
                  "name":"",
@@ -58,8 +58,56 @@
                  "type":"",
                  "visible":true,
                  "width":72,
+                 "x":24,
+                 "y":48
+                }, 
+                {
+                 "gid":7671,
+                 "height":24,
+                 "id":680,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
                  "x":0,
-                 "y":0
+                 "y":32
+                }, 
+                {
+                 "gid":7670,
+                 "height":16,
+                 "id":681,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":16,
+                 "y":32
+                }, 
+                {
+                 "gid":7670,
+                 "height":16,
+                 "id":682,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":48
+                }, 
+                {
+                 "gid":2147489816,
+                 "height":16,
+                 "id":683,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":8,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -124,8 +172,7 @@
          "visible":true,
          "x":0,
          "y":0
-        },
-    
+        }, 
         {
          "draworder":"topdown",
          "id":10,
@@ -138,7 +185,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":680,
+ "nextobjectid":684,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -179,8 +226,7 @@
         {
          "firstgid":1321,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-race\/generic.json"
-        },
-    
+        }, 
         {
          "firstgid":3305,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-race\/glitch.json"
@@ -192,7 +238,8 @@
         {
          "firstgid":3819,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-race\/hylotl.json"
-        }, 
+        },
+    
         {
          "firstgid":4051,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-race\/novakid.json"
@@ -216,8 +263,7 @@
         {
          "firstgid":6073,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/furniture.json"
-        },
-    
+        }, 
         {
          "firstgid":6427,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/light.json"
@@ -241,17 +287,18 @@
         {
          "firstgid":7358,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-type\/container.json"
-        }, 
+        },
+    
         {
          "firstgid":7643,
          "source":"..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-type\/teleporter.json"
         }, 
         {
          "firstgid":7670,
-         "source":"..\/tilesets\/namje\/namje_ship_obj.json"
+         "source":"..\/tilesets\/namje\/namje_broker_tileset.json"
         }],
  "tilewidth":8,
  "type":"map",
  "version":"1.10",
- "width":9
+ "width":12
 }

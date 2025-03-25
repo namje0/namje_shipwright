@@ -1,11 +1,11 @@
 {
        "metadata" : {
-         "name" : "namje_shipbroker",
+         "name" : "outpost_namje_shipbroker",
          "species" : "generic",
          "rules" : [
          ],
      
-         "anchor" : [ "namje_shipbroker" ],
+         "anchor" : [ "outpost_namje_shipbroker" ],
      
          "maxRadius" : 1000000,
          "maxParts" : 1,
@@ -14,11 +14,11 @@
      
        "parts" : [
          {
-           "name" : "namje_shipbroker",
+           "name" : "outpost_namje_shipbroker",
            "rules" : [
              [ "maxSpawnCount", [1] ]
            ],
-           "def" : [ "tmx", "namje_broker.json" ]
+           "def" : [ "tmx", "outpost_namje_shipbroker.json" ]
          }
        ]
      }

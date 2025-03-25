@@ -1,0 +1,9 @@
+[
+    {
+        "op": "add",
+        "path": "/quickfliss",
+        "value": [
+            "/warp instanceworld:outpost=464.580"
+        ]
+    }
+]

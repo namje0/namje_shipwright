@@ -1,0 +1,21 @@
+{
+  "objectName" : "namje_brokernotice",
+  "rarity" : "Common",
+  "category" : "decorative",
+  "price" : 1,
+  "description" : "A faded 'bongbong' poster, and other old notices.",
+  "shortdescription" : "Wall Notices",
+
+  "inventoryIcon" : "namje_brokernotice.png",
+  "orientations" : [
+    {
+      "image" : "namje_brokernotice.png:<color>",
+      "imagePosition" : [-8, -8],
+      
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ]
+}

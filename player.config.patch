@@ -1,8 +1,9 @@
 [
-    [
-        { "op" : "add",
-		  "path" : "/deploymentConfig/scripts/-",
-		  "value" : "/scripts/namje_cargo.lua"
-		}
-    ]
+  [
+    { 
+      "op" : "add",
+      "path" : "/deploymentConfig/scripts/-",
+      "value" : "/scripts/namje_cargo.lua"
+    }
+  ]
 ]

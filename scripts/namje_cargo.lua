@@ -1,7 +1,7 @@
 local ini = init or function() end
 
 function init() ini()
-    --player.setUniverseFlag("namje_closed_broker")
+    player.setUniverseFlag("outpost_namje_shipbroker")
     message.setHandler("namje_give_cargo", function(_, _, items) 
         local cargo_box = {
             name = "namje_cargo_box",
@@ -12,9 +12,5 @@ function init() ini()
         }
 
         player.giveItem(cargo_box)
-
-        --[[for _, item in ipairs(items) do
-            player.giveItem(item)
-        end]]
     end)
 end

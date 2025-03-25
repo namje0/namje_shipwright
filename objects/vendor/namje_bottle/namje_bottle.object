@@ -1,0 +1,29 @@
+{
+  "objectName" : "namje_bottle",
+  "rarity" : "Common",
+
+  "category" : "breakable",
+  "price" : 5,
+  "description" : "100% Alcohol? How??",
+  "shortdescription" : "Empty Alcohol Bottle",
+  "race" : "hylotl",
+
+  "inventoryIcon" : "namje_bottle.png",
+  "orientations" : [
+    {
+      "dualImage" : "namje_bottle.png:<color>",
+
+      "imagePosition" : [0, 0],
+      "frames" : 1,
+      "animationCycle" : 0.5,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ]
+
+    }
+  ],
+
+  "smashable" : true,
+  "smashSounds" : [ "/sfx/objects/vase_break_large1.ogg", "/sfx/objects/vase_break_large2.ogg" ],
+  "smashParticles" : [ { "count" : 4, "particle" : "glassshard" } ]
+}

@@ -1,12 +1,18 @@
 [
   {
     "op": "add",
-    "path": "/outpost_mission1/actions/-",
-    "value": {
-      "type" : "placeDungeon",
-      "dungeonId" : "namje_shipbroker",
-      "targetInstance" : "outpost",
-      "targetPosition" : [468, 580]
+    "path": "/outpost_namje_shipbroker",
+    "value": 
+    {
+      "actions": 
+      [
+        {
+          "type": "placeDungeon",
+          "dungeonId": "outpost_namje_shipbroker",
+          "targetInstance": "outpost",
+          "targetPosition": [464, 586]
+        }
+      ]
     }
   }
 ]
