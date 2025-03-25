@@ -40,8 +40,7 @@
     "Got some rare ships on sale, stranger!",
     "Don't ask where we get our ships.",
     "I really hope you didn't pick vanilla ships.",
-    "'Why is ship buying not basegame?' What do you mean?",
-    "Short on pixels? Try our STL options!"
+    "Short on pixels and a broken FTL drive? Try our STL shuttlecraft!"
   ],
 
   "interactAction" : "OpenMerchantInterface",
