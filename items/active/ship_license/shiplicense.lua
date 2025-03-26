@@ -31,6 +31,6 @@ function swap_ships()
 	world.spawnStagehand({1024, 1024}, "ship_handler")
 	world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
 	player.playCinematic(cinematic)
-	world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 5.0)
+	world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 7.0)
 	item.consume(1)
 end

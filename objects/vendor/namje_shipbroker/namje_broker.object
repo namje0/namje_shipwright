@@ -26,8 +26,8 @@
     }
   ],
 
-  "scripts" : [ "/objects/outpost/repairo/repairo.lua" ],
-  "scriptDelta" : 20,
+  "scripts" : [ "namje_broker.lua" ],
+  "scriptDelta" : 0,
 
   "chatRadius" : 5,
   "chatCooldown" : 25,
@@ -43,22 +43,26 @@
     "Short on pixels and a broken FTL drive? Try our STL shuttlecraft!"
   ],
 
-  "interactAction" : "OpenMerchantInterface",
   "interactData" : {
-    "config" : "/interface/windowconfig/merchant.config",
+    "config" : "/interface/windowconfig/namje_broker_crafting.config",
     "paneLayoutOverride" : {
       "windowtitle" : {
         "title" : "Outpost Shipbroking Services",
-        "subtitle" : "Ship trade-ins! No refunds!"
+        "subtitle" : "Ship trade-ins! No refunds! No questions asked! Perfectly legal!",
+        "icon" : {
+          "file" : "/interface/windowconfig/namje_broker_icon.png"
+        }
       }
     },
-    "buyFactor" : 1.0,
-    "sellFactor" : 0.2,
-    "items" : [
-      { "item" : "shiplicense_test" },
-      { "item" : "shiplicense_test2" },
-      { "item" : "fixerdusterchest" },
-      { "item" : "fixerdusterlegs" }
-    ]
+    "filter" : []
+  },
+  "storeInventory" : {
+    "small" : [
+      "shiplicense_test2"
+    ],
+    "medium" : [
+      "shiplicense_test"
+    ],
+    "large" : []
   }
 }

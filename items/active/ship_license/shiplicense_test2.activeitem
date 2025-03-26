@@ -2,8 +2,8 @@
   "itemName" : "shiplicense_test2",
   "shortdescription" : "Test License 2",
   "description" : "Test",
-  "price" : 1000,
-  "tooltipKind" : "base",
+  "price" : 20000,
+  "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
   "category" : "shipLicense",
   "itemTags" : [],
@@ -13,5 +13,6 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "fu_byosuros"
+  "shipType" : "fu_byosuros",
+  "shipImage" : "/interface/ai/shippreviews/namje_testship.png"
 }

@@ -2,8 +2,8 @@
   "itemName" : "shiplicense_test",
   "shortdescription" : "Test License",
   "description" : "Test",
-  "price" : 1000,
-  "tooltipKind" : "base",
+  "price" : 150000,
+  "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
   "category" : "shipLicense",
   "itemTags" : [],
@@ -13,5 +13,6 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_testship"
+  "shipType" : "namje_testship",
+  "shipImage" : "/interface/ai/shippreviews/namje_testship.png"
 }
