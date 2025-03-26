@@ -31,13 +31,6 @@
     "wrapWidth" : 225,
     "value" : "Recommended Crew Size: 1-6"
   },
-  "rarityLabel" : {
-    "type" : "label",
-    "position" : [7, 23],
-    "hAnchor" : "left",
-    "centered" : true,
-    "wrapWidth" : 126
-  },
   "shipImage" : {
     "type" : "image",
     "position" : [7, 115],

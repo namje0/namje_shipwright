@@ -1,0 +1,15 @@
+{
+  "itemName" : "namje_darkslopedinsetpanel",
+  "price" : 0,
+  "category" : "block",
+  "rarity" : "Common",
+  "inventoryIcon" : "namje_darkslopedinsetpanel.png",
+  "shortdescription" : "Dark Inset Panel",
+  "description" : "A somewhat inexpensive material that can withstand most weathering. This one comes with a dark outline.",
+  "glitchdescription" : "Observant. This somewhat inexpensive material can withstand most weathering.",
+  "florandescription" : "This sspace-metal looks ssstrong.",
+  "novakiddescription" : "A sturdy lookin' metal panel.",
+
+  "materialId" : 50505,
+  "learnBlueprintsOnPickup" : [ "namje_darkslopedinsetpanel" ]
+}
