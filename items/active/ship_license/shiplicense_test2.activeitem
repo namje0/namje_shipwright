@@ -14,5 +14,8 @@
   "scripts" : ["shiplicense.lua"],
 
   "shipType" : "fu_byosuros",
-  "shipImage" : "/interface/ai/shippreviews/namje_testship.png"
+  "shipImage" : "/interface/ai/shippreviews/fu_byosdefaultship.png",
+  "recCrewSize" : "3-5",
+
+  "builder" : "/items/buildscripts/build_shiplicense.lua"
 }

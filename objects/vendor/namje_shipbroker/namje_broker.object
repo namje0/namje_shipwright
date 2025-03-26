@@ -27,7 +27,7 @@
   ],
 
   "scripts" : [ "namje_broker.lua" ],
-  "scriptDelta" : 0,
+  "scriptDelta" : 20,
 
   "chatRadius" : 5,
   "chatCooldown" : 25,

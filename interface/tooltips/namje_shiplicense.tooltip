@@ -7,12 +7,12 @@
   },
   "moneyIcon" : {
     "type" : "image",
-    "position" : [97, 23],
+    "position" : [8, 23],
     "file" : "/interface/money.png"
   },
   "priceLabel" : {
     "type" : "label",
-    "position" : [110, 23],
+    "position" : [21, 23],
     "hAnchor" : "left",
     "value" : "0"
   },
@@ -21,7 +21,15 @@
     "position" : [11, 110],
     "hAnchor" : "left",
     "vAnchor" : "top",
-    "wrapWidth" : 233
+    "wrapWidth" : 225
+  },
+  "crewLabel" : {
+    "type" : "label",
+    "position" : [11, 45],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Recommended Crew Size: 1-6"
   },
   "rarityLabel" : {
     "type" : "label",

@@ -1,12 +1,12 @@
 {
   "moneyIcon" : {
     "type" : "image",
-    "position" : [102, 30],
+    "position" : [8, 30],
     "file" : "/interface/money.png"
   },
   "priceLabel" : {
     "type" : "label",
-    "position" : [115, 30],
+    "position" : [21, 30],
     "hAnchor" : "left",
     "value" : "0"
   },
@@ -15,7 +15,15 @@
     "position" : [11, 115],
     "hAnchor" : "left",
     "vAnchor" : "top",
-    "wrapWidth" : 233
+    "wrapWidth" : 225
+  },
+  "crewLabel" : {
+    "type" : "label",
+    "position" : [11, 60],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Recommended Crew Size: 1-6"
   },
   "shipImage" : {
     "type" : "image",

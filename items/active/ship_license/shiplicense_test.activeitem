@@ -1,8 +1,8 @@
 {
   "itemName" : "shiplicense_test",
-  "shortdescription" : "Test License",
-  "description" : "Test",
-  "price" : 150000,
+  "shortdescription" : "T-6 Transport Shuttle",
+  "description" : "A decommissioned cheap shuttlecraft. It's a bit beat up, but it'll let you travel within a system.\nThese models were made for intragalactic flight and are only in ^orange;STL^reset; configuration, but it can be easily swapped out for an ^cyan;FTL^reset; drive.",
+  "price" : 1500,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
   "category" : "shipLicense",
@@ -14,5 +14,8 @@
   "scripts" : ["shiplicense.lua"],
 
   "shipType" : "namje_testship",
-  "shipImage" : "/interface/ai/shippreviews/namje_testship.png"
+  "shipImage" : "/interface/ai/shippreviews/namje_testship.png",
+  "recCrewSize" : "1-2",
+
+  "builder" : "/items/buildscripts/build_shiplicense.lua"
 }

@@ -24,7 +24,6 @@ function update(dt)
 end
 
 function onInteraction(args)
-    sb.logInfo("frogfurnishing.lua onInteraction")
     local interactData = config.getParameter("interactData")
 
     interactData.recipes = {}
