@@ -1,0 +1,24 @@
+{
+  "materialId" : 50300,
+  "materialName" : "engineblock",
+  "particleColor" : [75, 181, 255, 255],
+  "itemDrop" : "engineblock",
+  "description" : "An engine block.",
+  "shortdescription" : "Engine Block",
+  "glitchDescription" : "Statement. An engine block.",
+  "floranDescription" : "Ssship engine.",
+  "footstepSound" : "/sfx/blocks/footstep_stone.ogg",
+  "health" : 8,
+  "category": "materials",
+
+  "renderTemplate" : "/tiles/classicmaterialtemplate.config",
+  "renderParameters" : {
+    "texture" : "engineblock.png",
+    "variants" : 1,
+    "lightTransparent" : false,
+    "occludesBelow" : true,
+    "multiColored" : true,
+    "zLevel" : 2630,
+    "radiantLight" : [171, 171, 171]
+  }
+}

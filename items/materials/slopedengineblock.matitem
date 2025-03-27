@@ -1,0 +1,13 @@
+{
+  "itemName" : "slopedengineblock",
+  "category" : "block",
+  "rarity" : "Rare",
+  "inventoryIcon" : "slopedengineblock.png",
+  "dropCollision" : [-2.5, -2.0, 2.5, 2.0],
+  "shortdescription" : "Sloped Engine Block",
+  "description" : "A sloped engine block. A lot of trouble must've gone into making this.",
+  "glitchdescription" : "Statement. Sloped engine block.",
+  "florandescription" : "Block glow...",
+
+  "materialId" : 50301
+}

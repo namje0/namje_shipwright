@@ -1,0 +1,24 @@
+{
+  "materialId" : 50301,
+  "materialName" : "slopedengineblock",
+  "particleColor" : [75, 181, 255, 255],
+  "itemDrop" : "slopedengineblock",
+  "description" : "A sloped engine block. A lot of work must've went into making this.",
+  "shortdescription" : "Ooo... Glowy.",
+  "glitchDescription" : "Amazed. Fascinating how powerful this object is.",
+  "floranDescription" : "Block glow...",
+  "footstepSound" : "/sfx/blocks/footstep_stone.ogg",
+  "health" : 8,
+  "category": "materials",
+
+  "renderTemplate" : "/tiles/slopedmaterialtemplate.config",
+  "renderParameters" : {
+    "texture" : "slopedengineblock.png",
+    "variants" : 1,
+    "lightTransparent" : false,
+    "occludesBelow" : true,
+    "multiColored" : true,
+    "zLevel" : 2630,
+    "radiantLight" : [171, 171, 171]
+  }
+}

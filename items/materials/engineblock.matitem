@@ -1,0 +1,13 @@
+{
+  "itemName" : "engineblock",
+  "category" : "block",
+  "rarity" : "Common",
+  "inventoryIcon" : "engineblock.png",
+  "dropCollision" : [-2.5, -2.0, 2.5, 2.0],
+  "shortdescription" : "Engine Block",
+  "description" : "An engine block.",
+  "glitchdescription" : "Statement. An engine block.",
+  "florandescription" : "Ssship engine.",
+
+  "materialId" : 50300
+}

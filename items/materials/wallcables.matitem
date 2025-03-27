@@ -1,0 +1,12 @@
+{
+  "itemName" : "wallcables",
+  "price" : 5,
+  "rarity" : "Common",
+  "inventoryIcon" : "wallcables.png",
+  "description" : "Some neatly placed cables.",
+  "shortdescription" : "Wall Cables",
+  "glitchdescription" : "Excited. Cables!",
+  "florandescription" : "Wirrrre.",
+
+  "materialId" : 50302
+}
