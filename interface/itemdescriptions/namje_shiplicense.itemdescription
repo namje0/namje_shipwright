@@ -17,6 +17,14 @@
     "vAnchor" : "top",
     "wrapWidth" : 225
   },
+  "cargoLabel" : {
+    "type" : "label",
+    "position" : [11, 70],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Ship Cargo Hold Size: 64"
+  },
   "crewLabel" : {
     "type" : "label",
     "position" : [11, 60],

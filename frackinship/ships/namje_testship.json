@@ -19,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztmMsKwyAQRU2pu24Kob\/U\/\/ajsm5nIVrxMaNNvKgHLtko3hzSMolSi8UCAfPN++ZiVDwzknIxQo7NZfk519Nr4\/+O7LqnduGsl8DZ45\/PPaPFU4ujnkgdEbWeahwhIe1U42k2R4TU04yOCIkniaPR4Hqa2RHB8TS6o+Oejj8\/5RjZEXnI4c+ZpTUjOir5Ibj3Lp3tH7otuQ67\/s2V7ywcena50kWtnxQmuMbup7Rf2qG1t98t9q3nDHKeOHuv\/J\/717NRe3Z4RXPU04\/fAaWLxZ9zUDpJn6MYsVmutROKHwtSJ6QuIQi9kP0Qvbuh+yF6z3zofizLz5x8AH6BWFI=",
+         "data":"eJztmN2KgzAQRnVp7nqzUNpud\/vfbgv7IPvePpTXdWCC0cY4k6AZogeGoWA6nwcbYrMsLhvV\/Pyl6gJ26n3N1LA5MvvsKA1HRVX\/H3UVmb18AUe6ANtvTZc0ulykUGVe1+xnWE\/rnP470td9qroo13OgrDHnU2eEeApxRJ6B+9AW9x\/Yc76r+qlqX9UBv+uI\/YT9jP2C\/Yr9hvPvDEeArycfRz5QPHEcAVxHgI+nsRxR+MV7fzCeUZ9MXE9TdARwPHEcpQbV05QdARRPqTsqF91lnp9cpOwIPLgwz5l913AdPR176p+Q960+PwD13rln+6UKK1eGlWrWmO8sFGJmGdOFr58uila33U\/fem6G0NxmNtt\/PUPg8kRZO1Qu17wxZ5qz212ao5h+zAxSsmjMc46UTNznyIbtLBeaSYofjaRMkrK0kZBLsh8gdjbpfoDYZz7pfjSzn2nyAqLjYCU=",
          "encoding":"base64",
          "height":29,
          "id":2,
@@ -345,6 +345,14 @@
         {
          "firstgid":1292,
          "source":"..\/..\/tilesets\/tiles\/horizon_tiles\/horizon_tiles.json"
+        }, 
+        {
+         "firstgid":1302,
+         "source":"..\/..\/tilesets\/namje_engines_cables\/engines_cables_tileset.json"
+        }, 
+        {
+         "firstgid":1320,
+         "source":"..\/..\/tilesets\/packed\/moreoutpostobjects\/moreoutpostobjects-furniture.json"
         }],
  "tilewidth":8,
  "type":"map",

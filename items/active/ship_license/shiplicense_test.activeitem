@@ -16,6 +16,7 @@
   "shipType" : "namje_testship",
   "shipImage" : "/interface/ai/shippreviews/namje_testship.png",
   "recCrewSize" : "1-2",
+  "cargoHoldSize" : "64",
 
   "builder" : "/items/buildscripts/build_shiplicense.lua"
 }

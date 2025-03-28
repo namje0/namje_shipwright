@@ -5,5 +5,13 @@
         "value": [
             "/warp instanceworld:outpost=464.580"
         ]
+    },
+    {
+        "op": "add",
+        "path": "/quickship",
+        "value": [
+            "/spawnitem shiplicense_test",
+            "/spawnitem shiplicense_test2"
+        ]
     }
 ]
