@@ -8,10 +8,10 @@
   "shortdescription" : "Empty Alcohol Bottle",
   "race" : "hylotl",
 
-  "inventoryIcon" : "namje_bottle.png",
+  "inventoryIcon" : "body.png",
   "orientations" : [
     {
-      "dualImage" : "namje_bottle.png:<color>",
+      "dualImage" : "body.png:<color>",
 
       "imagePosition" : [0, 0],
       "frames" : 1,

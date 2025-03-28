@@ -1,0 +1,11 @@
+{
+  "itemName" : "namje_indestructiblemetal",
+  "price" : 0,
+  "category" : "block",
+  "rarity" : "Common",
+  "inventoryIcon" : "namje_darkslopedinsetpanel.png",
+  "shortdescription" : "Interior Ship Plating",
+  "description" : "^red;This block is almost indestructible (50k hp) and shouldn't be placed in normal gameplay. It's only used for ship balancing.^reset;",
+
+  "materialId" : 50506
+}

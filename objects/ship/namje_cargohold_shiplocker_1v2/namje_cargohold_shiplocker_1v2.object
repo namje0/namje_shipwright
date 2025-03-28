@@ -1,0 +1,49 @@
+{
+  "objectName" : "namje_cargohold_shiplocker_1v2",
+  "rarity" : "Common",
+  "category" : "storage",
+  "objectType" : "container",
+  "tooltipKind" : "container",
+  "printable" : false,
+
+  "description" : "This console will let me access the cargo hold of my ship. ^orange;Ship Capacity: 64^reset;",
+  "shortdescription" : "^orange;Cargo Hold Access^reset;",
+
+  "price" : 1,
+  "lightColor" : [127, 67, 30],
+
+  "inventoryIcon" : "/objects/vendor/namje_shipbroker/namje_brokericon.png",
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>", "fullbright" : true }, { "image" : "lit.png:<color>" } ],
+      "imagePosition" : [0, 0],
+	    "lightPosition" : [0, 0],
+
+      "direction" : "left",
+
+      "flipImages" : true,
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    },
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>", "fullbright" : true }, { "image" : "lit.png:<color>" } ],
+      "imagePosition" : [0, 0],
+	    "lightPosition" : [0, 0],
+
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ],
+  
+  "health" : 50000,
+
+  "openSounds" : [ "/sfx/objects/console_generic_switchon.ogg" ],
+  "closeSounds" : [ "/sfx/objects/console_generic_switchoff.ogg" ],
+  "slotCount" : 64,
+  "uiConfig" : "/interface/chests/chest<slots>.config",
+  "frameCooldown" : 5,
+  "openFrameIndex" : 4,
+  "autoCloseCooldown" : 3600
+}

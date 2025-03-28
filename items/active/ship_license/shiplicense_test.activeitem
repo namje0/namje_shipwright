@@ -1,7 +1,7 @@
 {
   "itemName" : "shiplicense_test",
-  "shortdescription" : "T-6 Transport Shuttle",
-  "description" : "A decommissioned cheap shuttlecraft. It's a bit beat up, but it'll let you travel within a system.\nThese models were made for intragalactic flight and are only in ^orange;STL^reset; configuration, but it can be easily swapped out for an ^cyan;FTL^reset; drive.",
+  "shortdescription" : "C-Haul Transport Shuttle",
+  "description" : "An old and cheap decommissioned transport shuttle. It was made for short flights within a system, and thus only has an ^orange;STL drive^reset; and limited cargo capacity. Upgrading to ^cyan;FTL^reset; shouldn't be too hard.\nSeems like this was someones home at some point.",
   "price" : 1500,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",

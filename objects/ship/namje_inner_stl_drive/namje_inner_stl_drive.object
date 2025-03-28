@@ -1,0 +1,60 @@
+{
+  "objectName" : "namje_inner_stl_drive",
+  "rarity" : "essential",
+  "category" : "furniture",
+  "printable" : false,
+
+  "description" : "An STL drive that's inside the ship. Allows travel within a system, but isn't strong enough to travel to others.\n^red;BYOS Only^reset;",
+  "shortdescription" : "^red;Encased STL Drive^reset;",
+
+  "apexDescription" : "Sometimes rebels try to escape the Miniknog with engines like this. They never get far.",
+  "avianDescription" : "I better not fall into any gravity wells with an engine like this.",
+  "floranDescription" : "Ssslow engine.",
+  "glitchDescription" : "Irked. Core Fragments are nowhere near as powerful as Erchius Crystals.",
+  "humanDescription" : "Humans colonized the Sol system with engines like this, so I shouldn't complain.",
+  "hylotlDescription" : "Going somewhere slowly is better than going nowhere fast.",
+  "novakidDescription" : "It's basically just a steam engine, but that's just fine.",
+
+  "inventoryIcon" : "icon.png",
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>.<frame>", "fullbright" : true }, { "image" : "lit.png:<color>.<frame>" } ],
+      "imagePosition" : [0, 0],
+
+      "frames" : 2,
+      "animationCycle" : 0.2,
+
+      "direction" : "left",
+
+      "flipImages" : true,
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    },
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>.<frame>", "fullbright" : true }, { "image" : "lit.png:<color>.<frame>" } ],
+      "imagePosition" : [0, 0],
+
+      "frames" : 2,
+      "animationCycle" : 0.2,
+
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ],
+
+  "scripts" : [ "/objects/ship/fu_shipstatmodifier.lua" ],
+  "scriptDelta" : 60,
+
+  "stats" : {
+    "shipSpeed" : -20
+  },
+  "capabilities" : [
+    "planetTravel"
+  ],
+  "maxAmountGroups" : {
+    "ftlDrive" : 1
+  },
+  "byosOnly" : true
+}

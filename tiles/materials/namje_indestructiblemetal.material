@@ -1,0 +1,23 @@
+{
+  "materialId" : 50506,
+  "materialName" : "namje_indestructiblemetal",
+  "particleColor" : [182, 182, 182, 255],
+  "itemDrop" : "slopedscrappanel",
+
+  "description" : "Interior ship wiring and plating that can't be taken out. Don't question why you can break everything else, it's gameplay purposes!",
+
+  "shortdescription" : "Interior Plating",
+  "footstepSound" : "/sfx/blocks/footstep_lightmetal.ogg",
+  "health" : 50000,
+  "category" : "materials",
+
+  "renderTemplate" : "/tiles/slopedmaterialtemplate.config",
+  "renderParameters" : {
+    "texture" : "namje_darkslopedinsetpanel.png",
+    "variants" : 5,
+    "lightTransparent" : false,
+    "occludesBelow" : true,
+    "multiColored" : true,
+    "zLevel" : 4999
+  }
+}
