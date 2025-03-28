@@ -1,0 +1,68 @@
+{
+  "objectName" : "namje_shipteleporter_1",
+  "rarity" : "Common",
+  "category" : "teleporter",
+  "printable" : false,
+
+  "description" : "Trusty teleporter, what would we do without you? Sets your ship spawn. Extract to return the ship teleporter.",
+  "shortdescription" : "Flat Ship Teleporter",
+
+  "inventoryIcon" : "body.png",
+
+  "lightColor" : [32, 160, 89],
+  "flickerDistance" : 0.2,
+  "flickerStrength" : 0.05,
+  "flickerTiming" : 5,
+
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>", "fullbright" : true }, { "image" : "lit.png:<color>" } ],
+
+      "imagePosition" : [-16, 0],
+      "frames" : 1,
+      "animationCycle" : 0.5,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ],
+      "collision" : "solid",
+      "collisionSpaces" : [ [-2, 0], [-1, 0], [0, 0], [1, 0] ]
+    }
+  ],
+
+  "particleEmitter" : {
+    "emissionRate" : 2,
+    "emissionVariance" : 0.5,
+
+    "particle" : {
+      "type" : "ember",
+      "position" : [-0.5, 5],
+      "size" : 1.0,
+      "color" : [111, 233, 149, 255],
+      "light" : [32, 160, 89],
+      "fade" : 0.9,
+      "destructionAction" : "shrink",
+      "destructionTime" : 0.5,
+      "initialVelocity" : [0.0, 0.0],
+      "finalVelocity" : [0.0, 0.0],
+      "approach" : [0, 1],
+      "timeToLive" : 1,
+      "layer" : "middle"
+    },
+
+    "particleVariance" : {
+      "initialVelocity" : [0, 5],
+      "finalVelocity" : [0, 1],
+      "position" : [1.5, 0],
+      "size" : 0.5
+    }
+  },
+
+  "interactAction" : "OpenTeleportDialog",
+  "interactData" : "/interface/warping/shipteleporter.config",
+
+  "soundEffect" : "/sfx/objects/shipengine.ogg",
+  "soundEffectRangeMultiplier" : 1.5,
+
+  "scripts" : [ "/objects/ship/fu_byosteleporter/fu_byosteleporter.lua", "/objects/ship/fu_byosobjectdeath.lua" ],
+  "scriptDelta" : 20
+}

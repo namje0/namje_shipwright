@@ -1,5 +1,5 @@
 {
-  "objectName" : "namje_cargohold_shiplocker_1",
+  "objectName" : "namje_cargohold_shiplocker_1v2",
   "rarity" : "Common",
   "category" : "storage",
   "objectType" : "container",
@@ -9,7 +9,6 @@
   "description" : "This console will let me access the cargo hold of my ship. ^orange;Ship Capacity: 64^reset;",
   "shortdescription" : "^orange;Cargo Hold Access^reset;",
 
-  "price" : 1,
   "lightColor" : [127, 67, 30],
 
   "inventoryIcon" : "/objects/vendor/namje_shipbroker/namje_brokericon.png",
