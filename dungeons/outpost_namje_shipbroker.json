@@ -295,7 +295,7 @@
         }, 
         {
          "firstgid":7670,
-         "source":"..\/tilesets\/namje\/namje_broker_tileset.json"
+         "source":"..\/tilesets\/namje\/broker\/namje_broker_tileset.json"
         }],
  "tilewidth":8,
  "type":"map",

@@ -58,6 +58,32 @@ function create_ship(ply, ship_type)
     local replace_mode = {dungeon = "fu_byosblankquarter", size = {512, 512}}
 
     if selected_ship then
+        if not world.getProperty("fu_byos") then 
+            return 
+        end
+        --reset any byos stats to their default
+        local ship_stats = {
+            "shipSpeed",
+            "fuelEfficiency",
+            "maxFuel",
+            "crewSize"
+        }
+
+        local ship_capabilities = {
+            "systemTravel",
+            "planetTravel"
+        }
+
+        for _, stat in ipairs(ship_stats) do
+            world.setProperty("fu_byos." .. stat, 0)
+        end
+
+        for _, capability in ipairs(ship_capabilities) do
+            world.setProperty("fu_byos." .. capability, 0)
+        end
+
+        world.setProperty("fu_byos.group.ftlDrive", 0)
+
 		selected_ship.offset = selected_ship.offset or {-6, 12}
 		selected_ship.offset[1] = math.min(selected_ship.offset[1], -1)
 		selected_ship.offset[2] = math.max(selected_ship.offset[2], 1)

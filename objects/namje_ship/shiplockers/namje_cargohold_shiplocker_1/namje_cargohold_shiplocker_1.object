@@ -11,7 +11,7 @@
 
   "lightColor" : [127, 67, 30],
 
-  "inventoryIcon" : "/objects/vendor/namje_shipbroker/namje_brokericon.png",
+  "inventoryIcon" : "/objects/namje_ship/shiplockers/shiplockericon.png",
   "orientations" : [
     {
       "imageLayers" : [ { "image" : "body.png:<color>", "fullbright" : true }, { "image" : "lit.png:<color>" } ],

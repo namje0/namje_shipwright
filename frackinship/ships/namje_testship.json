@@ -19,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztmN2KgzAQRnVp7nqzUNpud\/vfbgv7IPvePpTXdWCC0cY4k6AZogeGoWA6nwcbYrMsLhvV\/Pyl6gJ26n3N1LA5MvvsKA1HRVX\/H3UVmb18AUe6ANtvTZc0ulykUGVe1+xnWE\/rnP470td9qroo13OgrDHnU2eEeApxRJ6B+9AW9x\/Yc76r+qlqX9UBv+uI\/YT9jP2C\/Yr9hvPvDEeArycfRz5QPHEcAVxHgI+nsRxR+MV7fzCeUZ9MXE9TdARwPHEcpQbV05QdARRPqTsqF91lnp9cpOwIPLgwz5l913AdPR176p+Q960+PwD13rln+6UKK1eGlWrWmO8sFGJmGdOFr58uila33U\/fem6G0NxmNtt\/PUPg8kRZO1Qu17wxZ5qz212ao5h+zAxSsmjMc46UTNznyIbtLBeaSYofjaRMkrK0kZBLsh8gdjbpfoDYZz7pfjSzn2nyAqLjYCU=",
+         "data":"eJztmNsKgzAMhnWsd7sZjJ3Px0fZe\/tQu56BFKurmrTThuoHP2HQrumHlm5JEpaVKn\/eqCLAVv3OGRo2R2YdHcXhKMvznhTJEntcAUc6gO1d05FGnYsY8kmLjH669bRM6e+RHjdXRSjjOVDmmOtT1\/Dx5OOIvAaeQ2s8f+DM2eXZ5znkOeJ3nbCesV6wXrHesN5x\/QfDEeDqycWRCxRPHEcA1xHg4qkvRxSeuPcX4xl16YnraYiOAI4njqPYoHoasiOA4il2R59pfcz7UxMxOwIPTZj3zLYxMTpq8wNQ986928+UX5p6WKhy+vzNQiFkL326cPVTR1aptv20zef24Nu32Zvtv54uaPJEmdvnOfevZ8N17WqV5iikH7MHKb1ozHuOlJ64z5EN213OtycpfjSSepLUSxUJfUn2A4TuTbofIPSdT7ofzehnmHwB9ldfyA==",
          "encoding":"base64",
          "height":29,
          "id":2,
@@ -59,42 +59,6 @@
                  "width":40,
                  "x":8,
                  "y":120
-                }, 
-                {
-                 "gid":205,
-                 "height":80,
-                 "id":4,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":72,
-                 "y":128
-                }, 
-                {
-                 "gid":200,
-                 "height":24,
-                 "id":5,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":16,
-                 "x":336,
-                 "y":192
-                }, 
-                {
-                 "gid":222,
-                 "height":41,
-                 "id":6,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":60,
-                 "x":168,
-                 "y":208
                 }, 
                 {
                  "gid":1007,
@@ -199,18 +163,6 @@
                  "y":176
                 }, 
                 {
-                 "gid":204,
-                 "height":24,
-                 "id":17,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":24,
-                 "x":464,
-                 "y":112
-                }, 
-                {
                  "gid":199,
                  "height":24,
                  "id":18,
@@ -293,6 +245,114 @@
                  "width":24,
                  "x":424,
                  "y":168
+                }, 
+                {
+                 "gid":1326,
+                 "height":24,
+                 "id":32,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":184,
+                 "y":192
+                }, 
+                {
+                 "gid":1323,
+                 "height":24,
+                 "id":33,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":216,
+                 "y":192
+                }, 
+                {
+                 "gid":1320,
+                 "height":16,
+                 "id":34,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":256,
+                 "y":104
+                }, 
+                {
+                 "gid":1321,
+                 "height":16,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":264,
+                 "y":104
+                }, 
+                {
+                 "gid":1324,
+                 "height":8,
+                 "id":36,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":88,
+                 "y":128
+                }, 
+                {
+                 "gid":1325,
+                 "height":24,
+                 "id":37,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":464,
+                 "y":112
+                }, 
+                {
+                 "gid":1329,
+                 "height":18,
+                 "id":38,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":40,
+                 "x":152,
+                 "y":128
+                }, 
+                {
+                 "gid":1327,
+                 "height":24,
+                 "id":39,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":56,
+                 "x":368,
+                 "y":128
+                }, 
+                {
+                 "gid":1334,
+                 "height":40,
+                 "id":42,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":200,
+                 "y":128
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -312,7 +372,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":31,
+ "nextobjectid":43,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -352,7 +412,11 @@
         }, 
         {
          "firstgid":1320,
-         "source":"..\/..\/tilesets\/packed\/moreoutpostobjects\/moreoutpostobjects-furniture.json"
+         "source":"..\/..\/tilesets\/namje\/ship\/namje_ship_obj_tileset.json"
+        }, 
+        {
+         "firstgid":1327,
+         "source":"..\/..\/tilesets\/namje\/moreoutpostobjects\/moreoutpostobjects-furniture.json"
         }],
  "tilewidth":8,
  "type":"map",
