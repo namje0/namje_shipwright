@@ -1,0 +1,10 @@
+{
+  "itemName": "atelierver_zen_industriallargepipe",
+  "price": 0,
+  "category": "block",
+  "rarity": "Uncommon",
+  "inventoryIcon": "atelierver_zen_industriallargepipe.png",
+  "description": "A thick vertical metal pipe.",
+  "shortdescription": "Industrial Vertical Large Pipe",
+  "materialId": 50507
+}

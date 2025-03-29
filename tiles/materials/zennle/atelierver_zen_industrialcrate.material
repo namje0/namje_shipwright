@@ -1,0 +1,21 @@
+{
+  "materialId" : 50509,
+  "materialName" : "atelierver_zen_industrialcrate",
+  "particleColor" : [110, 110, 110, 255],
+  "itemDrop" : "atelierver_zen_industrialcrate",
+  "description" : "A heavy, solid metal crate.",
+  "shortdescription" : "Industrial Crate Block",
+  "footstepSound" : "/sfx/blocks/footstep_metallic.ogg",
+  "health" : 10,
+  "category" : "materials",
+
+  "renderTemplate" : "/tiles/pipetemplate.config",
+  "renderParameters" : {
+    "texture" : "atelierver_zen_industrialcrate.png",
+    "variants" : 1,
+    "lightTransparent" : false,
+    "occludesBelow" : true,
+    "multiColored" : true,
+    "zLevel" : 2900
+  }
+}

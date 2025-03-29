@@ -1,0 +1,10 @@
+{
+  "itemName": "atelierver_zen_industrialcrate",
+  "price": 0,
+  "category": "block",
+  "rarity": "Uncommon",
+  "inventoryIcon": "atelierver_zen_industrialcrate.png",
+  "description": "A heavy, solid metal crate.",
+  "shortdescription": "Industrial Crate Block",
+  "materialId": 50509
+}
