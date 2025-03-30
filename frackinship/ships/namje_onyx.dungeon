@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_testship",
-    "species" : "apex",
+    "name" : "namje_onyx",
+    "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_testship" ],
+    "anchor" : [ "namje_onyx" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_testship",
+      "name" : "namje_onyx",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_testship.json" ]
+      "def" : [ "tmx", "namje_onyx.json" ]
     }
   ]
 }

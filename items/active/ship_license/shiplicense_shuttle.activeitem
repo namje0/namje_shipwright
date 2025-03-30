@@ -1,7 +1,7 @@
 {
-  "itemName" : "shiplicense_test",
+  "itemName" : "shiplicense_shuttle",
   "shortdescription" : "C-Haul Transport Shuttle",
-  "description" : "An old and cheap decommissioned transport shuttle. It was made for short flights within a system, and thus only has an ^orange;STL drive^reset; and limited cargo capacity. Upgrading to ^cyan;FTL^reset; shouldn't be too hard.\nSeems like this was someones home at some point.",
+  "description" : "An old and cheap decommissioned transport shuttle. It was made for short flights within a system, and thus only has an ^orange;STL drive^reset; installed.\nCramped and uncomfortable, only an option if you have nothing else but the money.",
   "price" : 1500,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
@@ -13,8 +13,8 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_testship",
-  "shipImage" : "/interface/ai/shippreviews/namje_testship.png",
+  "shipType" : "namje_starter_onyx",
+  "shipImage" : "/interface/ai/shippreviews/namje_starter_onyx.png",
   "recCrewSize" : "1-2",
   "cargoHoldSize" : "64",
 

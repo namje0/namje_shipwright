@@ -1,0 +1,61 @@
+{
+  "objectName" : "namje_inner_ftl_drive",
+  "rarity" : "essential",
+  "category" : "furniture",
+  "printable" : false,
+
+  "description" : "An FTL drive inside a ship. Allows interstellar travel and STL travel. ^orange;Ship Speed: +3^reset;. ^red;BYOS Only^reset;",
+  "shortdescription" : "^cyan;Encased FTL Drive^reset;",
+
+  "apexDescription" : "Smaller than most models, but it works. For now.",
+  "avianDescription" : "This small device gathers electricity and converts it into motion.",
+  "floranDescription" : "FTL drive sssmall, but Floran make do.",
+  "glitchDescription" : "Content. This FTL drive works enough for space travel.",
+  "humanDescription" : "Small, but an FTL drive is a must have for any ship.",
+  "hylotlDescription" : "A smaller model FTL drive for intergalactic travel.",
+  "novakidDescription" : "This faster'n 'light machine is workin' fine, though it's quite small.",
+
+  "inventoryIcon" : "icon.png",
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>.<frame>", "fullbright" : true }, { "image" : "lit.png:<color>.<frame>" } ],
+      "imagePosition" : [0, 0],
+
+      "frames" : 2,
+      "animationCycle" : 0.2,
+
+      "direction" : "left",
+
+      "flipImages" : true,
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    },
+    {
+      "imageLayers" : [ { "image" : "body.png:<color>.<frame>", "fullbright" : true }, { "image" : "lit.png:<color>.<frame>" } ],
+      "imagePosition" : [0, 0],
+
+      "frames" : 2,
+      "animationCycle" : 0.2,
+
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ],
+
+  "scripts" : [ "/objects/ship/fu_shipstatmodifier.lua" ],
+  "scriptDelta" : 60,
+
+  "stats" : {
+    "shipSpeed" : 3
+  },
+  "capabilities" : [
+    "systemTravel",
+    "planetTravel"
+  ],
+  "maxAmountGroups" : {
+    "ftlDrive" : 1
+  },
+  "byosOnly" : true
+}

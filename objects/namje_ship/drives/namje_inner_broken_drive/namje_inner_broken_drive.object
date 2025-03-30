@@ -1,0 +1,49 @@
+{
+  "objectName" : "namje_inner_broken_drive",
+  "rarity" : "uncommon",
+  "category" : "furniture",
+  "printable" : false,
+
+  "description" : "A small FTL drive, built to travel the stars. This one's broken.",
+  "shortdescription" : "^cyan;(Broken) Small FTL Drive^reset;",
+
+  "apexDescription" : "A broken FTL drive. Pity.",
+  "avianDescription" : "This used to harness electricity and convert it into motion.",
+  "floranDescription" : "Sssad. I wonder why thisss FTL drive fell into disssarray.",
+  "glitchDescription" : "Disapproving. This FTL drive will not do.",
+  "humanDescription" : "Ugh. Broken FTL drives are worthless.",
+  "hylotlDescription" : "A broken FTL drive. That's not good.",
+  "novakidDescription" : "This 'ere faster'n 'light machine sure is broken!",
+
+  "inventoryIcon" : "icon.png",
+  "orientations" : [
+    {
+      "dualImage" : "body.png",
+      "imagePosition" : [0, 0],
+
+      "direction" : "left",
+
+      "flipImages" : true,
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    },
+    {
+      "dualImage" : "body.png",
+      "imagePosition" : [0, 0],
+
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ],
+
+  "soundEffect" : "/sfx/projectiles/guidedrocket_electric_loop.ogg",
+
+  "animation" : "anim.animation",
+  "animationParts" : {
+    "base" : "body.png",
+	"fullbright" : "body.png"
+  },
+  "animationPosition" : [0, 0]
+}

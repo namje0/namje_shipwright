@@ -10,5 +10,53 @@
       "icon": "/interface/ai/shippreviews/byosgenericicon.png",
       "previewImage": "/interface/ai/shippreviews/namje_testship.png"
     }
+  },
+  {
+    "op": "add",
+    "path": "/namje_templateship",
+    "value": {
+      "ship": "namje_templateship",
+      "name": "Temp namje BYOS Ship",
+      "racialiserOverride" : "human",
+      "offset": [-13, 16],
+      "icon": "/interface/ai/shippreviews/byosgenericicon.png",
+      "previewImage": "/interface/ai/shippreviews/fu_byosdefaultship.png"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/shuttle",
+    "value": {
+      "ship": "shuttle",
+      "name": "Shuttle Ship",
+      "racialiserOverride" : "human",
+      "offset": [-13, 16],
+      "icon": "/interface/ai/shippreviews/byosgenericicon.png",
+      "previewImage": "/interface/ai/shippreviews/fu_byosdefaultship.png"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/namje_onyx",
+    "value": {
+      "ship": "namje_onyx",
+      "name": "Onyx D10 Corvette",
+      "racialiserOverride" : "human",
+      "offset": [-13, 16],
+      "icon": "/interface/ai/shippreviews/byosgenericicon.png",
+      "previewImage": "/interface/ai/shippreviews/fu_byosdefaultship.png"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/namje_starting_onyx",
+    "value": {
+      "ship": "namje_starting_onyx",
+      "name": "Onyx D10 Corvette",
+      "racialiserOverride" : "human",
+      "offset": [0, 0],
+      "icon": "/objects/namje_vendor/namje_shipbroker/namje_brokericon.png",
+      "previewImage": "/interface/ai/shippreviews/namje_onyx.png"
+    }
   }
 ]

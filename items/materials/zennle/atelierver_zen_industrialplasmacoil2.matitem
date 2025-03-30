@@ -1,0 +1,9 @@
+{
+  "itemName": "atelierver_zen_industrialplasmacoil2",
+  "category": "block",
+  "rarity": "Uncommon",
+  "inventoryIcon": "atelierver_zen_industrialplasmacoil2.png",
+  "description": "A brutally hot plasma coil set inside a light grey metal frame.",
+  "shortdescription": "Industrial Plasma Coil",
+  "materialId": 50511
+}

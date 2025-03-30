@@ -58,10 +58,11 @@
   },
   "storeInventory" : {
     "small" : [
-      "shiplicense_test2"
+      "shiplicense_test",
+      "shiplicense_onyx"
     ],
     "medium" : [
-      "shiplicense_test"
+      "shiplicense_test2"
     ],
     "large" : []
   }

@@ -1,0 +1,32 @@
+{
+  "objectName" : "namje_lavatory_1",
+  "rarity" : "common",
+  "category" : "furniture",
+  "printable" : false,
+
+  "description" : "A compact bathroom module usually found on ships. It has a toilet, sink, and shower.",
+  "shortdescription" : "Ship Lavatory",
+
+  "inventoryIcon" : "icon.png",
+  "orientations" : [
+    {
+      "image" : "body.png:<color>",
+      "imagePosition" : [-16, 0],
+
+      "direction" : "left",
+
+      "flipImages" : true,
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    },
+    {
+      "image" : "body.png:<color>",
+      "imagePosition" : [-16, 0],
+
+      "direction" : "right",
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "background" ]
+    }
+  ]
+}

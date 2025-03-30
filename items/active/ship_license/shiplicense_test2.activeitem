@@ -1,8 +1,8 @@
 {
   "itemName" : "shiplicense_test2",
-  "shortdescription" : "Test License 2",
-  "description" : "Test",
-  "price" : 20000,
+  "shortdescription" : "UROs Ship",
+  "description" : "The default FU BYOS UROs Ship. Does not come with a working FTL drive.",
+  "price" : 1000,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
   "category" : "shipLicense",
@@ -13,7 +13,7 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "fu_byosuros",
+  "shipType" : "namje_templateship",
   "shipImage" : "/interface/ai/shippreviews/fu_byosdefaultship.png",
   "recCrewSize" : "3-5",
 

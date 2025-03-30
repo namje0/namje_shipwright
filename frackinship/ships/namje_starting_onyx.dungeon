@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "namje_starting_onyx",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "namje_starting_onyx" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "namje_starting_onyx",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "namje_starting_onyx.json" ]
+    }
+  ]
+}

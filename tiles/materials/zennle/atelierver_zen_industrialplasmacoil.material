@@ -1,0 +1,21 @@
+{
+  "materialId" : 50510,
+  "materialName" : "atelierver_zen_industrialplasmacoil",
+  "particleColor" : [60, 60, 60, 255],
+  "itemDrop" : "atelierver_zen_industrialplasmacoil",
+  "description" : "A brutally hot plasma coil set inside a metal frame.",
+  "shortdescription" : "Industrial Plasma Coil",
+  "footstepSound" : "/sfx/blocks/footstep_composite.ogg",
+  "health" : 10,
+  "category": "materials",
+
+  "renderTemplate" : "/tiles/classicmaterialtemplate.config",
+  "renderParameters" : {
+    "texture" : "atelierver_zen_industrialplasmacoil.png",
+    "variants" : 5,
+    "lightTransparent" : false,
+    "occludesBelow" : false,
+    "multiColored" : true,
+    "zLevel" : 600
+  }
+}
