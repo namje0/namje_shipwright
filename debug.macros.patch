@@ -10,7 +10,7 @@
         "op": "add",
         "path": "/quickship",
         "value": [
-            "/spawnitem shiplicense_test",
+            "/spawnitem shiplicense_onyx",
             "/spawnitem shiplicense_test2"
         ]
     }

@@ -9,12 +9,16 @@ end
 function swap_ship(_, _, ply, ship_type)
     sb.logInfo("start ship swapping process")
     local ship_items = get_ship_items()
-    create_ship(ply, ship_type)
-    give_cargo(ply, ship_items)
+    local ship_create, err = pcall(create_ship, ply, ship_type)
+    if ship_create then
+        give_cargo(ply, ship_items)
 
-    local players = world.players()
-    for _, player in ipairs (players) do
-        world.sendEntityMessage(player, "fs_respawn")
+        local players = world.players()
+        for _, player in ipairs (players) do
+            world.sendEntityMessage(player, "fs_respawn")
+        end
+    else 
+        sb.logInfo("ship swap failed: " .. err)
     end
 
     stagehand.die()
@@ -24,16 +28,10 @@ end
 --TODO: Fix radius, its too short range? Doesn't grab all items
 function get_ship_items()
     local items = {}
-    local locker
-    local objects = world.objectQuery(entity.position(), 500)
+    local objects = world.objectQuery({500, 500}, {1500, 1500})
     for _, v in ipairs (objects) do
-        local is_container = world.containerSize(v) ~= nil
-        if is_container then
-            local shiplocker = string.find(world.entityName(v), "fuwallsafe")
-            if shiplocker then
-                locker = v
-            end
-            local container_items = world.containerItems(v)
+        local container_items = world.containerItems(v)
+        if container_items then
             for _, i in ipairs (container_items) do
                 table.insert(items, i)
             end
@@ -51,47 +49,40 @@ end
 function create_ship(ply, ship_type)
     sb.logInfo("create namjeship")
 
-    local ship_config = root.assetJson("/frackinship/configs/ships.config")
+    --local ship_config = root.assetJson("/frackinship/configs/ships.config")
 
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
-    local selected_ship = ship_config[ship_type]
     local replace_mode = {dungeon = "fu_byosblankquarter", size = {512, 512}}
 
-    if selected_ship then
-        if not world.getProperty("fu_byos") then 
-            return 
-        end
-        --reset any byos stats to their default
-        local ship_stats = {
-            "shipSpeed",
-            "fuelEfficiency",
-            "maxFuel",
-            "crewSize"
-        }
-
-        local ship_capabilities = {
-            "systemTravel",
-            "planetTravel"
-        }
-
-        for _, stat in ipairs(ship_stats) do
-            world.setProperty("fu_byos." .. stat, 0)
-        end
-
-        for _, capability in ipairs(ship_capabilities) do
-            world.setProperty("fu_byos." .. capability, 0)
-        end
-
-        world.setProperty("fu_byos.group.ftlDrive", 0)
-
-		selected_ship.offset = selected_ship.offset or {-6, 12}
-		selected_ship.offset[1] = math.min(selected_ship.offset[1], -1)
-		selected_ship.offset[2] = math.max(selected_ship.offset[2], 1)
-		world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
-		world.placeDungeon(selected_ship.ship, vec2.add({1024, 1024}, selected_ship.offset), ship_dungeon_id)
-	else
-        sb.logInfo("cant find namjeship")
+    if not world.getProperty("fu_byos") then 
+        return 
     end
+    --reset any byos stats to their default
+    local ship_stats = {
+        "shipSpeed",
+        "fuelEfficiency",
+        "maxFuel",
+        "crewSize"
+    }
+
+    local ship_capabilities = {
+        "systemTravel",
+        "planetTravel"
+    }
+
+    for _, stat in ipairs(ship_stats) do
+        world.setProperty("fu_byos." .. stat, 0)
+    end
+
+    for _, capability in ipairs(ship_capabilities) do
+        world.setProperty("fu_byos." .. capability, 0)
+    end
+
+    world.setProperty("fu_byos.group.ftlDrive", 0)
+
+    world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
+    world.placeDungeon(ship_type, vec2.add({1024, 1024}, {-6, 12}), ship_dungeon_id)
+	
 end
 
 --from FU
