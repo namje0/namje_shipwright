@@ -1,8 +1,11 @@
 {
   "version" : "1.00",
   "author" : "namje",
-  "description" : "test",
-  "name" : "test",
-  "friendlyName" : "test",
+  "description" : "Buy ships, edit them however you want. Built-in BYOS included. FU compatible.",
+  "name" : "shipwright_atelier",
+  "friendlyName" : "Shipwright Atelier",
+  "scripts" : {
+    "postLoad" : ["/scripts/namje_removeShipBackgrounds.lua"]
+  },
   "includes" : ["FrackinUniverse" ]
 }

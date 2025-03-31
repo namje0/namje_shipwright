@@ -7,7 +7,6 @@ function init()
 end
 
 function swap_ship(_, _, ply, ship_type)
-    sb.logInfo("start ship swapping process")
     local ship_items = get_ship_items()
     local ship_create, err = pcall(create_ship, ply, ship_type)
     if ship_create then
@@ -18,14 +17,14 @@ function swap_ship(_, _, ply, ship_type)
             world.sendEntityMessage(player, "fs_respawn")
         end
     else 
-        sb.logInfo("ship swap failed: " .. err)
+        sb.logInfo("namje === ship swap failed: " .. err)
     end
 
     stagehand.die()
 end
 
--- returns a list of every item stored in containers in the ship. Hopefully...
---TODO: Fix radius, its too short range? Doesn't grab all items
+-- returns a list of every item stored in containers in the ship
+--TODO: some containers seem to be ignored?
 function get_ship_items()
     local items = {}
     local objects = world.objectQuery({500, 500}, {1500, 1500})
@@ -47,16 +46,12 @@ function give_cargo(ply, items)
 end
 
 function create_ship(ply, ship_type)
-    sb.logInfo("create namjeship")
-
-    --local ship_config = root.assetJson("/frackinship/configs/ships.config")
-
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local replace_mode = {dungeon = "fu_byosblankquarter", size = {512, 512}}
 
-    if not world.getProperty("fu_byos") then 
+    --[[if not world.getProperty("fu_byos") then 
         return 
-    end
+    end]]
     --reset any byos stats to their default
     local ship_stats = {
         "shipSpeed",
@@ -80,7 +75,7 @@ function create_ship(ply, ship_type)
 
     world.setProperty("fu_byos.group.ftlDrive", 0)
 
-    world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
+    --world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
     world.placeDungeon(ship_type, vec2.add({1024, 1024}, {-6, 12}), ship_dungeon_id)
 	
 end

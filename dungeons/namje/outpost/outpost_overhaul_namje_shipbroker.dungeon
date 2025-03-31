@@ -1,0 +1,25 @@
+{
+       "metadata" : {
+         "name" : "outpost_overhaul_namje_shipbroker",
+         "species" : "generic",
+         "rules" : [
+         ],
+     
+         "anchor" : [ "outpost_overhaul_namje_shipbroker" ],
+     
+         "maxRadius" : 1000000,
+         "maxParts" : 1,
+         "protected" : true
+       },
+     
+       "parts" : [
+         {
+           "name" : "outpost_overhaul_namje_shipbroker",
+           "rules" : [
+             [ "maxSpawnCount", [1] ]
+           ],
+           "def" : [ "tmx", "outpost_overhaul_namje_shipbroker.json" ]
+         }
+       ]
+     }
+     
