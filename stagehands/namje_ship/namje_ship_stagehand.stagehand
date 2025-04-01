@@ -1,0 +1,10 @@
+
+{
+    "type" : "namje_ship_stagehand",
+    "scripts" : [
+        "/stagehands/namje_ship/namje_ship_stagehand.lua"
+    ],
+    "scriptDelta" : 1,
+    "uniqueId" : "namje_ship_stagehand",
+    "shipDungeonId" : 10101
+}

@@ -1,0 +1,7 @@
+[
+	{
+		"op" : "replace",
+		"path" : "/script",
+		"value" : "/scripts/quest/namje_human_mission1.lua"
+	}
+]
