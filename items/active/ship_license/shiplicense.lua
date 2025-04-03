@@ -1,4 +1,5 @@
 require "/scripts/messageutil.lua"
+require "/scripts/namje_byos.lua"
 
 function init()
 	message.setHandler("confirm_swap", localHandler(swap_ships))
@@ -28,8 +29,10 @@ end
 function swap_ships()
 	local ship_type = config.getParameter("shipType")
 	local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
-	world.spawnStagehand({1024, 1024}, "ship_handler")
-	world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
+	--world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
+
+	namje_byos.change_ships(ship_type)
+
 	player.playCinematic(cinematic)
 	world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 7.0)
 	item.consume(1)

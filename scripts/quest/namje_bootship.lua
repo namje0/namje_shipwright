@@ -18,6 +18,9 @@ function init()
   self.state:set(wakeSail)
 
   self.interactTimer = 0
+
+  --this method of running the script is based off how FU does it, i'm not sure if there's a better way to do this atm
+    player.startQuest("namje_shippassive")
 end
 
 function questInteract(entityId)

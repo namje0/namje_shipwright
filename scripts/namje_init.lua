@@ -20,6 +20,9 @@ function init() ini()
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         self.tick_test = 1
     end
+    if player.introComplete() and not player.getProperty("namje_byos_tpToShipOnInit") then
+        self.tick_test2 = 1
+    end
 end
 
 function update(dt)
@@ -28,9 +31,18 @@ function update(dt)
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         self.tick_test = self.tick_test + 1
         if self.tick_test > 10 then
-            namje_byos.change_ships("namje_templateship")
-            player.giveItem("dirtmaterial")
+            namje_byos.change_ships("namje_byos_testship")
             player.setProperty("namje_byos_setup", true)
+        end
+    end
+
+    --cant send entitymessages until the player fully loads?
+    --this sucks ass, find alternative later
+    if player.introComplete() and not player.getProperty("namje_byos_tpToShipOnInit") then
+        self.tick_test2 = self.tick_test2 + 1
+        if self.tick_test2 > 120 then
+            player.setProperty("namje_byos_tpToShipOnInit", true)
+            world.sendEntityMessage(player.id(), "namje_moveToShipSpawn")
         end
     end
 end

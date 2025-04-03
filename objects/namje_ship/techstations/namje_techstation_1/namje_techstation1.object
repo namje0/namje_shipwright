@@ -46,17 +46,14 @@
     }
   ],
   
-  "interactAction" : "ScriptPane",
+  "uniqueId" : "techstation",
 
-  "planetInteractAction" : "ScriptPane",
-  "planetInteractData" : "/interface/scripted/fu_planetsail/fu_planetsail.config",
+  "interactAction" : "OpenAiInterface",
 
   "offeredQuests" : [ "gaterepair" ],
   "animation" : "/objects/ship/techstation.animation",
 
-  "interactData" : "/zb/newSail/newSail.config",
-
-  "scripts" : ["/objects/spawner/techstation.lua", "/objects/scripts/customtechstation.lua", "/objects/ship/fu_shipobjectplanetinteraction.lua"],
+  "scripts" : ["/objects/spawner/techstation.lua"],
   "shipPetType" : "petcat",
 
   "chatPortrait" : "/ai/portraits/humanportrait.png:yell.1",

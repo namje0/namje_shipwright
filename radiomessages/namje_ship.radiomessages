@@ -3,6 +3,10 @@
     "unique" : false,
     "text" : "You must have BYOS enabled in order to use this license, which means that you can't buy new ships on this character. Sorry!"
   },
+  "namje_ship_noupgrades" : {
+    "unique" : false,
+    "text" : "Ship upgrades are unavailable with this BYOS system. Sorry!"
+  },
   "namje_ship_invalidowner" : {
     "unique" : false,
     "text" : "You must be on your ship in order to use this license."

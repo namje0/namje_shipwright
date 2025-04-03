@@ -1,0 +1,21 @@
+{
+    "id" : "namje_shippassive",
+    "mainQuest" : false,
+    "showInLog" : false,
+    "showAcceptDialog" : false,
+    "showCompleteDialog" : false,
+    "showFailDialog" : false,
+    "title" : "Ship Passive Systems",
+    "text" : "This quest just allows ship passive systems to run via script. Completing it will stop the systems... so don't do that",
+    "completionText" : "You shouldn't be able to complete this quest. Something has went wrong if this happens",
+    "moneyRange" : [0, 0],
+    "rewards" : [[]],
+    "canBeAbandoned" : false,
+    "updateDelta" : 120,
+    "script" : "/scripts/namje_shippassive.lua",
+    "scriptConfig" : {
+        "portraits" : {
+            "default" : "sail"
+        }
+    }
+}

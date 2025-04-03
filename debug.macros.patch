@@ -11,7 +11,20 @@
         "path": "/quickship",
         "value": [
             "/spawnitem shiplicense_onyx",
-            "/spawnitem shiplicense_test2"
+            "/spawnitem shiplicense_shuttle"
+        ]
+    },
+    {
+        "op": "add",
+        "path": "/quickupgradetest",
+        "value": [
+            "/startquest gaterepair",
+            "/completequest gaterepair",
+            "/startquest human_mission1",
+            "/completequest human_mission1",
+            "/startquest shiprepair",
+            "/completequest shiprepair",
+            "/spawnitem fakelicense1"
         ]
     }
 ]

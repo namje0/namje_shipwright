@@ -15,8 +15,6 @@ function namje_byos.change_ships(ship_type)
         sb.logInfo("namje // changing ship on client")
 
         if player.worldId() ~= player.ownShipWorldId() then
-            sb.logInfo("world id: " .. player.worldId())
-            sb.logInfo("ship world id: " .. player.ownShipWorldId())
             error("namje // tried to change ship on client while player world id is not their ship world id")
         end
 

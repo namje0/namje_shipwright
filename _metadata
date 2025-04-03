@@ -5,7 +5,8 @@
   "name" : "shipwright_atelier",
   "friendlyName" : "Shipwright Atelier",
   "scripts" : {
-    "postLoad" : ["/scripts/namje_removeShipBackgrounds.lua"]
-  },
-  "includes" : ["FrackinUniverse" ]
+    "postLoad" : [
+      "/scripts/namje_removeShipBackgrounds.lua"
+    ]
+  }
 }
