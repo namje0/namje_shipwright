@@ -8,7 +8,16 @@ end
 
 function swap_ship(_, _, ply, ship_type)
     local ship_items = get_ship_items()
-    local ship_create, err = pcall(create_ship, ply, ship_type)
+
+    local ship_config = root.assetJson("/atelier_ships/ships/".. ship_type .."/ship.config")
+    if not ship_config then
+        error("namje // ship config not found for " .. ship_type)
+    end
+    if ship_config.ship ~= ship_type then
+        error("namje // ship config does not match ship type " .. ship_type)
+    end
+
+    local ship_create, err = pcall(create_ship, ply, ship_config)
     if ship_create then
         if #ship_items > 0 then
             give_cargo(ply, ship_items)
@@ -26,8 +35,8 @@ function swap_ship(_, _, ply, ship_type)
     stagehand.die()
 end
 
-function create_ship(ply, ship_type)
-    namje_byos.spawn_ship(ship_type)
+function create_ship(ply, ship_config)
+    namje_byos.spawn_ship(ship_config)
 end
 
 -- returns a list of every item stored in containers in the ship

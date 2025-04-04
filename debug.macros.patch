@@ -11,7 +11,8 @@
         "path": "/quickship",
         "value": [
             "/spawnitem shiplicense_onyx",
-            "/spawnitem shiplicense_shuttle"
+            "/spawnitem shiplicense_shuttle",
+            "/spawnitem shiplicense_test2"
         ]
     },
     {

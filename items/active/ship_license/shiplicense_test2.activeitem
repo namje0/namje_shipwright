@@ -13,7 +13,7 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_templateship",
+  "shipType" : "namje_byos_testship2",
   "shipImage" : "/interface/ai/shippreviews/fu_byosdefaultship.png",
   "recCrewSize" : "3-5",
 

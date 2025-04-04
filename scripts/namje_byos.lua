@@ -5,12 +5,19 @@ require "/scripts/util.lua"
 
 namje_byos = {}
 
-function namje_byos.change_ships(ship_type)
+function namje_byos.change_ships(ship_type, init)
     sb.logInfo("namje // changing ship to " .. ship_type)
-    --if called on server, change the ship directly.
-    --if called on client, create the stagehand that will handle changing the ship
-    local is_server = world.isServer()
+    local ship_config = root.assetJson("/atelier_ships/ships/".. ship_type .."/ship.config")
+    if not ship_config then
+        error("namje // ship config not found for " .. ship_type)
+    end
+    if ship_config.ship ~= ship_type then
+        error("namje // ship config does not match ship type " .. ship_type)
+    end
 
+    sb.logInfo(sb.printJson(ship_config))
+
+    local is_server = world.isServer()
     if is_server then
         sb.logInfo("namje // changing ship on server")
     else
@@ -25,16 +32,21 @@ function namje_byos.change_ships(ship_type)
     end
 end
 
-function namje_byos.spawn_ship(ship_type)
+function namje_byos.spawn_ship(ship_config)
     if world.getProperty("fu_byos") then 
         namje_byos.reset_fu_stats() 
     end
-
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local replace_mode = {dungeon = "namje_void", size = {512, 512}}
 
+    local teleporter_offset = ship_config.atelier_stats.teleporter_position
+    local ship_position = vec2.sub({1024, 1024}, {teleporter_offset[1], -teleporter_offset[2]})
+
+    --TODO: send entity message for this
+    --player.upgradeShip({capabilities = ship_config.capabilities, maxFuel = ship_config.maxFuel, fuelEfficiency = ship_config.fuelEfficiency, shipSpeed = ship_config.shipSpeed, crewSize = ship_config.crewSize})
+
     world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
-    world.placeDungeon(ship_type, vec2.add({1024, 1024}, {-6, 12}), ship_dungeon_id)
+    world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
 end
 
 function namje_byos.is_fu()
