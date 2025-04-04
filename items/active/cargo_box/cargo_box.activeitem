@@ -3,14 +3,12 @@
   "shortdescription" : "Leftover Cargo",
   "description" : "Leftover cargo scrounged from your previous ship thrown into a box. Use to open. ^red;Depending on how much you left on your ship, this may drop a lot of items.^reset;",
   "price" : 1,
-  "tooltipKind" : "base",
   "rarity" : "common",
   "category" : "tool",
   "itemTags" : [],
   "inventoryIcon" : "cargo_box.png",
   "twoHanded" : true,
   "maxStack" : 1,
-  "animation" : "animation.animation",
   "scripts" : ["cargo_box.lua"],
 
   "loot" : {}

@@ -1,7 +1,3 @@
---[[function init()
-	world.spawnStagehand({1024, 1024}, "ship_handler")
-end]]
-
 function activate()
 	if player then
 		local loot = config.getParameter("loot")
