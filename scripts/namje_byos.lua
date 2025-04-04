@@ -1,6 +1,8 @@
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 
+--utility module used for ship stuff
+
 namje_byos = {}
 
 function namje_byos.change_ships(ship_type)
@@ -35,7 +37,19 @@ function namje_byos.spawn_ship(ship_type)
     world.placeDungeon(ship_type, vec2.add({1024, 1024}, {-6, 12}), ship_dungeon_id)
 end
 
+function namje_byos.is_fu()
+    local status, err = pcall(function()
+        local fu = root.assetJson("/frackinship/configs/ships.config")
+        if fu then
+            return true
+        end
+    end)
+    return false
+end
+
 function namje_byos.reset_fu_stats()
+    if not namje_byos.is_fu() then return end
+
     local ship_stats = {
         "shipSpeed",
         "fuelEfficiency",

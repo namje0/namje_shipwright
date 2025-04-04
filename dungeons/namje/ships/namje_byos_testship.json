@@ -154,6 +154,54 @@
                  "width":8,
                  "x":392,
                  "y":192
+                }, 
+                {
+                 "gid":250,
+                 "height":24,
+                 "id":214,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":416,
+                 "y":224
+                }, 
+                {
+                 "gid":2230,
+                 "height":16,
+                 "id":215,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":320,
+                 "y":208
+                }, 
+                {
+                 "gid":2464,
+                 "height":24,
+                 "id":216,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":336,
+                 "y":200
+                }, 
+                {
+                 "gid":1271,
+                 "height":16,
+                 "id":217,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":368,
+                 "y":192
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -173,7 +221,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":214,
+ "nextobjectid":218,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -202,6 +250,10 @@
         {
          "firstgid":582,
          "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/light.json"
+        }, 
+        {
+         "firstgid":1040,
+         "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/decorative.json"
         }],
  "tilewidth":8,
  "type":"map",

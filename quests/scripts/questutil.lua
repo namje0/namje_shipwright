@@ -75,6 +75,10 @@ function questutil.questCompleteActions()
   end
 
 
+  --[[
+    TODO: upgradeShip is used for more than just shipLevel, if we dont do custom ship maxfuel etc. then just
+    deny any shipLevel calls instead of the whole thing.
+  ]]
   local upgradeShip = config.getParameter("upgradeShip")
   if upgradeShip then
     world.sendEntityMessage(player.id(), "queueRadioMessage", "namje_ship_noupgrades", 4.0)

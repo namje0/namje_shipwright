@@ -46,6 +46,7 @@ end
 
 function questComplete()
   --player.upgradeShip(config.getParameter("shipUpgrade"))
+  player.upgradeShip({capabilities = {"teleport", "planetTravel", "systemTravel"}})
   player.playCinematic(config.getParameter("shipUpgradeCinema"))
 
   setPortraits()
