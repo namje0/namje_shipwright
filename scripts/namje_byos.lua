@@ -32,7 +32,7 @@ function namje_byos.change_ships(ship_type, init)
     end
 end
 
-function namje_byos.spawn_ship(ship_config)
+function namje_byos.spawn_ship(ply, ship_config)
     if world.getProperty("fu_byos") then 
         namje_byos.reset_fu_stats() 
     end
@@ -42,9 +42,8 @@ function namje_byos.spawn_ship(ship_config)
     local teleporter_offset = ship_config.atelier_stats.teleporter_position
     local ship_position = vec2.sub({1024, 1024}, {teleporter_offset[1], -teleporter_offset[2]})
 
-    --TODO: send entity message for this
-    --player.upgradeShip({capabilities = ship_config.capabilities, maxFuel = ship_config.maxFuel, fuelEfficiency = ship_config.fuelEfficiency, shipSpeed = ship_config.shipSpeed, crewSize = ship_config.crewSize})
-
+    world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
+    
     world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
     world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
 end

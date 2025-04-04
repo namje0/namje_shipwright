@@ -6,10 +6,18 @@ local ini = init or function() end
 function init() ini()
     --TODO: FU Compability - don't use this handler if FU is detected
     message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
+
+    message.setHandler("namje_upgradeShip", upgrade_ship)
 end
 
 function update(dt)
 
+end
+
+--TODO: this doesn't work on the initial ship spawn, only on ship change (aside from changing crew size?)
+--this shouldn't matter much, just use the default ship stats for the initial spawn
+function upgrade_ship(_, _, ship_stats)
+    player.upgradeShip({capabilities = ship_stats.capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
 end
 
 function move_to_ship_spawn()

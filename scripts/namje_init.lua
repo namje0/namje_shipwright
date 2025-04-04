@@ -20,9 +20,6 @@ function init() ini()
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         self.tick_test = 1
     end
-    if player.introComplete() and not player.getProperty("namje_byos_tpToShipOnInit") then
-        self.tick_test2 = 1
-    end
 end
 
 function update(dt)

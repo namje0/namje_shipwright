@@ -36,7 +36,7 @@ function swap_ship(_, _, ply, ship_type)
 end
 
 function create_ship(ply, ship_config)
-    namje_byos.spawn_ship(ship_config)
+    namje_byos.spawn_ship(ply, ship_config)
 end
 
 -- returns a list of every item stored in containers in the ship
