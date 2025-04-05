@@ -5,7 +5,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJzt1kEOQDAURdHuf1MSEfZhJSYkJuq3aengnORNEAM3QUoAAAAAAAAAwJ+mBpvP3Y9RJ\/ec95fzuR6a1OnVYzlHmd49NCnTqseanntoEvdVD01iIj22l13vq9w1vvMxeoxFj7FEvg81\/1dPI24uXPRe1OnVQxMAAAAAAABgVAdN8N4D",
+         "data":"eJzt1kEOQDAURdHuf1MSERZiIyYkJuq3aengnORNEAM3QUoAAAAAAAAAwJ+mBpvP3Y9RJ\/ec95fzuR6a1OnVYzlHmd49NCnTqseanntoEvdVD01iIj22l13vq9w1vvMxeoxFj7FEvg81\/1dPI24uXPRe1OnVQxMAAAAAAABgVAeH\/94L",
          "encoding":"base64",
          "height":50,
          "id":1,
@@ -19,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt10EKwjAQBdDc\/1JCFNx7hJ5EAgYqTZNGTCPyHvxNGWaRD00bAgAAAAAAAAAwy+VLia+sn9Enn9tyIJ\/0oZO2GLZnN0LefRu0\/x+kDh7hnD7WdFI2q49EJ1sz+0h08m52H+75rbPu8xJ91JW+W\/dm7o3kjmsz+mgb+T+4F467diZWdq3fjaExS1nsTM8uAAAAAAAAgF\/0BElJi1o=",
+         "data":"eJzt19EJwjAUBdCM4f6LCFVwAEdwESkaSNs0acU0CufA\/SnhfeRC0oQAAAAAAAAAAPRy\/lKGd9Jv7BP37bEhn\/Shk7JhlpZ7FmdfG83\/d6fw6uAejukjpZOlnn2MdDLVu4+RTqZ69+GeXzrqPs\/RR1nuv3Vtza2S2HFpjT7qWr4H18J2l50ZCrPSszFU1pI3fzPWsmcWAAAAAAAAwC96AqpXjHE=",
          "encoding":"base64",
          "height":50,
          "id":2,
@@ -108,7 +108,7 @@
                  "y":208
                 }, 
                 {
-                 "gid":267,
+                 "gid":268,
                  "height":16,
                  "id":210,
                  "name":"",
@@ -120,7 +120,7 @@
                  "y":224
                 }, 
                 {
-                 "gid":2147484068,
+                 "gid":2147484069,
                  "height":24,
                  "id":211,
                  "name":"",
@@ -132,7 +132,7 @@
                  "y":224
                 }, 
                 {
-                 "gid":749,
+                 "gid":750,
                  "height":16,
                  "id":212,
                  "name":"",
@@ -144,7 +144,7 @@
                  "y":192
                 }, 
                 {
-                 "gid":749,
+                 "gid":750,
                  "height":16,
                  "id":213,
                  "name":"",
@@ -156,7 +156,7 @@
                  "y":192
                 }, 
                 {
-                 "gid":250,
+                 "gid":251,
                  "height":24,
                  "id":214,
                  "name":"",
@@ -168,7 +168,7 @@
                  "y":224
                 }, 
                 {
-                 "gid":2230,
+                 "gid":2231,
                  "height":16,
                  "id":215,
                  "name":"",
@@ -180,7 +180,7 @@
                  "y":208
                 }, 
                 {
-                 "gid":2464,
+                 "gid":2465,
                  "height":24,
                  "id":216,
                  "name":"",
@@ -192,7 +192,7 @@
                  "y":200
                 }, 
                 {
-                 "gid":1271,
+                 "gid":1272,
                  "height":16,
                  "id":217,
                  "name":"",
@@ -202,6 +202,18 @@
                  "width":16,
                  "x":368,
                  "y":192
+                }, 
+                {
+                 "gid":210,
+                 "height":24,
+                 "id":218,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":168,
+                 "y":208
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -221,7 +233,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":218,
+ "nextobjectid":219,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -240,19 +252,19 @@
          "source":"..\/..\/..\/tilesets\/namje\/ship\/namje_ship_obj_tileset.json"
         }, 
         {
-         "firstgid":210,
+         "firstgid":211,
          "source":"..\/..\/..\/tilesets\/namje\/engines_cables\/engines_cables_tileset.json"
         }, 
         {
-         "firstgid":228,
+         "firstgid":229,
          "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/furniture.json"
         }, 
         {
-         "firstgid":582,
+         "firstgid":583,
          "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/light.json"
         }, 
         {
-         "firstgid":1040,
+         "firstgid":1041,
          "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-category\/decorative.json"
         }],
  "tilewidth":8,

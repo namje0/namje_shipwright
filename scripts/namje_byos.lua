@@ -18,7 +18,7 @@ function namje_byos.change_ships(ship_type, init, ...)
 
     local is_server = world.isServer()
     if is_server then
-        local items = namje_byos.get_ship_items()
+        local items = init and {} or namje_byos.get_ship_items()
         local args = ...
         local ply = init and args[1] or args
 
