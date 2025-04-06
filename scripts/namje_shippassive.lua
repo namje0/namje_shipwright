@@ -2,6 +2,7 @@ require("/scripts/namje_byos.lua")
 require "/scripts/vec2.lua"
 
 local ini = init or function() end
+local initial_outside = false
 
 function init() ini()
     --TODO: FU Compability - don't use this handler if FU is detected
@@ -11,7 +12,23 @@ function init() ini()
 end
 
 function update(dt)
-
+    if player.worldId() ~= player.ownShipWorldId() then
+        if not initial_outside then
+            mcontroller.clearControls()
+            initial_outside = true
+        end
+        return
+    end
+    if not world.tileIsOccupied(mcontroller.position(), false) then
+        mcontroller.controlParameters({gravityEnabled = false})
+        if initial_outside then
+            mcontroller.setVelocity({0, 0})
+            initial_outside = false
+        end
+    else
+        mcontroller.clearControls()
+        initial_outside = true
+    end
 end
 
 --TODO: this doesn't work on the initial ship spawn, only on ship change (aside from changing crew size?)

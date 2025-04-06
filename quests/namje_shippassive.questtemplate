@@ -11,7 +11,7 @@
     "moneyRange" : [0, 0],
     "rewards" : [[]],
     "canBeAbandoned" : false,
-    "updateDelta" : 120,
+    "updateDelta" : 60,
     "script" : "/scripts/namje_shippassive.lua",
     "scriptConfig" : {
         "portraits" : {
