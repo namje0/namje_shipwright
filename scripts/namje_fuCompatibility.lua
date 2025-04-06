@@ -35,3 +35,15 @@ for i=1, #techstations do
   local techstation = techstations[i]
   assets.patch(techstation, techstation_path)
 end
+
+--Ship Teleporter Compatibility
+local teleporter_path = "/namje_fuCompatibility_teleporter_patch.patch"
+assets.add(teleporter_path, '{"scripts": ["/objects/namje_ship/shipteleporters/namje_shipteleporter.lua", "/objects/ship/fu_byosteleporter/fu_byosteleporter.lua", "/objects/ship/fu_byosobjectdeath.lua"]}')
+
+local teleporters = {
+  "/objects/namje_ship/techstations/namje_techstation1.object"
+}
+for i=1, #teleporters do
+  local teleporter = teleporters[i]
+  assets.patch(teleporter, teleporter_path)
+end
