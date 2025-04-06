@@ -7,8 +7,8 @@
   "scripts" : {
     "postLoad" : [
       "/scripts/namje_removeShipBackgrounds.lua",
-      "/scripts/namje_fuCompatibility.lua",
-      "/scripts/namje_boosterPatch.lua"
+      "/scripts/namje_fuCompatibility.lua"
     ]
-  }
+  },
+  "includes" : ["FrackinUniverse" ]
 }

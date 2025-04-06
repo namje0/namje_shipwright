@@ -57,9 +57,7 @@ function namje_byos.change_ships(ship_type, init, ...)
 end
 
 function namje_byos.create_ship(ply, ship_config)
-    if world.getProperty("fu_byos") then 
-        namje_byos.reset_fu_stats() 
-    end
+    namje_byos.reset_fu_stats() 
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local replace_mode = {dungeon = "namje_void", size = {512, 512}}
     local teleporter_offset = ship_config.atelier_stats.teleporter_position
@@ -87,12 +85,14 @@ function namje_byos.get_ship_items()
 end
 
 function namje_byos.is_fu()
-    local status, err = pcall(function()
-        local fu = root.assetJson("/frackinship/configs/ships.config")
-        if fu then
+    local player_config = root.assetJson("/player.config")
+    local deployment_scripts = player_config.deploymentConfig.scripts
+    for i = 1, #deployment_scripts do
+        sb.logInfo(sb.print(deployment_scripts[i]))
+        if string.find(deployment_scripts[i], "fu_player_init") then
             return true
         end
-    end)
+    end
     return false
 end
 
