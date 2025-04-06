@@ -28,7 +28,7 @@ function update(dt)
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         self.tick_test = self.tick_test + 1
         if self.tick_test > 10 then
-            namje_byos.change_ships("namje_byos_testship", true)
+            namje_byos.change_ships("namje_startershuttle", true)
             player.setProperty("namje_byos_setup", true)
         end
     end

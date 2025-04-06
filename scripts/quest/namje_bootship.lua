@@ -64,11 +64,11 @@ function wakeSail()
     {self.descriptions.wakeSail, false}
   })
 
-  -- try to lounge in the teleporter for a bit
-  util.wait(1.0, function()
+  -- try to lounge in the sleeping bag instead of teleporter
+  util.wait(2, function()
     local teleporters = world.entityQuery(mcontroller.position(), 100, {includedTypes = {"object"}})
     teleporters = util.filter(teleporters, function(entityId)
-      if string.find(world.entityName(entityId), "teleporterTier0") then
+      if string.find(world.entityName(entityId), "sleepingbag") then
         return true
       end
     end)
