@@ -88,7 +88,6 @@ function namje_byos.is_fu()
     local player_config = root.assetJson("/player.config")
     local deployment_scripts = player_config.deploymentConfig.scripts
     for i = 1, #deployment_scripts do
-        sb.logInfo(sb.print(deployment_scripts[i]))
         if string.find(deployment_scripts[i], "fu_player_init") then
             return true
         end
