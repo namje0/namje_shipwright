@@ -1,7 +1,7 @@
 {
   "itemName" : "shiplicense_shuttle",
-  "shortdescription" : "C-Haul Transport Shuttle",
-  "description" : "An old and cheap decommissioned transport shuttle. It was made for short flights within a system, and thus only has an ^orange;STL drive^reset; installed.\nCramped and uncomfortable, only an option if you have nothing else but the money.",
+  "shortdescription" : "AOM Kellion",
+  "description" : "An auxillary maintenance shuttle utilized by the Protectorate. Not suited for long voyages, plus it was damaged in the escape... but it should be enough to get you started.",
   "price" : 1500,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
@@ -13,10 +13,7 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_byos_testship",
-  "shipImage" : "/interface/ai/shippreviews/namje_starter_onyx.png",
-  "recCrewSize" : "1-2",
-  "cargoHoldSize" : "64",
+  "shipType" : "namje_startershuttle",
 
   "builder" : "/items/buildscripts/build_shiplicense.lua"
 }

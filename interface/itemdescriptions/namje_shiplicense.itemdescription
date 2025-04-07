@@ -12,22 +12,46 @@
   },
   "descriptionLabel" : {
     "type" : "label",
-    "position" : [11, 115],
+    "position" : [12, 170],
     "hAnchor" : "left",
     "vAnchor" : "top",
-    "wrapWidth" : 225
+    "wrapWidth" : 272
   },
-  "cargoLabel" : {
+  "efficiencyLabel" : {
     "type" : "label",
-    "position" : [11, 70],
+    "position" : [12, 108],
     "hAnchor" : "left",
     "vAnchor" : "top",
     "wrapWidth" : 225,
-    "value" : "Ship Cargo Hold Size: 64"
+    "value" : "Fuel Efficiency: 5%"
+  },
+  "fuelLabel" : {
+    "type" : "label",
+    "position" : [12, 96],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Max Fuel: 5000"
+  },
+  "speedLabel" : {
+    "type" : "label",
+    "position" : [12, 84],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Ship Speed: 25"
+  },
+  "cargoLabel" : {
+    "type" : "label",
+    "position" : [12, 72],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Cargo Hold Size: 64"
   },
   "crewLabel" : {
     "type" : "label",
-    "position" : [11, 60],
+    "position" : [12, 60],
     "hAnchor" : "left",
     "vAnchor" : "top",
     "wrapWidth" : 225,
@@ -35,14 +59,14 @@
   },
   "shipImage" : {
     "type" : "image",
-    "position" : [7, 120],
+    "position" : [7, 177],
     "file" : "/interface/ai/shippreviews/namje_testship.png",
-    "maxSize" : [233, 100],
-    "minSize" : [233, 100]
+    "maxSize" : [280, 100],
+    "minSize" : [280, 100]
   },
-  "objectImage" : {
+  "manufacturerImage" : {
     "type" : "image",
-    "position" : [23, 132],
+    "position" : [23, 189],
     "file" : "",
     "centered" : true,
     "maxSize" : [20, 20],
@@ -50,20 +74,20 @@
   },
   "title" : {
     "type" : "label",
-    "position" : [30, 240],
+    "position" : [30, 297],
     "hAnchor" : "left",
     "value" : ""
   },
   "subTitle" : {
     "type" : "label",
-    "position" : [30, 230],
+    "position" : [30, 287],
     "hAnchor" : "left",
     "color" : [185, 181, 178],
     "value" : ""
   },
   "titleIcon" : {
     "type" : "itemslot",
-    "position" : [4, 228],
+    "position" : [4, 285],
     "callback" : "null",
     "iconMode" : true,
     "backingImage" : "/interface/inventory/portrait.png",

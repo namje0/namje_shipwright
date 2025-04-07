@@ -65,7 +65,7 @@ function wakeSail()
   })
 
   -- try to lounge in the sleeping bag instead of teleporter
-  util.wait(2, function()
+  util.wait(2.2, function()
     local teleporters = world.entityQuery(mcontroller.position(), 100, {includedTypes = {"object"}})
     teleporters = util.filter(teleporters, function(entityId)
       if string.find(world.entityName(entityId), "sleepingbag") then
@@ -101,5 +101,6 @@ function questComplete()
   if namje_byos.is_fu() then
     status.addEphemeralEffect("fu_byosfindship", 10)
   end
+  player.upgradeShip({capabilities = { "teleport" }})
   questutil.questCompleteActions()
 end

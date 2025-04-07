@@ -18,14 +18,38 @@
   },
   "descriptionLabel" : {
     "type" : "label",
-    "position" : [11, 110],
+    "position" : [9, 166],
     "hAnchor" : "left",
     "vAnchor" : "top",
-    "wrapWidth" : 225
+    "wrapWidth" : 272
+  },
+  "efficiencyLabel" : {
+    "type" : "label",
+    "position" : [9, 96],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Fuel Efficiency: 5%"
+  },
+  "fuelLabel" : {
+    "type" : "label",
+    "position" : [9, 84],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Max Fuel: 5000"
+  },
+  "speedLabel" : {
+    "type" : "label",
+    "position" : [9, 72],
+    "hAnchor" : "left",
+    "vAnchor" : "top",
+    "wrapWidth" : 225,
+    "value" : "Ship Speed: 25"
   },
   "cargoLabel" : {
     "type" : "label",
-    "position" : [11, 55],
+    "position" : [9, 60],
     "hAnchor" : "left",
     "vAnchor" : "top",
     "wrapWidth" : 225,
@@ -33,7 +57,7 @@
   },
   "crewLabel" : {
     "type" : "label",
-    "position" : [11, 45],
+    "position" : [9, 48],
     "hAnchor" : "left",
     "vAnchor" : "top",
     "wrapWidth" : 225,
@@ -41,14 +65,14 @@
   },
   "shipImage" : {
     "type" : "image",
-    "position" : [7, 115],
+    "position" : [7, 173],
     "file" : "/interface/ai/shippreviews/namje_testship.png",
-    "maxSize" : [233, 100],
-    "minSize" : [233, 100]
+    "maxSize" : [280, 100],
+    "minSize" : [280, 100]
   },
-  "objectImage" : {
+  "manufacturerImage" : {
     "type" : "image",
-    "position" : [23, 127],
+    "position" : [23, 185],
     "file" : "",
     "centered" : true,
     "maxSize" : [20, 20],
