@@ -1,5 +1,5 @@
 {
-  "objectName" : "namje_cargohold_shiplocker_1",
+  "objectName" : "namje_cargohold_shiplocker_2",
   "rarity" : "Common",
   "category" : "storage",
   "objectType" : "container",
@@ -11,7 +11,7 @@
 
   "lightColor" : [127, 67, 30],
 
-  "inventoryIcon" : "/objects/namje_ship/cargo_holds/shiplockericon.png",
+  "inventoryIcon" : "/objects/namje_ship/cargo_holds/shiplockericon2.png",
   "orientations" : [
     {
       "imageLayers" : [ { "image" : "body.png:<color>", "fullbright" : true }, { "image" : "lit.png:<color>" } ],

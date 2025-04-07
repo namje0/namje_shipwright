@@ -2,16 +2,24 @@ require("/scripts/namje_byos.lua")
 require "/scripts/vec2.lua"
 
 local ini = init or function() end
+local fu_atmosphere = false
 local initial_outside = false
 
 function init() ini()
     --TODO: FU Compability - don't use this handler if FU is detected
     message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
-
     message.setHandler("namje_upgradeShip", upgrade_ship)
+    if namje_byos.is_fu() then
+        fu_atmosphere = true
+        sb.logInfo("namje // fu atmosphere detected")
+    end
+
 end
 
 function update(dt)
+    if fu_atmosphere then
+        return
+    end
     if player.worldId() ~= player.ownShipWorldId() then
         if not initial_outside then
             mcontroller.clearControls()
@@ -34,7 +42,8 @@ end
 --TODO: this doesn't work on the initial ship spawn, only on ship change (aside from changing crew size?)
 --this shouldn't matter much, just use the default ship stats for the initial spawn
 function upgrade_ship(_, _, ship_stats)
-    player.upgradeShip({capabilities = ship_stats.capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
+    local capabilities = namje_byos.is_fu() and {} or ship_stats.capabilities
+    player.upgradeShip({capabilities = capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
 end
 
 function move_to_ship_spawn()
