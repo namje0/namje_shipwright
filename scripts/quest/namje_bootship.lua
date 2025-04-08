@@ -64,11 +64,11 @@ function wakeSail()
     {self.descriptions.wakeSail, false}
   })
 
-  -- try to lounge in the sleeping bag instead of teleporter
+  -- try to lounge in the bed instead of teleporter, since we're spawning the ship with a functional tp
   util.wait(2.2, function()
     local teleporters = world.entityQuery(mcontroller.position(), 100, {includedTypes = {"object"}})
     teleporters = util.filter(teleporters, function(entityId)
-      if string.find(world.entityName(entityId), "sleepingbag") then
+      if string.find(world.entityName(entityId), "prisonbed") then
         return true
       end
     end)

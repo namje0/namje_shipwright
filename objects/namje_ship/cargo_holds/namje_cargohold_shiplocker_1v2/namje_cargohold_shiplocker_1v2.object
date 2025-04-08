@@ -38,9 +38,12 @@
   
   "health" : 50000,
 
+  "scripts" : [ "/objects/namje_ship/cargo_holds/namje_cargohold.lua" ],
+  "scriptDelta" : 20,
+
   "openSounds" : [ "/sfx/objects/console_generic_switchon.ogg" ],
   "closeSounds" : [ "/sfx/objects/console_generic_switchoff.ogg" ],
-  "slotCount" : 64,
+  "slotCount" : 1,
   "uiConfig" : "/interface/chests/chest<slots>.config",
   "frameCooldown" : 5,
   "openFrameIndex" : 4,

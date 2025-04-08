@@ -23,7 +23,8 @@ function namje_byos.change_ships(ship_type, init, ...)
         local ply = init and args[1] or args
 
         sb.logInfo("namje // changing ship on server")
-
+        
+        world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_hold_size)
         local ship_create, err = pcall(namje_byos.create_ship, ply, ship_config)
         if ship_create then
             if #items > 0 then
@@ -124,6 +125,7 @@ end
 --only used on init
 --method of grabbing racial treasure pool based on how FU does it
 function fill_shiplocker(species)
+    --since we're using a custom cargo hold instead of the ship locker for the starter ship, we're just gonna fill random storage containers onboard the ship
     sb.logInfo("namje // creating ship locker treasure pool")
 
     local racial_key = root.assetJson("/ships/" .. species .. "/blockKey.config:blockKey")
@@ -145,14 +147,34 @@ function fill_shiplocker(species)
 		starter_treasure = util.mergeTable(starter_treasure, treasure)
 	end
 
+    local starter_ship_containers = {
+        "bunkercabinet1",
+        "bunkercrate",
+        "wrecklocker",
+        "bunkerdesk"
+    }
+    local containers = {}
     local objects = world.objectQuery({500, 500}, {1500, 1500})
     for _, v in ipairs (objects) do
-        if string.find(world.entityName(v), "shiplocker") then
+        for _, container in ipairs (starter_ship_containers) do
+            if string.find(world.entityName(v), container) then
+                table.insert(containers, v)
+            end
+        end
+       --[[ if string.find(world.entityName(v), "shiplocker") then
             for _,item in pairs(starter_treasure) do
                 world.containerAddItems(v, item)
             end
             break
+        end]]
+    end
+
+    if #containers > 0 then
+        for _, item in ipairs(starter_treasure) do
+            world.containerAddItems(containers[math.random(1,#starter_ship_containers)], item)
         end
+    else
+        error("namje // no ship locker found to fill with treasure")
     end
 end
 

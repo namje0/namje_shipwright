@@ -3,7 +3,6 @@
   "rarity" : "Common",
   "category" : "storage",
   "objectType" : "container",
-  "tooltipKind" : "container",
   "printable" : false,
 
   "description" : "This console will let me access the cargo hold of my ship.",
@@ -38,10 +37,13 @@
   
   "health" : 50000,
 
+  "scripts" : [ "/objects/namje_ship/cargo_holds/namje_cargohold.lua" ],
+  "scriptDelta" : 10,
+
   "openSounds" : [ "/sfx/objects/console_generic_switchon.ogg" ],
   "closeSounds" : [ "/sfx/objects/console_generic_switchoff.ogg" ],
-  "slotCount" : 64,
-  "uiConfig" : "/interface/chests/chest<slots>.config",
+  "slotCount" : 1,
+  "uiConfig" : "/interface/namje_cargohold/namje_cargohold.config",
   "frameCooldown" : 5,
   "openFrameIndex" : 4,
   "autoCloseCooldown" : 3600
