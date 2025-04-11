@@ -7,6 +7,8 @@ local cargo_size
 
 function init() ini()
     widget.registerMemberCallback("cargoHoldScrollArea.itemList", "take_item", receive_item)
+    widget.registerMemberCallback("cargoHoldScrollArea.itemList", "take_item.right", receive_item)
+
     cargo_size = world.getProperty("namje_cargo_size", 0)
 end
 
