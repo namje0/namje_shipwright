@@ -34,16 +34,14 @@
       "anchors" : [ "background" ]
     }
   ],
-  
-  "health" : 50000,
 
   "scripts" : [ "/objects/namje_ship/cargo_holds/namje_cargohold.lua" ],
-  "scriptDelta" : 10,
+  "scriptDelta" : 5,
 
   "openSounds" : [ "/sfx/objects/console_generic_switchon.ogg" ],
   "closeSounds" : [ "/sfx/objects/console_generic_switchoff.ogg" ],
   "slotCount" : 1,
-  "uiConfig" : "/interface/namje_cargohold/namje_cargohold.config",
+  "uiConfig" : "/interface/namje_cargohold/namje_cargohold_ui.config",
   "frameCooldown" : 5,
   "openFrameIndex" : 4,
   "autoCloseCooldown" : 3600
