@@ -1,14 +1,14 @@
 [
     {
         "op": "add",
-        "path": "/quickfliss",
+        "path": "/namjefliss",
         "value": [
             "/warp instanceworld:outpost=464.580"
         ]
     },
     {
         "op": "add",
-        "path": "/quickship",
+        "path": "/namjeships",
         "value": [
             "/spawnitem shiplicense_onyx",
             "/spawnitem shiplicense_shuttle",
@@ -17,7 +17,7 @@
     },
     {
         "op": "add",
-        "path": "/quickupgradetest",
+        "path": "/namjequickupgrades",
         "value": [
             "/startquest gaterepair",
             "/completequest gaterepair",

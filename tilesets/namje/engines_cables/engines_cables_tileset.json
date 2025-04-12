@@ -1,0 +1,143 @@
+{
+ "name":"engines_cables_tileset",
+
+ "columns":0,
+ "margin":0,
+ "spacing":0,
+
+ "tileheight":8,
+ "tilewidth":8,
+
+ "tilecount":18,
+ "type":"tileset",
+
+ "tileproperties": {
+    "0" : {
+        "material" : "slopedengineblock"
+      },
+    "1" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "1"
+      },
+    "2" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "2"
+      },
+    "3" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "3"
+      },
+    "4" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "4"
+      },
+    "5" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "5"
+      },
+    "6" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "6"
+      },
+    "7" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "7"
+      },
+    "8" : {
+        "material" : "slopedengineblock",
+        "colorVariant" : "8"
+      },
+    "9" : {
+        "material" : "wallcables"
+      },
+      "10" : {
+        "material" : "wallcables",
+        "colorVariant" : "1"
+      },
+      "11" : {
+        "material" : "wallcables",
+        "colorVariant" : "2"
+      },
+      "12" : {
+        "material" : "wallcables",
+        "colorVariant" : "3"
+      },
+      "13" : {
+        "material" : "wallcables",
+        "colorVariant" : "4"
+      },
+      "14" : {
+        "material" : "wallcables",
+        "colorVariant" : "5"
+      },
+      "15" : {
+        "material" : "wallcables",
+        "colorVariant" : "6"
+      },
+      "16" : {
+        "material" : "wallcables",
+        "colorVariant" : "7"
+      },
+      "17" : {
+        "material" : "wallcables",
+        "colorVariant" : "8"
+      }
+  },
+  "tiles": {
+    "0" : {
+        "image" : "slopedengineblock.png"
+    },
+    "1" : {
+        "image" : "slopedengineblock_1.png"
+    },
+    "2" : {
+        "image" : "slopedengineblock_2.png"
+    },
+    "3" : {
+        "image" : "slopedengineblock_3.png"
+    },
+    "4" : {
+        "image" : "slopedengineblock_4.png"
+    },
+    "5" : {
+        "image" : "slopedengineblock_5.png"
+    },
+    "6" : {
+        "image" : "slopedengineblock_6.png"
+    },
+    "7" : {
+        "image" : "slopedengineblock_7.png"
+    },
+    "8" : {
+        "image" : "slopedengineblock_8.png"
+    },
+    "9" : {
+        "image" : "wallcables.png"
+    },
+    "10" : {
+        "image" : "wallcables_1.png"
+    },
+    "11" : {
+        "image" : "wallcables_2.png"
+    },
+    "12" : {
+        "image" : "wallcables_3.png"
+    },
+    "13" : {
+        "image" : "wallcables_4.png"
+    },
+    "14" : {
+        "image" : "wallcables_5.png"
+    },
+    "15" : {
+        "image" : "wallcables_6.png"
+    },
+    "16" : {
+        "image" : "wallcables_7.png"
+    },
+    "17" : {
+        "image" : "wallcables_8.png"
+    }
+  }
+  
+}

@@ -1,9 +1,9 @@
 {
   "version" : "1.00",
   "author" : "namje",
-  "description" : "Buy ships, edit them however you want. Built-in BYOS included. FU compatible.",
-  "name" : "shipwright_atelier",
-  "friendlyName" : "Shipwright Atelier",
+  "description" : "A framework adding a custom BYOS system, the ability for developers to make multiple ships with different stats, and the ability to purchase and swap to different ships. FU compatible.",
+  "name" : "namje_shipwright",
+  "friendlyName" : "NamjeShipwright",
   "scripts" : {
     "postLoad" : [
       "/scripts/namje_removeShipBackgrounds.lua",

@@ -1,0 +1,57 @@
+{
+ "name":"zennles_placeables_tileset",
+
+ "columns":0,
+ "margin":0,
+ "spacing":0,
+
+ "tileheight":8,
+ "tilewidth":8,
+
+ "tilecount":6,
+ "type":"tileset",
+
+ "tileproperties":
+    {
+      "0" : {
+          "material" : "atelierver_zen_industrialcrate"
+       },
+      "1" : {
+          "material" : "atelierver_zen_industriallargepipe"
+        },
+      "2" : {
+          "material" : "atelierver_zen_industriallargepipe2"
+        },
+      "3" : {
+          "material" : "atelierver_zen_industrialplasmacoil"
+        },
+      "4" : {
+          "material" : "atelierver_zen_industrialplasmacoil2"
+        },
+      "5" : {
+          "material" : "atelierver_zen_industrialplasmacoil3"
+        }
+    },
+  "tiles":
+    {
+      "0": {
+        "image":"atelierver_zen_industrialcrate.png"
+        },
+      "1" : {
+        "image":"atelierver_zen_industriallargepipe.png"
+        },
+      "2" : {
+        "image":"atelierver_zen_industriallargepipe2.png"
+        },
+      "3" : {
+        "image":"atelierver_zen_industrialplasmacoil.png"
+        },
+      "4" : {
+        "image":"atelierver_zen_industrialplasmacoil2.png"
+        },
+      "5" : {
+        "image":"atelierver_zen_industrialplasmacoil3.png"
+        }
+    }
+  
+}

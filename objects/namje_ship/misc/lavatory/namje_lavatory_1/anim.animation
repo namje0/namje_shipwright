@@ -1,0 +1,74 @@
+{
+  "animatedParts" : {
+    "stateTypes" : {
+      "base": {
+				"default": "default",
+				"states": {
+					"default": {
+            "properties" : {
+              "particleEmittersOff" : [ "steam" ]
+            }
+          },
+          "using": {
+            "properties" : {
+              "persistentSound" : "/sfx/objects/namje_shower.ogg",
+              "persistentSoundRangeMultiplier" : 0.5,
+              "particleEmittersOn" : [ "steam" ]
+            }
+					}
+				}
+			}
+    },
+	
+  "parts" : {
+	  "base" : {
+        "properties" : {
+          "centered" : false
+        },
+        "partStates" : {
+          "base" : {
+            "using" : {
+              "properties" : {
+                "image" : "<partImage>:using"
+              }
+            },
+            "default" : {
+              "properties" : {
+                "image" : "<partImage>:default"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  
+  "particleEmitters" : {
+    "steam" : {
+      "enabled" : true,
+      "emissionRateVariance": 2.0,
+      "emissionRate" : 0.5,
+      "particles" : [ 
+        { "particle" :
+          {
+            "type" : "animated",
+            "animation" : "/animations/energy/energy.animation",
+            "destructionAction" : "shrink",
+            "destructionTime" : 2,
+            "fade" : 0.1,
+            "size" : 1.8,
+            "layer" : "front",
+            "timeToLive" : 2.5,
+            "initialVelocity": [0, 1],
+            "position" : [2, 1.5],
+            "color" : [200, 200, 200, 50],
+            "variance" : {
+              "initialVelocity": [0.5, 0.5],
+              "position": [0.25, 0.25]
+            }
+          } 
+        } 
+      ]
+    }
+  }
+}

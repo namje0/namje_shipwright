@@ -1,6 +1,6 @@
 function build(directory, config, parameters, level, seed)
     local ship_type = config.shipType
-    local ship_config = root.assetJson("/atelier_ships/ships/".. ship_type .."/ship.config")
+    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.config")
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
@@ -10,7 +10,7 @@ function build(directory, config, parameters, level, seed)
     
     config.tooltipFields = config.tooltipFields or {}
 
-    config.tooltipFields.shipImage = "/atelier_ships/ships/" .. ship_type .. "/ship_preview.png" or ""
+    config.tooltipFields.shipImage = "/namje_ships/ships/" .. ship_type .. "/ship_preview.png" or ""
     config.tooltipFields.crewLabel = ship_config.recommended_crew_size and "^orange;Recommended Crew Size:^reset; " .. ship_config.recommended_crew_size or "^orange;Recommended Crew Size:^reset; ^red;N/A^reset;"
     config.tooltipFields.cargoLabel = ship_config.atelier_stats.cargo_hold_size and "^orange;Ship Cargo Hold Size:^reset; " .. ship_config.atelier_stats.cargo_hold_size or "^orange;Ship Cargo Hold Size:^reset; ^red;N/A^reset;"
     config.tooltipFields.speedLabel = ship_config.base_stats.ship_speed and "^orange;Ship Speed:^reset; " .. ship_config.base_stats.ship_speed or "^orange;Ship Speed:^reset; ^red;N/A^reset;"

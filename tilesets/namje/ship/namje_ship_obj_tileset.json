@@ -1,0 +1,129 @@
+{
+ "name":"namje_ship_obj_tileset",
+
+ "columns":0,
+ "margin":0,
+ "spacing":0,
+
+ "tileheight":8,
+ "tilewidth":8,
+
+ "tilecount":12,
+ "type":"tileset",
+
+ "tileproperties":
+    {
+      "0" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_cargohold_shiplocker_1",
+        "tilesetDirection" : "right"
+      },
+      "1" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_cargohold_shiplocker_1v2",
+        "tilesetDirection" : "right"
+      },
+      "2" : {
+        "imagePositionX" : "-8",
+        "imagePositionY" : "-16",
+        "object" : "namje_fuelhatch_1",
+        "tilesetDirection" : "right"
+      },
+      "3" : {
+        "imagePositionX" : "-8",
+        "imagePositionY" : "-16",
+        "object" : "namje_fuelhatch_1v2",
+        "tilesetDirection" : "right"
+      },
+      "4" : {
+        "imagePositionX" : "-16",
+        "imagePositionY" : "0",
+        "object" : "namje_shipteleporter_1",
+        "tilesetDirection" : "right"
+      },
+      "5" : {
+        "imagePositionX" : "-16",
+        "imagePositionY" : "-8",
+        "object" : "namje_techstation1",
+        "tilesetDirection" : "right"
+      },
+      "6" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_inner_stl_drive",
+        "tilesetDirection" : "right"
+      },
+      "7" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_inner_ftl_drive",
+        "tilesetDirection" : "right"
+      },
+      "8" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_inner_broken_drive",
+        "tilesetDirection" : "right"
+      },
+      "9" : {
+        "imagePositionX" : "-16",
+        "imagePositionY" : "0",
+        "object" : "namje_lavatory_1",
+        "tilesetDirection" : "right"
+      },
+      "10" : {
+        "imagePositionX" : "-8",
+        "imagePositionY" : "-8",
+        "object" : "namje_smallboosterflame",
+        "tilesetDirection" : "right"
+      },
+      "11" : {
+        "imagePositionX" : "0",
+        "imagePositionY" : "0",
+        "object" : "namje_cargohold_shiplocker_2",
+        "tilesetDirection" : "right"
+      }
+    },
+  "tiles":
+      {
+        "0" : {
+          "image" : "namje_cargohold_shiplocker_1.png"
+        },
+        "1" : {
+          "image" : "namje_cargohold_shiplocker_1v2.png"
+        },
+        "2" : {
+          "image" : "namje_fuelhatch_1.png"
+        },
+        "3" : {
+          "image" : "namje_fuelhatch_1v2.png"
+        },
+        "4" : {
+          "image" : "namje_shipteleporter_1.png"
+        },
+        "5" : {
+          "image" : "namje_techstation1.png"
+        },
+        "6" : {
+          "image" : "namje_inner_stl_drive.png"
+        },
+        "7" : {
+          "image" : "namje_inner_ftl_drive.png"
+        },
+        "8" : {
+          "image" : "namje_inner_broken_drive.png"
+        },
+        "9" : {
+          "image" : "namje_lavatory_1.png"
+        },
+        "10" : {
+          "image" : "namje_smallboosterflame.png"
+        },
+        "11" : {
+          "image" : "namje_cargohold_shiplocker_2.png"
+        }
+      }
+  
+}

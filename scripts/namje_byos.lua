@@ -6,7 +6,7 @@ require "/scripts/util.lua"
 namje_byos = {}
 
 function namje_byos.change_ships(ship_type, init, ...)
-    local ship_config = root.assetJson("/atelier_ships/ships/".. ship_type .."/ship.config")
+    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.config")
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end

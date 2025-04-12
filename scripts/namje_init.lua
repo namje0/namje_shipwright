@@ -1,10 +1,8 @@
 require("/scripts/namje_byos.lua")
+
 local ini = init or function() end
 
 function init() ini()
-    player.setUniverseFlag("outpost_namje_shipbroker")
-
-    --event for giving cargo box
     message.setHandler("namje_give_cargo", function(_, _, items) 
         local cargo_box = {
             name = "namje_cargo_box",
