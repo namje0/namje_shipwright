@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "namje_void_xsmall",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "namje_void_xsmall" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "namje_void_xsmall",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "namje_void_xsmall.json" ]
+    }
+  ]
+}

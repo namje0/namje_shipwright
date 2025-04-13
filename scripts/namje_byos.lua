@@ -58,15 +58,24 @@ function namje_byos.change_ships(ship_type, init, ...)
 end
 
 function namje_byos.create_ship(ply, ship_config)
-    namje_byos.reset_fu_stats() 
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
-    local replace_mode = {dungeon = "namje_void", size = {512, 512}}
     local teleporter_offset = ship_config.atelier_stats.teleporter_position
     local ship_position = vec2.sub({1024, 1024}, {teleporter_offset[1], -teleporter_offset[2]})
+    local void_size = ship_config.atelier_stats.size
+    local voids = {
+        ["xsmall"] = {100, 100},
+        ["small"] = {250, 250},
+        ["medium"] = {500, 500},
+        ["large"] = {1000, 1000}
+    }
 
+    namje_byos.reset_fu_stats()
     world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
     
-    world.placeDungeon(replace_mode.dungeon, getReplaceModePosition(replace_mode.size))
+    sb.logInfo(sb.print(void_size))
+    sb.logInfo(sb.print(voids[void_size]))
+
+    world.placeDungeon("namje_void_" .. void_size, voids[void_size])
     world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
 end
 
@@ -161,12 +170,6 @@ function fill_shiplocker(species)
                 table.insert(containers, v)
             end
         end
-       --[[ if string.find(world.entityName(v), "shiplocker") then
-            for _,item in pairs(starter_treasure) do
-                world.containerAddItems(v, item)
-            end
-            break
-        end]]
     end
 
     if #containers > 0 then
@@ -178,12 +181,15 @@ function fill_shiplocker(species)
     end
 end
 
---taken from Frackin Universe
-function getReplaceModePosition(size)
-	local position = {1024, 1024}
-	local halfSize = vec2.div(size, 2)
-	position[1] = position[1] - halfSize[1]
-	position[2] = position[2] + halfSize[2] + 1
-
-	return position
+--method for centering the namje_void dungeons (for clearing out the ship area before putting the new one)
+function center_void(box)
+    local box_x = -box[1] / 2
+    local box_y = -box[2] / 2
+  
+    -- calculate the final position of the top-left corner of the box
+    -- by adding the ships center coord
+    local final_x = 1024 + box_x
+    local final_y = 1024 + box_y
+  
+    return {final_x, final_y}
 end
