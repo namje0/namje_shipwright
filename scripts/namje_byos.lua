@@ -5,6 +5,8 @@ require "/scripts/util.lua"
 
 namje_byos = {}
 
+namje_byos.fu_enabled = nil
+
 function namje_byos.change_ships(ship_type, init, ...)
     local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.config")
     if not ship_config then
@@ -39,7 +41,11 @@ function namje_byos.change_ships(ship_type, init, ...)
 
             local players = world.players()
             for _, player in ipairs (players) do
-                world.sendEntityMessage(player, "namje_moveToShipSpawn")
+                if namje_byos.is_fu() then
+                    world.sendEntityMessage(player, "fs_respawn")
+                else
+                    world.sendEntityMessage(player, "namje_moveToShipSpawn")
+                end
             end
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
@@ -95,14 +101,20 @@ function namje_byos.get_ship_items()
 end
 
 function namje_byos.is_fu()
-    local player_config = root.assetJson("/player.config")
-    local deployment_scripts = player_config.deploymentConfig.scripts
-    for i = 1, #deployment_scripts do
-        if string.find(deployment_scripts[i], "fu_player_init") then
-            return true
+    if namje_byos.fu_enabled == nil then
+        local player_config = root.assetJson("/player.config")
+        local deployment_scripts = player_config.deploymentConfig.scripts
+        for i = 1, #deployment_scripts do
+            if string.find(deployment_scripts[i], "fu_player_init") then
+                namje_byos.fu_enabled = true
+                return true
+            end
         end
+        namje_byos.fu_enabled = false
+        return false
+    else
+        return namje_byos.fu_enabled
     end
-    return false
 end
 
 function namje_byos.reset_fu_stats()
@@ -188,7 +200,7 @@ function center_void(box)
   
     -- calculate the final position of the top-left corner of the box
     -- by adding the ships center coord
-    local final_x = 1024 + box_x
+    local final_x = 1024 - box_x
     local final_y = 1024 + box_y
   
     return {final_x, final_y}

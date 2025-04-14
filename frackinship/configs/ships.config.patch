@@ -1,0 +1,14 @@
+[
+  {
+    "op": "add",
+    "path": "/namje_startershuttle",
+    "value": {
+      "ship": "namje_startershuttle",
+      "name": "AOM Kellion",
+      "offset": [0, 0],
+      "racialiserOverride": "human",
+      "icon": "/namje_ships/manufacturers/protectorate.png",
+      "previewImage": "/namje_ships/ships/namje_startershuttle/ship_preview.png"
+    }
+  }
+]
