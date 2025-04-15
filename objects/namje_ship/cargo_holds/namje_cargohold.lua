@@ -26,7 +26,7 @@ function receive_item(_, _, args)
 
     for k, v in pairs(cargo_hold) do
         local cargo_item = v
-        if cargo_item and root.itemDescriptorsMatch(cargo_item, item, true) then
+        if cargo_item and root.itemDescriptorsMatch(cargo_item, item, true) and cargo_item.count == item.count then
             world.spawnItem(item, pos)
             table.remove(cargo_hold, k)
             world.setProperty("namje_cargo_hold", cargo_hold)
