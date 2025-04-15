@@ -3,7 +3,6 @@
   "rarity" : "Common",
   "category" : "storage",
   "objectType" : "container",
-  "tooltipKind" : "container",
   "printable" : false,
 
   "description" : "This console will let me access the cargo hold of my ship.",

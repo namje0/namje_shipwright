@@ -64,10 +64,11 @@ function namje_byos.change_ships(ship_type, init, ...)
 end
 
 function namje_byos.create_ship(ply, ship_config)
+    local previous_ship_size = world.getProperty("namje_current_size", {0,0})
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local teleporter_offset = ship_config.atelier_stats.teleporter_position
     local ship_position = vec2.sub({1024, 1024}, {teleporter_offset[1], -teleporter_offset[2]})
-    local void_size = ship_config.atelier_stats.size
+    local ship_void = ship_config.atelier_stats.size
     local voids = {
         ["xsmall"] = {100, 100},
         ["small"] = {250, 250},
@@ -75,13 +76,19 @@ function namje_byos.create_ship(ply, ship_config)
         ["large"] = {1000, 1000}
     }
 
-    namje_byos.reset_fu_stats()
-    world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
-    
-    sb.logInfo(sb.print(void_size))
-    sb.logInfo(sb.print(voids[void_size]))
+    local void_size = voids[ship_void]
+    --since fu byos ships arent always centered properly, just wipe the whole area
+    if namje_byos.is_fu() then
+        void_size = voids["large"]
+        namje_byos.reset_fu_stats()
+    end
+    if vec2.mag(previous_ship_size) > vec2.mag(void_size) then
+        void_size = previous_ship_size
+    end
 
-    world.placeDungeon("namje_void_" .. void_size, voids[void_size])
+    world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
+    world.setProperty("namje_current_size", void_size) 
+    world.placeDungeon("namje_void_" .. ship_void, void_size)
     world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
 end
 

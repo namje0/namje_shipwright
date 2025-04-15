@@ -4,7 +4,7 @@
   "category" : "furniture",
   "printable" : false,
 
-  "description" : "A cheap bathroom module found on ships. Comes with a toilet and shower.",
+  "description" : "A cheap bathroom module found on ships. Comes with everything you'd expect in one.",
   "shortdescription" : "Ship Lavatory",
 
   "inventoryIcon" : "/objects/namje_ship/misc/lavatory/lavatory_icon.png",

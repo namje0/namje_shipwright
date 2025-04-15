@@ -29,7 +29,7 @@ local techstation_path = "/namje_fuCompatibility_techstation_patch.patch"
 assets.add(techstation_path, '{"interactAction": "ScriptPane", "interactData": "/zb/newSail/newSail.config", "scripts": ["/objects/scripts/customtechstation.lua"]}')
 
 local techstations = {
-  "/objects/namje_ship/techstations/namje_techstation1.object"
+  "/objects/namje_ship/techstations/namje_techstation_1/namje_techstation1.object"
 }
 for i=1, #techstations do
   local techstation = techstations[i]
@@ -41,7 +41,7 @@ local teleporter_path = "/namje_fuCompatibility_teleporter_patch.patch"
 assets.add(teleporter_path, '{"scripts": ["/objects/namje_ship/shipteleporters/namje_shipteleporter.lua", "/objects/ship/fu_byosteleporter/fu_byosteleporter.lua", "/objects/ship/fu_byosobjectdeath.lua"]}')
 
 local teleporters = {
-  "/objects/namje_ship/techstations/namje_techstation1.object"
+  "/objects/namje_ship/shipteleporters/namje_shipteleporter_1/namje_shipteleporter_1.object"
 }
 for i=1, #teleporters do
   local teleporter = teleporters[i]

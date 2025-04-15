@@ -6,14 +6,13 @@ local fu_atmosphere = false
 local initial_outside = false
 
 function init() ini()
-    --TODO: FU Compability - don't use this handler if FU is detected
-    message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
     message.setHandler("namje_upgradeShip", upgrade_ship)
     if namje_byos.is_fu() then
         fu_atmosphere = true
         sb.logInfo("namje // fu atmosphere detected")
+    else
+        message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
     end
-
 end
 
 function update(dt)
