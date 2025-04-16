@@ -14,43 +14,43 @@
  "tileproperties":
     {
       "0" : {
-          "material" : "atelierver_zen_industrialcrate"
+          "material" : "zen_industrialcrate"
        },
       "1" : {
-          "material" : "atelierver_zen_industriallargepipe"
+          "material" : "zen_industriallargepipe"
         },
       "2" : {
-          "material" : "atelierver_zen_industriallargepipe2"
+          "material" : "zen_industriallargepipe2"
         },
       "3" : {
-          "material" : "atelierver_zen_industrialplasmacoil"
+          "material" : "zen_industrialplasmacoil"
         },
       "4" : {
-          "material" : "atelierver_zen_industrialplasmacoil2"
+          "material" : "zen_industrialplasmacoil2"
         },
       "5" : {
-          "material" : "atelierver_zen_industrialplasmacoil3"
+          "material" : "zen_industrialplasmacoil3"
         }
     },
   "tiles":
     {
       "0": {
-        "image":"atelierver_zen_industrialcrate.png"
+        "image":"zen_industrialcrate.png"
         },
       "1" : {
-        "image":"atelierver_zen_industriallargepipe.png"
+        "image":"zen_industriallargepipe.png"
         },
       "2" : {
-        "image":"atelierver_zen_industriallargepipe2.png"
+        "image":"zen_industriallargepipe2.png"
         },
       "3" : {
-        "image":"atelierver_zen_industrialplasmacoil.png"
+        "image":"zen_industrialplasmacoil.png"
         },
       "4" : {
-        "image":"atelierver_zen_industrialplasmacoil2.png"
+        "image":"zen_industrialplasmacoil2.png"
         },
       "5" : {
-        "image":"atelierver_zen_industrialplasmacoil3.png"
+        "image":"zen_industrialplasmacoil3.png"
         }
     }
   
