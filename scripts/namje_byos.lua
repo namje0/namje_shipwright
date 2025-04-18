@@ -34,7 +34,8 @@ function namje_byos.change_ships(ship_type, init, ...)
             end
 
             --create the shiplocker treasurepool on init
-            if init then
+            --FU also fills the shiplocker (or a random container if there is none) so just skip that part if FU is enabled
+            if init and not namje_byos.is_fu() then
                 local species = args[2]
                 fill_shiplocker(species)
             end
@@ -176,10 +177,12 @@ function fill_shiplocker(species)
 	end
 
     local starter_ship_containers = {
-        "bunkercabinet1",
-        "bunkercrate",
         "wrecklocker",
-        "bunkerdesk"
+        "bunkerdesk",
+        "outpostcargocrate",
+        "outpostcargocrateshort",
+        "industrialcrate"
+
     }
     local containers = {}
     local objects = world.objectQuery({500, 500}, {1500, 1500})

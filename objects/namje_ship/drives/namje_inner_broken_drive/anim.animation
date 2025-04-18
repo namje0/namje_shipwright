@@ -114,8 +114,9 @@
 				"particle": {
 					"type" : "animated",
                 "animation" : "/animations/energy/energy.animation",
-                "position" : [1.2, 2],
-                "initialVelocity": [1.0, 1.0],
+                "position" : [1.2, 1.8],
+				"color" : [200, 200, 200, 220],
+                "initialVelocity": [0, 1.0],
                 "finalVelocity" : [0, 0],
                 "approach" : [0, 0],
                 "destructionAction" : "shrink",
@@ -126,7 +127,7 @@
                 "timeToLive" : 2.5,
                 "variance" : {
                   "initialVelocity": [0.5, 0.5],
-						"position": [0.25, 0.25]
+						"position": [0.5, 0.5]
                }
             }
 			}]

@@ -11,8 +11,7 @@
         "path": "/namjeships",
         "value": [
             "/spawnitem shiplicense_onyx",
-            "/spawnitem shiplicense_shuttle",
-            "/spawnitem shiplicense_test2"
+            "/spawnitem namje_startership"
         ]
     },
     {

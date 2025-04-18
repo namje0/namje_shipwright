@@ -1,0 +1,53 @@
+{ "margin":0,
+ "name":"namje_colors",
+ "properties":
+    {
+
+    },
+ "spacing":0,
+ "tilecount":4,
+ "tileheight":8,
+ "tileproperties":
+    {
+     "0":
+        {
+         "material":"heavypipe",
+         "colorVariant" : "7"
+        },
+     "1":
+        {
+         "material":"sewerpipe",
+         "colorVariant" : "7"
+        },
+     "2":
+        {
+         "material":"girder",
+         "colorVariant" : "7"
+        },
+     "3":
+        {
+         "material":"namje_darkslopedinsetpanel",
+         "colorVariant" : "7"
+        }
+    },
+ "tiles":
+    {
+     "0":
+        {
+         "image":"heavypipe.png"
+        },
+     "1":
+        {
+         "image":"sewerpipe.png"
+        },
+     "2":
+        {
+         "image":"girdermaterial.png"
+        },
+     "3":
+        {
+         "image":"namje_darkslopedinsetpanel.png"
+        }
+    },
+ "tilewidth":8
+}

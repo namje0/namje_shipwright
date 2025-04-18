@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_byos_testship",
+    "name" : "namje_aomkellion",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_byos_testship" ],
+    "anchor" : [ "namje_aomkellion" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_byos_testship",
+      "name" : "namje_aomkellion",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_byos_testship.json" ]
+      "def" : [ "tmx", "namje_aomkellion.json" ]
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_startershuttle",
+    "name" : "namje_startership",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_startershuttle" ],
+    "anchor" : [ "namje_startership" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_startershuttle",
+      "name" : "namje_startership",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_startershuttle.json" ]
+      "def" : [ "tmx", "namje_startership.json" ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
-  "itemName" : "shiplicense_shuttle",
+  "itemName" : "namje_startership",
   "shortdescription" : "AOM Kellion",
-  "description" : "An auxillary maintenance shuttle utilized by the Protectorate. Not suited for long voyages, plus it was damaged in the escape... but it should be enough to get you started.",
+  "description" : "An outdated maintenance shuttle used by the Protectorate. This one was carrying capsules to be sent out into the galaxy. \nCramped and not suited for long voyages, plus it was damaged in the escape... but it should be enough to get you started.",
   "price" : 1500,
   "tooltipKind" : "namje_shiplicense",
   "rarity" : "essential",
@@ -13,7 +13,7 @@
   "animation" : "animation.animation",
   "scripts" : ["shiplicense.lua"],
 
-  "shipType" : "namje_startershuttle",
+  "shipType" : "namje_startership",
 
   "builder" : "/items/buildscripts/build_shiplicense.lua"
 }
