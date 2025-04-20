@@ -41,6 +41,7 @@ function namje_byos.change_ships(ship_type, init, ...)
                 fill_shiplocker(species)
             end
 
+            --move players to new ship spawn
             local players = world.players()
             for _, player in ipairs (players) do
                 if namje_byos.is_fu() then
@@ -48,6 +49,15 @@ function namje_byos.change_ships(ship_type, init, ...)
                 else
                     world.sendEntityMessage(player, "namje_moveToShipSpawn")
                 end
+            end
+            
+            --move crew (and any other monsters/animals) to new ship spawn
+            --TODO: occasional bug where they dont get moved? try to replicate more
+            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {1024, 1024}), {0, 2})
+            local entities = world.entityQuery({500, 500}, {1500, 1500}, {includedTypes = {"npc", "monster"}})
+            for _, entity_id in ipairs(entities) do
+                sb.logInfo(entity_id)
+                world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
         else 
             sb.logInfo("namje === ship swap failed: " .. err)

@@ -6,6 +6,7 @@
     "manufacturer" : "Terrene Protectorate",
     "manufacturer_icon" : "/namje_ships/manufacturers/protectorate.png",
     "recommended_crew_size" : "1-2",
+    "price" : 4000,
 
     "base_stats" : {
         "capabilities" : [],
