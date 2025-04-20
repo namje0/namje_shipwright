@@ -8,7 +8,11 @@
     "postLoad" : [
       "/scripts/namje_removeShipBackgrounds.lua",
       "/scripts/namje_fuCompatibility.lua"
+    ],
+    "onLoad" : [
+      "/scripts/namje_makeShiplicenses.lua"
     ]
   },
+  "priority" : 50,
   "includes" : ["FrackinUniverse" ]
 }

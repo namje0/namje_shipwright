@@ -1,5 +1,6 @@
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
+require "/scripts/rect.lua"
 
 --utility module used for ship stuff
 
@@ -8,7 +9,7 @@ namje_byos = {}
 namje_byos.fu_enabled = nil
 
 function namje_byos.change_ships(ship_type, init, ...)
-    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.config")
+    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.namjeship")
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
@@ -65,32 +66,43 @@ function namje_byos.change_ships(ship_type, init, ...)
 end
 
 function namje_byos.create_ship(ply, ship_config)
-    local previous_ship_size = world.getProperty("namje_current_size", {0,0})
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
-    local teleporter_offset = ship_config.atelier_stats.teleporter_position
-    local ship_position = vec2.sub({1024, 1024}, {teleporter_offset[1], -teleporter_offset[2]})
-    local ship_void = ship_config.atelier_stats.size
-    local voids = {
-        ["xsmall"] = {100, 100},
-        ["small"] = {250, 250},
-        ["medium"] = {500, 500},
-        ["large"] = {1000, 1000}
-    }
+    local ship_offset = ship_config.atelier_stats.ship_center_pos
+    local ship_position = vec2.sub({1024, 1024}, {ship_offset[1], -ship_offset[2]})
 
-    local void_size = voids[ship_void]
-    --since fu byos ships arent always centered properly, just wipe the whole area
     if namje_byos.is_fu() then
-        void_size = voids["large"]
         namje_byos.reset_fu_stats()
-    end
-    if vec2.mag(previous_ship_size) > vec2.mag(void_size) then
-        void_size = previous_ship_size
     end
 
     world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
-    world.setProperty("namje_current_size", void_size) 
-    world.placeDungeon("namje_void_" .. ship_void, void_size)
+
+    clear_ship_area()
     world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
+end
+
+--scan from 500,500 to 1500,1500 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
+function clear_ship_area()
+    local start_x = 500
+    local start_y = 500
+    local subgrid_size = 100
+
+    for i = 0, 10 - 1 do
+        for j = 0, 10 - 1 do
+            local top_left_x = start_x + i * 100
+            local top_left_y = start_y + j * 100
+            local bottom_right_x = top_left_x + 100
+            local bottom_right_y = top_left_y + 100
+
+            local min_vec = {top_left_x, top_left_y}
+            local max_vec = {bottom_right_x + 1, bottom_right_y + 1}
+
+            local collision_detected = world.rectTileCollision(rect.fromVec2(min_vec, max_vec), {"Block", "Dynamic", "Slippery"})
+            if collision_detected then
+                sb.logInfo(sb.print("tiles detected: ".. top_left_x .. "," .. top_left_y .. "|" .. bottom_right_x .. "," .. bottom_right_y))
+                world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
+            end
+        end
+    end
 end
 
 --TODO: see if some items are still missing after ship change
@@ -201,17 +213,4 @@ function fill_shiplocker(species)
     else
         error("namje // no ship locker found to fill with treasure")
     end
-end
-
---method for centering the namje_void dungeons (for clearing out the ship area before putting the new one)
-function center_void(box)
-    local box_x = -box[1] / 2
-    local box_y = -box[2] / 2
-  
-    -- calculate the final position of the top-left corner of the box
-    -- by adding the ships center coord
-    local final_x = 1024 - box_x
-    local final_y = 1024 + box_y
-  
-    return {final_x, final_y}
 end

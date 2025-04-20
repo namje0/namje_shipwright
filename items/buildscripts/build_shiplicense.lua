@@ -1,6 +1,6 @@
 function build(directory, config, parameters, level, seed)
     local ship_type = config.shipType
-    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.config")
+    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.namjeship")
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end

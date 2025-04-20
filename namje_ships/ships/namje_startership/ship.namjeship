@@ -17,6 +17,6 @@
     "atelier_stats" : {
         "size" : "xsmall",
         "cargo_hold_size" : 90,
-        "teleporter_position" : [95, 41]
+        "ship_center_pos" : [74, 42]
     }
 }
