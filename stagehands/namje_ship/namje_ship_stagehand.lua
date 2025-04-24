@@ -7,11 +7,7 @@ function init()
 end
 
 function swap_ship(_, _, ply, ship_type, init, ...)
-    if init then
-        local species = ...
-        namje_byos.change_ships(ship_type, init, {ply, species})
-    else
-        namje_byos.change_ships(ship_type, init, ply)
-    end
+    local species = init and ... or nil
+    namje_byos.change_ships(ship_type, init, init and {ply, species} or ply)
     stagehand.die()
 end
