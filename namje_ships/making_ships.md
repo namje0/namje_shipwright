@@ -1,4 +1,4 @@
-## Making your own ship template
+# Making your own ship template
 
 Currently, this framework only supports using dungeons for ship templates.    
 If you don't know how to make a dungeon in Starbound, [refer to this article](https://starbounder.org/Modding:Tiled)
