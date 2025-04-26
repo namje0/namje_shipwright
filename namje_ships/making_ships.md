@@ -3,13 +3,13 @@
 Currently, this framework only supports using dungeons for ship templates.    
 If you don't know how to make a dungeon in Starbound, [refer to this article](https://starbounder.org/Modding:Tiled)
 
-Copy one of the [existing ship folders in the framework](https://github.com/namje0/namje_shipwright/tree/main/namje_ships/ships/namje_startership) and replace it with your own dungeon and information.
+Copy one of the [existing ship folders in the framework](https://github.com/namje0/namje_shipwright/tree/main/namje_ships/ships/namje_startership) and replace it with your own dungeon and information. For best practices, the name of the template folder, dungeon, and json file should be consistent with the id set in your **ship.namjeship** file.
 
 Ship folders should have a **ship_preview.png** that is 1210 x 432 in size (or the same aspect ratio) for best results.
 
 ![Ship preview example](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/namje_startership/ship_preview.png)
 
-The most important part of a ship template is the **ship.namjeship** file. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
+The most important part of a ship template is the **ship.namjeship** file. Don't rename it. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
 
 ## Ship licenses
 
