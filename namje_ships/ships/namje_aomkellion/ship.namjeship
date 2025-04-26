@@ -1,11 +1,12 @@
 {
-    "ship" : "namje_aomkellion",
+    "id" : "namje_aomkellion",
 
     "name" : "AOM Kellion",
     "description" : "An outdated maintenance shuttle used by the Protectorate. This one was carrying capsules to be sent out into the galaxy. \nIt's seen better days, but it has ^cyan;FTL^reset; capability and a decent cargo hold size.",
     "manufacturer" : "Terrene Protectorate",
     "manufacturer_icon" : "/namje_ships/manufacturers/protectorate.png",
     "recommended_crew_size" : "1-2",
+    "auto_create_license" : true,
     "price" : 10000,
 
     "base_stats" : {
@@ -16,8 +17,9 @@
         "crew_size" : 2
     },
     "atelier_stats" : {
-        "size" : "xsmall",
         "cargo_hold_size" : 150,
         "ship_center_pos" : [74, 42]
-    }
+    },
+
+    "ship" : "namje_aomkellion"
 }

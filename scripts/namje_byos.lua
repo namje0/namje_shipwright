@@ -13,7 +13,7 @@ function namje_byos.change_ships(ship_type, init, ...)
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
-    if ship_config.ship ~= ship_type then
+    if ship_config.id ~= ship_type then
         error("namje // ship config does not match ship type " .. ship_type)
     end
 
@@ -87,14 +87,18 @@ function namje_byos.create_ship(ply, ship_config)
     world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
 
     clear_ship_area()
-    world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
+
+    if type(ship_config.ship) == "table" then
+        sb.logInfo("namje // placing table variant of ship")
+    else
+        world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
+    end
 end
 
 --scan from 500,500 to 1500,1500 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
 function clear_ship_area()
     local start_x = 500
     local start_y = 500
-    local subgrid_size = 100
 
     for i = 0, 10 - 1 do
         for j = 0, 10 - 1 do

@@ -1,11 +1,12 @@
 {
-    "ship" : "namje_startership",
+    "id" : "namje_startership",
 
-    "name" : "AOM Kellion",
+    "name" : "AOM Kellion [Starter]",
     "description" : "An outdated maintenance shuttle used by the Protectorate. This one was carrying capsules to be sent out into the galaxy. \nCramped and not suited for long voyages, plus it was damaged in the escape... but it should be enough to get you started.",
     "manufacturer" : "Terrene Protectorate",
     "manufacturer_icon" : "/namje_ships/manufacturers/protectorate.png",
     "recommended_crew_size" : "1-2",
+    "auto_create_license" : false,
     "price" : 4000,
 
     "base_stats" : {
@@ -16,8 +17,9 @@
         "crew_size" : 2
     },
     "atelier_stats" : {
-        "size" : "xsmall",
         "cargo_hold_size" : 90,
         "ship_center_pos" : [74, 42]
-    }
+    },
+
+    "ship" : "namje_startership"
 }
