@@ -9,7 +9,7 @@ Ship folders should have a **ship_preview.png** that is 1210 x 432 in size (or t
 
 ![Ship preview example](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/namje_startership/ship_preview.png)
 
-The most important part of a ship template is the **ship.namjeship** file. Don't rename it. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
+The most important part of a ship template is the **ship.namjeship** file. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
 
 ## Ship licenses
 
