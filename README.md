@@ -7,6 +7,10 @@ A BYOS and ship-swapping framework.
 
 Steam Link(tba)
 
+## For Modders
+
+If you want to make your own ship template, refer to [this guide](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/making_ships.md)
+
 ## Features
 
 ### FU Compatiblity
