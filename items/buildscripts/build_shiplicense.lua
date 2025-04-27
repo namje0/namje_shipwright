@@ -4,7 +4,7 @@ function build(directory, config, parameters, level, seed)
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
-    if ship_config.ship ~= ship_type then
+    if ship_config.id ~= ship_type then
         error("namje // ship config does not match ship type " .. ship_type)
     end
     

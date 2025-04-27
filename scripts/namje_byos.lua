@@ -5,7 +5,6 @@ require "/scripts/rect.lua"
 --utility module used for ship stuff
 
 namje_byos = {}
-
 namje_byos.fu_enabled = nil
 
 function namje_byos.change_ships(ship_type, init, ...)

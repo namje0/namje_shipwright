@@ -5,7 +5,6 @@ local fu = false
 sb.logInfo("namje // checking for fu compatibility")
 local deployment_scripts = player_config.deploymentConfig.scripts
 for i = 1, #deployment_scripts do
-  sb.logInfo(sb.print(deployment_scripts[i]))
   if string.find(deployment_scripts[i], "fu_player_init") then
     fu = true
     break
@@ -17,6 +16,8 @@ if not fu then
   return
 end
 sb.logInfo("namje // fu detected, adding compatibility patches")
+
+--TODO: FTL Drive recipe compatibility
 
 -- FTL Drive Compatibility
 local ftl_drive_path = "/namje_fuCompatibility_drive_patch.patch"

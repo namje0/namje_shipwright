@@ -7,7 +7,9 @@
     "manufacturer_icon" : "/namje_ships/manufacturers/protectorate.png",
     "recommended_crew_size" : "1-2",
     "auto_create_license" : false,
-    "price" : 4000,
+    "price" : 1000,
+    "add_to_penguin_bay" : false,
+    "license_icon" : "/namje_ships/ships/namje_startership/license_icon.png",
 
     "base_stats" : {
         "capabilities" : [],
