@@ -1,0 +1,27 @@
+{
+    "id" : "namje_shipyard",
+
+    "name" : "Keeper Shipyard",
+    "description" : "An old decommissioned mobile shipyard from a defunct company. Technically a ship and has been retrofitted with ^cyan;FTL^reset; capabilities. The actual shipyard doesn't work anymore, but the space can be utilized for making your own ship within it and then removing the platform afterwards. Or, make something cool with the shipyard itself!",
+    "manufacturer" : "Phare Astroneering",
+    "manufacturer_icon" : "/namje_ships/manufacturers/phare_astroneering.png",
+    "recommended_crew_size" : "1-5",
+    "auto_create_license" : true,
+    "price" : 25000,
+    "add_to_penguin_bay" : true,
+    "license_icon" : "/namje_ships/ships/namje_shipyard/license_icon.png",
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0,
+        "max_fuel" : 10000,
+        "ship_speed" : 30,
+        "crew_size" : 5
+    },
+    "atelier_stats" : {
+        "cargo_hold_size" : 200,
+        "ship_center_pos" : [101, 62]
+    },
+
+    "ship" : "namje_shipyard"
+}
