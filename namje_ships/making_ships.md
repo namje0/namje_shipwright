@@ -18,4 +18,4 @@ namjeShipwright will automatically generate ship licenses for any mod that **is 
 
 This framework provides functionality for changing ships without licenses, so it is not required. You can also opt for making your own ship license instead of having it be generated.
 
-This framework on it's own does not give the player a way to acquire these ships or ship licenses. You will have to implement your own method of acquiring them, either through a vendor or something else.
+The option to sell the ship license at penguin bay is provided for generated licenses. Other than that, you will have to implement your own method of acquiring them, either through a vendor or something else.
