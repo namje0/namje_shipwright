@@ -1,5 +1,6 @@
 {
   "itemName" : "wallcables",
+  "category" : "block",
   "price" : 5,
   "rarity" : "Common",
   "inventoryIcon" : "wallcables.png",
