@@ -2,7 +2,7 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-	message.setHandler("confirm_swap", localHandler(swap_ships))
+	message.setHandler("namje_confirmSwap", localHandler(swap_ships))
 end
 
 function activate()

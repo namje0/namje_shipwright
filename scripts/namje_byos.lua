@@ -70,7 +70,7 @@ function namje_byos.change_ships(ship_type, init, ...)
         end
 
         world.spawnStagehand({1024, 1024}, "namje_ship_stagehand")
-        world.sendEntityMessage("namje_ship_stagehand", "swap_ship", player.id(), ship_type, init, player.species())
+        world.sendEntityMessage("namje_ship_stagehand", "namje_swapShip", player.id(), ship_type, init, player.species())
     end
 end
 

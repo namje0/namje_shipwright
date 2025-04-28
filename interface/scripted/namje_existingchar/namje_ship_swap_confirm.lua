@@ -1,4 +1,4 @@
 function swapShip()
-  world.sendEntityMessage(pane.sourceEntity(), "confirm_swap")
+  world.sendEntityMessage(pane.sourceEntity(), "namje_confirmSwap")
   pane.dismiss()
 end

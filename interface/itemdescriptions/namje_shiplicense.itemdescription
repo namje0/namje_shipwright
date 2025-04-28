@@ -60,7 +60,7 @@
   "shipImage" : {
     "type" : "image",
     "position" : [7, 177],
-    "file" : "/interface/ai/shippreviews/namje_testship.png",
+    "file" : "/namje_ships/ships/namje_startership/ship_preview.png",
     "maxSize" : [280, 100],
     "minSize" : [280, 100]
   },
