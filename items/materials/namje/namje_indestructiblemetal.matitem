@@ -7,5 +7,10 @@
   "shortdescription" : "Interior Ship Plating",
   "description" : "^red;This block is almost indestructible (50k hp) and shouldn't be placed in normal gameplay. It's only used for ship balancing.^reset;",
 
+  "tooltipKind" : "eppaugment",
+  "tooltipFields" : {
+    "instructionLabel" : ""
+  },
+
   "materialId" : 50506
 }
