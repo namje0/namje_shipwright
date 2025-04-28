@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "namje_asteroidship",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "namje_asteroidship" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "namje_asteroidship",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "namje_asteroidship.json" ]
+    }
+  ]
+}

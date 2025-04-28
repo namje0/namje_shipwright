@@ -1,0 +1,26 @@
+{
+    "id" : "namje_asteroidship",
+
+    "name" : "Oumuamua",
+    "description" : "This barely counts as a ship. It's just a thruster attached to a rock.",
+    "manufacturer" : "An asteroid",
+    "recommended_crew_size" : "1-5",
+    "auto_create_license" : true,
+    "price" : 18000,
+    "add_to_penguin_bay" : true,
+    "license_icon" : "/namje_ships/ships/namje_asteroidship/license_icon.png",
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0,
+        "max_fuel" : 5000,
+        "ship_speed" : 40,
+        "crew_size" : 5
+    },
+    "atelier_stats" : {
+        "cargo_hold_size" : 150,
+        "ship_center_pos" : [36, 19]
+    },
+
+    "ship" : "namje_asteroidship"
+}

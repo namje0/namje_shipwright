@@ -7,14 +7,14 @@
     "manufacturer_icon" : "/namje_ships/manufacturers/phare_astroneering.png",
     "recommended_crew_size" : "1-5",
     "auto_create_license" : true,
-    "price" : 25000,
+    "price" : 45000,
     "add_to_penguin_bay" : true,
     "license_icon" : "/namje_ships/ships/namje_shipyard/license_icon.png",
 
     "base_stats" : {
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],
         "fuel_efficiency" : 0,
-        "max_fuel" : 10000,
+        "max_fuel" : 5000,
         "ship_speed" : 30,
         "crew_size" : 5
     },
