@@ -4,8 +4,8 @@
   "printable" : false,
   "rarity" : "Common",
   "objectType" : "container",
-  "description" : "Accepts Liquid Erchius as fuel for the ship's FTL dive. This one comes with a orange interface.",
-  "shortdescription" : "FTL Fuel Hatch ^orange;[v2]^reset;",
+  "description" : "Accepts Liquid Erchius as fuel for the ship's FTL dive.",
+  "shortdescription" : "FTL Fuel Hatch",
   "lightColor" : [102, 77, 68],
 
   "apexDescription" : "The FTL drive fuel hatch. Converts fuel into freedom.",

@@ -109,13 +109,37 @@ function clear_ship_area()
             local min_vec = {top_left_x, top_left_y}
             local max_vec = {bottom_right_x + 1, bottom_right_y + 1}
 
+            --[[
+                platforms and back walls arent detected by this, i'm assuming im missing platforms in the collisionSet, but starbound docs sucks
+                so I couldnt find the full collisionKind list.
+
+                as for background tiles, this is abysmal dogshit but too bad! check in intervals of 10 for background tiles in the chunk
+
+                TODO: detect platforms
+            ]]
+
             local collision_detected = world.rectTileCollision(rect.fromVec2(min_vec, max_vec), {"Block", "Dynamic", "Slippery"})
             if collision_detected then
-                sb.logInfo(sb.print("tiles detected: ".. top_left_x .. "," .. top_left_y .. "|" .. bottom_right_x .. "," .. bottom_right_y))
+                --sb.logInfo(sb.print("tiles detected: ".. top_left_x .. "," .. top_left_y .. "|" .. bottom_right_x .. "," .. bottom_right_y))
                 world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
+            else
+                if find_background_tiles(top_left_x, top_left_y) then
+                    world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
+                end
             end
         end
     end
+end
+
+function find_background_tiles(pos_x,pos_y)
+    for x = pos_x, (pos_x + 99), 10 do
+        for y = pos_y, (pos_y + 99), 10 do
+            if world.tileIsOccupied({x, y}, false, false) then
+                return true
+            end
+        end
+    end
+    return false
 end
 
 --TODO: see if some items are still missing after ship change
