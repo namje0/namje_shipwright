@@ -9,6 +9,7 @@
   "glitchdescription" : "Observant. This somewhat inexpensive material can withstand most weathering.",
   "florandescription" : "This sspace-metal looks ssstrong.",
   "novakiddescription" : "A sturdy lookin' metal panel.",
+  "tooltipKind" : "fossil", //description box that supports 4 lines
 
   "materialId" : 50505,
   "learnBlueprintsOnPickup" : [ "namje_darkslopedinsetpanel" ]
