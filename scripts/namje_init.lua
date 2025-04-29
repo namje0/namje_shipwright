@@ -11,7 +11,6 @@ function init() ini()
             },
             amount = 1
         }
-
         player.giveItem(cargo_box)
     end)
 
@@ -34,7 +33,7 @@ function update(dt)
                 player.giveItem("namje_enablebyositem")
                 player.setProperty("namje_byos_setup", true)
             else
-                namje_byos.change_ships("namje_startership", true)
+                namje_byos.change_ships_from_config("namje_startership", true)
                 player.setProperty("namje_byos_setup", true)
             end
         end

@@ -2,7 +2,7 @@ require("/scripts/namje_byos.lua")
 
 function activate()
     player.giveItem("shiplicense_namje_aomkellion")
-    player.startQuest("namje_shippassive")
+    player.startQuest("namje_shipPassive")
     if namje_byos.is_fu() then
       player.startQuest("fu_shipupgrades")
     end

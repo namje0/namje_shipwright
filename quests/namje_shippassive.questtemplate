@@ -1,5 +1,5 @@
 {
-    "id" : "namje_shippassive",
+    "id" : "namje_shipPassive",
     "mainQuest" : false,
     "showInLog" : false,
     "showAcceptDialog" : false,
@@ -12,7 +12,7 @@
     "rewards" : [[]],
     "canBeAbandoned" : false,
     "updateDelta" : 60,
-    "script" : "/scripts/namje_shippassive.lua",
+    "script" : "/scripts/namje_shipPassive.lua",
     "scriptConfig" : {
         "portraits" : {
             "default" : "sail"

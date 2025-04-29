@@ -20,7 +20,7 @@ function init()
   self.interactTimer = 0
 
   --this method of running the script is based off how FU does it, i'm not sure if there's a better way to do this atm
-    player.startQuest("namje_shippassive")
+    player.startQuest("namje_shipPassive")
     if namje_byos.is_fu() then
       player.startQuest("fu_shipupgrades")
     end
@@ -31,7 +31,7 @@ function questInteract(entityId)
 
   if world.entityUniqueId(entityId) == self.techstationUid then
     --player.upgradeShip(config.getParameter("shipUpgrade"))
-    --namje_byos.change_ships("namje_templateship")
+    --namje_byos.change_ships_from_config("namje_templateship")
     if namje_byos.is_fu() then
       player.interact("ScriptPane", "/interface/ai/fu_byosai.config")
     else

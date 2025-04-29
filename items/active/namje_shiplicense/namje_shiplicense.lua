@@ -31,9 +31,9 @@ function swap_ships()
 	local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
 	--world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
 
-	namje_byos.change_ships(ship_type, false)
+	namje_byos.change_ships_from_config(ship_type, false)
 
-	player.playCinematic(cinematic)
+	--player.playCinematic(cinematic)
 	world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 7.0)
 	item.consume(1)
 end

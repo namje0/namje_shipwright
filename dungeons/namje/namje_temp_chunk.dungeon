@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "namje_temp_chunk",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "namje_temp_chunk" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "namje_temp_chunk",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "namje_temp_chunk.json" ]
+    }
+  ]
+}

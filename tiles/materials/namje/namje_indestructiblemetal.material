@@ -4,11 +4,11 @@
   "particleColor" : [182, 182, 182, 255],
   "itemDrop" : "slopedscrappanel",
 
-  "description" : "Interior ship wiring and plating that can't be taken out. Don't question why you can break everything else, it's gameplay purposes!",
+  "description" : "This is only used for loading ships from saves.",
 
-  "shortdescription" : "Interior Plating",
+  "shortdescription" : "Temporary Plating",
   "footstepSound" : "/sfx/blocks/footstep_lightmetal.ogg",
-  "health" : 50000,
+  "health" : 1,
   "category" : "materials",
 
   "renderTemplate" : "/tiles/slopedmaterialtemplate.config",
