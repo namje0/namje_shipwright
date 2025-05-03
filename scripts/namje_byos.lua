@@ -81,6 +81,16 @@ function namje_byos.change_ships_from_save(ship)
         local ship_create, err = pcall(namje_byos.create_ship_from_save, ship)
         if ship_create then
             sb.logInfo("namje // loaded ship from table")
+
+            --move players to new ship spawn
+            local players = world.players()
+            for _, player in ipairs (players) do
+                if namje_byos.is_fu() then
+                    world.sendEntityMessage(player, "fs_respawn")
+                else
+                    world.sendEntityMessage(player, "namje_moveToShipSpawn")
+                end
+            end
         else
             sb.logInfo("namje === ship load failed: " .. err)
         end
@@ -102,6 +112,11 @@ end
     saves the ship as a table of chunks and returns the table
 ]]
 function namje_byos.ship_to_table()
+    if not world.isServer() then
+        --getting an object's direction isn't available on the client
+        error("namje // saving ship to table is not supported on client")
+    end
+
     local chunks = namje_byos.get_ship_chunks()
     local ship_chunks = {}
 
@@ -111,23 +126,49 @@ function namje_byos.ship_to_table()
         local bottom_right_x = chunk.bottom_right[1]
         local bottom_right_y = chunk.bottom_right[2]
 
+        --TODO: tile hue shift
         local foreground_tiles = {}
         local background_tiles = {}
         local objects = {}
+        local mods = {}
         
         local chunk_objects = world.objectQuery({top_left_x, top_left_y}, {bottom_right_x, bottom_right_y})
         for _, object_id in ipairs (chunk_objects) do
             local object_data = {}
             local pos = world.entityPosition(object_id)
-            --TODO: Object Parameters, Direction, etc
             local object_parameters = world.getObjectParameter(object_id,"")
-            local direction = world.isServer() and world.callScriptedEntity(object_id, "object.direction") or 0
+
+            local direction = world.callScriptedEntity(object_id, "object.direction") or 0
             table.insert(object_data, object_parameters)
             table.insert(object_data, direction)
 
             local container_items = world.containerItems(object_id)
             if container_items then
-                table.insert(object_data, world.containerItems(object_id))
+                table.insert(object_data, container_items)
+            end
+
+            --[[
+                very jank system:
+                for crafting stations with upgrade stages that were upgraded without being broken and placed again, the upgradeStage is still set to the
+                lowest tier; in upgradeablecraftingobject.lua the upgrade stage is only set for the item drop on 'die', so we will
+                call die on the object, get the item drop, get the upgrade stage parameters, then add it to the object data table.
+            ]]
+            
+            local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
+            if object_upgrade_stage then
+                world.callScriptedEntity(object_id, "die")
+                local item_drops = world.itemDropQuery(pos, 5)
+                if #item_drops > 0 then
+                    for _, item_drop in ipairs (item_drops) do
+                        local descriptor = world.itemDropItem(item_drop)
+                        if descriptor.name == object_parameters.objectName then
+                            local params = descriptor.parameters
+                            local starting_stage = params.startingUpgradeStage or 0
+                            object_parameters["startingUpgradeStage"] = starting_stage
+                            world.takeItemDrop(item_drop)
+                        end
+                    end
+                end
             end
 
             table.insert(objects, {pos, object_data})
@@ -137,6 +178,8 @@ function namje_byos.ship_to_table()
             for y = top_left_y, bottom_right_y do
                 local foreground_material = world.material({x, y}, "foreground")
                 local background_material = world.material({x, y}, "background")
+                local fore_mod = world.mod({x, y}, "foreground")
+                local back_mod = world.mod({x, y}, "background")
 
                 if foreground_material and not string.find(foreground_material, "metamaterial") then
                     -- skip metamaterials, they include objects and im pretty sure the player can't place down other metamaterials
@@ -148,16 +191,34 @@ function namje_byos.ship_to_table()
                     local mat_color = world.materialColor({x, y}, "background")
                     table.insert(background_tiles, {{x, y}, background_material, mat_color})
                 end
+
+                if fore_mod then
+                    local mod_hue = world.modHueShift({x, y}, "foreground")
+                    table.insert(mods, {{x, y}, "foreground", fore_mod, mod_hue})
+                end
+
+                if back_mod then
+                    local mod_hue = world.modHueShift({x, y}, "background")
+                    table.insert(mods, {{x, y}, "background", back_mod, mod_hue})
+                end
             end
         end
 
-        local ship_chunk = {{top_left_x, bottom_right_y}, {foreground_tiles, background_tiles, objects}}
+        local ship_chunk = {{top_left_x, bottom_right_y}, {foreground_tiles, background_tiles, objects, mods}}
         table.insert(ship_chunks, ship_chunk)
     end
     return ship_chunks
 end
 
 function namje_byos.load_ship_from_table(ship_chunks)
+    if not world.isServer() then
+        error("namje // loading ship from table is not supported on client")
+    end
+
+    local total_object_count = 0
+    local failed_objects = {}
+    local placed_objects = 0
+
     --due to how placematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
     for _, chunk in pairs (ship_chunks) do
         local top_left_x = chunk[1][1]
@@ -168,6 +229,7 @@ function namje_byos.load_ship_from_table(ship_chunks)
         local foreground_tiles = chunk[2][1]
         local background_tiles = chunk[2][2]
         local objects = chunk[2][3]
+        local mods = chunk[2][4]
 
         for _, tile in pairs (foreground_tiles) do
             local place = world.placeMaterial(tile[1], "foreground", tile[2], 0, true)
@@ -183,6 +245,10 @@ function namje_byos.load_ship_from_table(ship_chunks)
             end
         end
 
+        for _, mod in pairs (mods) do
+            local place = world.placeMod(mod[1], mod[2], mod[3], mod[4], true)
+        end
+
         --clearing temp background
         for i = 0, 100 do
             for j = 0, 100 do
@@ -196,6 +262,7 @@ function namje_byos.load_ship_from_table(ship_chunks)
         end
 
         --placing objects
+        total_object_count = total_object_count + #objects
         for _, object in pairs (objects) do
             local pos = object[1]
             local object_data = object[2]
@@ -204,17 +271,71 @@ function namje_byos.load_ship_from_table(ship_chunks)
             local container_items = object_data[3] or nil
 
             local place = world.placeObject(parameters.objectName, pos, dir or 0, parameters)
-            if container_items then
-                local object_id = world.objectAt(pos)
-                if not object_id then
-                    return 
+            if place then
+                if container_items then
+                    local object_id = world.objectAt(pos)
+                    if not object_id then
+                        return 
+                    end
+                    for slot, item in pairs (container_items) do
+                        world.containerPutItemsAt(object_id, item, slot-1)
+                    end
                 end
-                for slot, item in pairs (container_items) do
-                    world.containerPutItemsAt(object_id, item, slot-1)
-                end
+                placed_objects = placed_objects + 1
+            else
+                sb.logInfo("namje // failed to place object " .. object[2][1].objectName .. " at " .. object[1][1] .. "," .. object[1][2])
+                table.insert(failed_objects, object)
             end
         end
     end
+
+    -- get the failed object placements and try to place them here recursively
+    local iterations = 0
+    local iteration_cap = 500
+    if #failed_objects > 0 then
+        while placed_objects < total_object_count do
+            for k, object in ipairs (failed_objects) do
+                local pos = object[1]
+
+                if world.objectAt(pos) then
+                    placed_objects = placed_objects + 1
+                    table.remove(failed_objects, k)
+                else
+                    local object_data = object[2]
+                    local parameters = object_data[1]
+                    local dir = object_data[2]
+                    local container_items = object_data[3] or nil
+                    local place = world.placeObject(parameters.objectName, pos, dir or 0, parameters)
+
+                    if place then
+                        if container_items then
+                            local object_id = world.objectAt(pos)
+                            if not object_id then
+                                return 
+                            end
+                            for slot, item in pairs (container_items) do
+                                world.containerPutItemsAt(object_id, item, slot-1)
+                            end
+                        end
+                        placed_objects = placed_objects + 1
+                        table.remove(failed_objects, k)
+                    end
+                end
+            end
+            iterations = iterations + 1
+            if iterations >= iteration_cap then
+                sb.logInfo("namje // object placing timed out after " .. iteration_cap)
+                for k, object in pairs (failed_objects) do
+                    sb.logInfo("namje // failed to place object " .. object[2][1].objectName .. " at " .. object[1][1] .. "," .. object[1][2])
+                end
+                break
+            end
+        end
+        sb.logInfo("namje // complete object placement after " .. iterations .. " attempts")
+    else
+        sb.logInfo("namje // no failed objects")
+    end
+    
 end
 
 function namje_byos.create_ship_from_save(ship)
@@ -270,8 +391,8 @@ function namje_byos.get_ship_chunks()
         for j = 0, 10 - 1 do
             local top_left_x = start_x + i * 100
             local top_left_y = start_y + j * 100
-            local bottom_right_x = top_left_x + 100
-            local bottom_right_y = top_left_y + 100
+            local bottom_right_x = top_left_x + 99
+            local bottom_right_y = top_left_y + 99
 
             local min_vec = {top_left_x, top_left_y}
             local max_vec = {bottom_right_x + 1, bottom_right_y + 1}
@@ -282,7 +403,7 @@ function namje_byos.get_ship_chunks()
 
                 as for background tiles, this is abysmal dogshit but too bad! check in intervals of 10 for background tiles in the chunk
 
-                TODO: detect platforms
+                TODO: detect platforms, detect objects; it only grabs foreground/background tiles atm
             ]]
 
             local collision_detected = world.rectTileCollision(rect.fromVec2(min_vec, max_vec), {"Block", "Dynamic", "Slippery"})

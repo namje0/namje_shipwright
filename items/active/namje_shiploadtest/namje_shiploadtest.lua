@@ -2,7 +2,11 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-	
+	message.setHandler("namje_getSavedShip", function(_, _, ship)
+		sb.logInfo("namje // saved current shipworld on client")
+		player.setProperty("current_ship", ship)
+		interface.queueMessage("ship successfully saved")
+	end)
 end
 
 function activate()
@@ -27,14 +31,12 @@ function activate()
 			local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
 
 			namje_byos.change_ships_from_save(nil)
+			player.playCinematic(cinematic)
+			interface.queueMessage("ship successfully loaded")
 		else
 			animator.playSound("activate")
-			local ship = namje_byos.ship_to_table()
-			player.setProperty("current_ship", ship)
-			--[[message.setHandler("namje_getSavedShip", function(_, _, ship)
-				player.setProperty("current_ship", ship)
-			end)]]
-			--world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
+			world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
+			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id())
 		end
 	end
 end

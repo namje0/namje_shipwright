@@ -3,8 +3,10 @@ require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-   --[[ local ship = namje_byos.ship_to_table()
-    
-    sb.logInfo("saved current_ship as ship")
-    stagehand.die()]]
+    message.setHandler("namje_saveShip", function(_, _, ply)
+        local ship = namje_byos.ship_to_table()
+        sb.logInfo("namje // saved current shipworld on server")
+        world.sendEntityMessage(ply, "namje_getSavedShip", ship)
+        stagehand.die()
+    end)
 end
