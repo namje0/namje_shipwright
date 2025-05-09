@@ -111,7 +111,7 @@ end
 --[[
     saves the ship as a table of chunks and returns the table
 ]]
-function namje_byos.ship_to_table()
+function namje_byos.ship_to_table(exclude_items)
     if not world.isServer() then
         --getting an object's direction isn't available on the client
         error("namje // saving ship to table is not supported on client")
@@ -138,13 +138,28 @@ function namje_byos.ship_to_table()
             local pos = world.entityPosition(object_id)
             local object_parameters = world.getObjectParameter(object_id,"")
 
+            local temp_obj_item = root.itemConfig(object_parameters.objectName)
+            local old_parameters = temp_obj_item.config
+
             local direction = world.callScriptedEntity(object_id, "object.direction") or 0
+
+            table.insert(object_data, object_parameters.objectName)
+
+            --this just removes the non-table dupes, i dont feel like doing the whole table diffing stuff. shouldnt be a problem, probably
+            for k, v in pairs (object_parameters) do
+                if old_parameters[k] and old_parameters[k] == v then
+                    object_parameters[k] = nil
+                end
+            end
+
             table.insert(object_data, object_parameters)
             table.insert(object_data, direction)
 
-            local container_items = world.containerItems(object_id)
-            if container_items then
-                table.insert(object_data, container_items)
+            if not exclude_items then
+                local container_items = world.containerItems(object_id)
+                if container_items then
+                    table.insert(object_data, container_items)
+                end
             end
 
             --[[
@@ -166,6 +181,7 @@ function namje_byos.ship_to_table()
                             local starting_stage = params.startingUpgradeStage or 0
                             object_parameters["startingUpgradeStage"] = starting_stage
                             world.takeItemDrop(item_drop)
+                            break
                         end
                     end
                 end
@@ -266,11 +282,12 @@ function namje_byos.load_ship_from_table(ship_chunks)
         for _, object in pairs (objects) do
             local pos = object[1]
             local object_data = object[2]
-            local parameters = object_data[1]
-            local dir = object_data[2]
-            local container_items = object_data[3] or nil
+            local object_name = object_data[1]
+            local parameters = object_data[2]
+            local dir = object_data[3]
+            local container_items = object_data[4] or nil
 
-            local place = world.placeObject(parameters.objectName, pos, dir or 0, parameters)
+            local place = world.placeObject(object_name, pos, dir or 0, parameters)
             if place then
                 if container_items then
                     local object_id = world.objectAt(pos)
@@ -283,7 +300,7 @@ function namje_byos.load_ship_from_table(ship_chunks)
                 end
                 placed_objects = placed_objects + 1
             else
-                sb.logInfo("namje // failed to place object " .. object[2][1].objectName .. " at " .. object[1][1] .. "," .. object[1][2])
+                sb.logInfo("namje // failed to place object " .. object[2][1] .. " at " .. object[1][1] .. "," .. object[1][2])
                 table.insert(failed_objects, object)
             end
         end
@@ -302,10 +319,11 @@ function namje_byos.load_ship_from_table(ship_chunks)
                     table.remove(failed_objects, k)
                 else
                     local object_data = object[2]
-                    local parameters = object_data[1]
-                    local dir = object_data[2]
-                    local container_items = object_data[3] or nil
-                    local place = world.placeObject(parameters.objectName, pos, dir or 0, parameters)
+                    local object_name = object_data[1]
+                    local parameters = object_data[2]
+                    local dir = object_data[3]
+                    local container_items = object_data[4] or nil
+                    local place = world.placeObject(object_name, pos, dir or 0, parameters)
 
                     if place then
                         if container_items then
@@ -362,6 +380,7 @@ function namje_byos.create_ship_from_config(ply, ship_config)
 
     if type(ship_config.ship) == "table" then
         sb.logInfo("namje // placing table variant of ship")
+        namje_byos.load_ship_from_table(ship_config.ship)
     else
         world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
     end
@@ -408,7 +427,6 @@ function namje_byos.get_ship_chunks()
 
             local collision_detected = world.rectTileCollision(rect.fromVec2(min_vec, max_vec), {"Block", "Dynamic", "Slippery"})
             if collision_detected then
-                sb.logInfo(sb.print("tiles detected: ".. top_left_x .. "," .. top_left_y .. "|" .. bottom_right_x .. "," .. bottom_right_y))
                 local chunk = {
                     top_left = {top_left_x, top_left_y},
                     bottom_right = {bottom_right_x, bottom_right_y}

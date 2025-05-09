@@ -1,11 +1,18 @@
 require "/scripts/messageutil.lua"
 require "/scripts/namje_byos.lua"
+require "/scripts/namje_util.lua"
+
+function uninit()
+	root.setConfigurationPath("namje_ship_template", {})
+end
 
 function init()
 	message.setHandler("namje_getSavedShip", function(_, _, ship)
 		sb.logInfo("namje // saved current shipworld on client")
-		player.setProperty("current_ship", ship)
-		interface.queueMessage("ship successfully saved")
+		root.setConfigurationPath("namje_ship_template", ship)
+		interface.queueMessage("^orange;namje_ship_template^reset; will be cleared on unload, so copy it beforehand")
+		interface.queueMessage("For info on how to use it in a ship file, check the github page")
+		interface.queueMessage("Template saved to starbound.config as ^orange;namje_ship_template")
 	end)
 end
 
@@ -21,22 +28,14 @@ function activate()
 			return
 		end
 
-		--[[if not world.getProperty("fu_byos") then
-			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_invalidbyos")
-			return
-		end]]
 		if mode == "alt" then
 			animator.playSound("activate")
-			local ship_type = config.getParameter("shipType")
-			local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
-
-			namje_byos.change_ships_from_save(nil)
-			player.playCinematic(cinematic)
-			interface.queueMessage("ship successfully loaded")
+			world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
+			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id(), true)
 		else
 			animator.playSound("activate")
 			world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
-			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id())
+			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id(), false)
 		end
 	end
 end

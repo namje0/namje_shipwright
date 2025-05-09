@@ -1,0 +1,17 @@
+{
+  "itemName" : "namje_saveshiptemplate",
+  "shortdescription" : "Save Ship Template",
+  "description" : "Saves the ship as a table for templates\nRMB - Save without any items in containers",
+  "rarity" : "essential",
+  "tooltipFields" : {
+    "rarityLabel" : ""
+  },
+  "twoHanded" : true,
+  "category" : "mysteriousReward",
+  "animation" : "animation.animation",
+  "inventoryIcon" : "namje_saveshiptemplate.png",
+  "maxStack" : 1,
+  "scripts" : ["namje_saveshiptemplate.lua"],
+
+  "loot" : {}
+}
