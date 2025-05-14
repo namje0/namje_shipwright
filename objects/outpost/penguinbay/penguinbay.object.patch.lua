@@ -7,7 +7,6 @@ function patch(config)
 
     if create_license and add_to_bay then
         local license_id = "shiplicense_" .. ship.id
-        local license_formatted = {item = license_id}
         table.insert(config.interactData.items, {item = license_id})
     end
   end

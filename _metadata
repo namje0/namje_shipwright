@@ -7,7 +7,8 @@
   "scripts" : {
     "postLoad" : [
       "/scripts/namje_removeShipBackgrounds.lua",
-      "/scripts/namje_fuCompatibility.lua"
+      "/scripts/namje_fuCompatibility.lua",
+      "/scripts/namje_overrideSail.lua"
     ],
     "onLoad" : [
       "/scripts/namje_makeShiplicenses.lua"

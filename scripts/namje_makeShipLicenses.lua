@@ -33,7 +33,5 @@ for i = 1, #ships do
         local license_id = "shiplicense_" .. ship.id
 
         sb.logInfo("namje // added ship license activeitem for " .. ship.id .. ", itemID: " .. license_id)
-    else
-        sb.logInfo("namje // auto ship license creation disabled for " .. ship.id .. ", skipping")
     end
 end

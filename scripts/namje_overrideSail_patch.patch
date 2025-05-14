@@ -1,0 +1,19 @@
+[
+    [
+        { "op" : "test", "path" : "/interactAction", "value" : "OpenAiInterface" },
+
+        { "op" : "replace", "path" : "/interactAction", "value" : "ScriptPane" },
+        { "op" : "add", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" }
+    ],
+    [
+        { "op" : "test", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" },
+        { "op" : "test", "path" : "/scripts", "inverse" : true },
+
+        { "op" : "add", "path" : "/scripts", "value" : [ ] }
+    ],
+    [
+        { "op" : "test", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" },
+
+        { "op" : "add", "path" : "/scripts/-", "value" : "/objects/namje_ship/techstations/namje_techstation.lua" }
+    ]
+]
