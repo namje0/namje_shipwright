@@ -4,6 +4,11 @@
       "op" : "add",
       "path" : "/deploymentConfig/scripts/-",
       "value" : "/scripts/namje_init.lua"
+    },
+    { 
+      "op" : "add",
+      "path" : "/companionsConfig/scripts/-",
+      "value" : "/scripts/namje_crewHandler.lua"
     }
   ]
 ]
