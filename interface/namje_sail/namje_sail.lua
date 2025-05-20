@@ -1,5 +1,6 @@
 require "/scripts/messageutil.lua"
 
+local ai_config = nil
 local tabs = {
     {"main.missions", "main.missions.mission_select.mission_list", "main.missions.mission_info"},
     {"main.home"},
@@ -11,16 +12,71 @@ local player_save = nil
 local crew = nil
 local promise = nil
 
+local sail_canvas = nil
+local racial_sail = nil
+local speaker_img = nil
+local speaker_state = "idle"
+local scanline_timer = 0
+local speaker_timer = 0
+local static_timer = 0
+local static_frame = 0
+local scan_frame = 0
+local speaker_frame = 0
+
 function init()
     promise = PromiseKeeper.new()
     player_save = player.save()
-    swap_tabs("show_home")
 
+    init_sail()
+
+    swap_tabs("show_home")
     refresh_crew()
 end
 
-function update()
+function update(dt)
     promise:update()
+
+    if sail_canvas then
+        if speaker_timer < world.time() then
+            speaker_timer = world.time() + (ai_config.aiAnimations[speaker_state].animationCycle or 0.5)
+            speaker_frame = (speaker_frame + 1) % ai_config.aiAnimations[speaker_state].frameNumber
+        end
+        
+        if scanline_timer < world.time() then
+            scanline_timer = world.time() + 0.05
+            scan_frame = (scan_frame + 1) % 14
+        end
+
+        if static_timer < world.time() then
+            static_timer = world.time() + 0.1
+            static_frame = (static_frame + 1) % 4
+        end
+        draw()
+    end
+end
+
+function draw()
+    local static_opacity = ai_config.staticOpacity
+    local scan_opacity = ai_config.scanlineOpacity
+
+	sail_canvas:clear()
+    sail_canvas:drawImage(string.gsub(speaker_img, "<index>", speaker_frame), {0,0})
+    sail_canvas:drawImage("/ai/" .. racial_sail.staticFrames .. ":" .. static_frame, {0,0}, nil, "#FFFFFF" .. a_to_hex(static_opacity), false)
+    sail_canvas:drawImage("/ai/scanlines.png" .. ":" .. scan_frame, {0,0}, nil, "#FFFFFF" .. a_to_hex(scan_opacity), false)
+end
+
+function change_speaker_state(new_state)
+    speaker_state = new_state
+    speaker_img = string.gsub("/ai/" .. ai_config.aiAnimations[speaker_state].frames, "<image>", racial_sail.aiFrames)
+end
+
+function init_sail()
+    ai_config = root.assetJson("/ai/ai.config")
+    racial_sail = ai_config.species[player.species()] or ai_config.species["human"]
+    sail_canvas = widget.bindCanvas("sail_portrait")
+    static_timer = world.time()
+
+    change_speaker_state("unique")
 end
 
 function refresh_crew()
@@ -109,7 +165,7 @@ function crew_tab()
         local member = crew[i]
 
          local list_item = crew_list .. "."..widget.addListItem(crew_list)
-        widget.setText(list_item..".itemName", member.name)
+        widget.setText(list_item..".item_name", member.name)
         
         local canvas = widget.bindCanvas(list_item..".portrait")
         for _, portrait in ipairs(member.portrait) do
@@ -186,26 +242,29 @@ function mission_tab()
             local mission_info = root.assetJson("/ai/"..available_missions[i]..".aimission")
 
             local list_item = mission_list .. "."..widget.addListItem(mission_list)
-            widget.setText(list_item..".itemName", mission_info.speciesText.default.buttonText)
-            widget.setImage(list_item..".itemIcon", "/ai/" .. mission_info.icon or "/ai/missionhuman1icon.png")
+            widget.setText(list_item..".item_name", mission_info.speciesText.default.buttonText)
+            widget.setImage(list_item..".item_icon", "/ai/" .. mission_info.icon or "/ai/missionhuman1icon.png")
             widget.setData(list_item, { mission_info, false })
+            widget.setVisible(list_item..".header_back", false)
         end
     end
     
     if #completed_missions > 0 then
         --replay header to separate mission type
         local list_header = mission_list .. "." ..widget.addListItem(mission_list)
-        widget.setText(list_header..".itemName", "^white;Replays^reset;")
-        widget.removeChild(list_header, "itemIcon")
-        widget.setImage(list_header..".background", "/interface/namje_sail/replayheader.png")
+        widget.setText(list_header..".item_name", "^white;Replays^reset;")
+        widget.removeChild(list_header, "item_icon")
+        widget.removeChild(list_header, "background")
+        --widget.setImage(list_header..".background", "/interface/namje_sail/replayheader.png")
 
         for i = 1, #completed_missions do
             local mission_info = root.assetJson("/ai/"..completed_missions[i]..".aimission")
 
             local list_item = mission_list .. "."..widget.addListItem(mission_list)
-            widget.setText(list_item..".itemName", mission_info.speciesText.default.repeatButtonText)
-            widget.setImage(list_item..".itemIcon", "/ai/" .. mission_info.icon or "/ai/missionhuman1icon.png")
+            widget.setText(list_item..".item_name", mission_info.speciesText.default.repeatButtonText)
+            widget.setImage(list_item..".item_icon", "/ai/" .. mission_info.icon or "/ai/missionhuman1icon.png")
             widget.setData(list_item, { mission_info, true })
+            widget.setVisible(list_item..".header_back", false)
         end
     end
 end
@@ -248,4 +307,10 @@ function start_mission()
 
     player.warp('instanceworld:' .. mission_data[1].missionWorld, mission_data[1].warpAnimation or 'beam')
     pane.dismiss()
+end
+
+function a_to_hex(a)
+    local alpha_255 = math.floor(math.max(0, math.min(255, a * 255)))
+    local a_hex = string.format("%02x", alpha_255)
+    return string.upper(a_hex)
 end
