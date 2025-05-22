@@ -3,7 +3,7 @@ local queue = {}
 local is_typing = false
 
 local current_widget = ""
-local current_goal = nil
+local current_goal
 local current_goal_mods = {}
 local current_goal_mod = 0
 local current_progress = ""
@@ -27,7 +27,6 @@ function namje_ai_typer.push_request(widget, message, speed_mod, talking_state, 
         }
     }
     table.insert(queue, request)
-    sb.logInfo("namje // added msg to typing queue")
     if not is_typing then
         start_next_request()
     end
@@ -130,7 +129,6 @@ function start_next_request()
         current_length = 0
 
         is_typing = true
-        sb.logInfo("namje // starting type request")
 
         if request.typing_sound then
             current_sound = request.typing_sound

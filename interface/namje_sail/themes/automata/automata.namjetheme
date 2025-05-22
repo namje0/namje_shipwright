@@ -1,0 +1,64 @@
+{
+    "id" : "automata",
+    "name" : "Automata",
+
+    "fetch_ascii" : "^#B4AF9A;  ####        ####  \n#         #    #         #\n#           ##           #\n  ##    ####    ##  \n    ^clear;.^#B4AF9A;###@@@###    \n      ^clear;..^#B4AF9A;##@@@##      \n    ^clear;.^#B4AF9A;###@@@###    \n  ##    ####    ##  \n#           ##           #\n#         #    #         #\n  ####        ####",
+
+    "main_text_color" : "#4E4B42",
+    "accent_text_color" : "#4E4B42",
+    "accent2_text_color" : "#898576",
+    "os_text_color" : "#4E4B42",
+    "success_text_color" : "#898576",
+    "error_text_color" : "#898576",
+    "warn_text_color" : "#4E4B42",
+    "directory_text_color" : "white",
+
+    "body" : "/interface/namje_sail/themes/automata/body.png",
+    "footer" : "/interface/namje_sail/themes/automata/footer.png",
+    "header" : "/interface/namje_sail/themes/automata/header.png",
+
+    "icon" : "/interface/namje_sail/themes/automata/icon.png",
+    "subtitle" : "^gray;Glory to Mankind",
+
+    "list_item_bg" : "/interface/namje_sail/themes/automata/listitemscrollsmall.png",
+    "list_item_bg_select" : "/interface/namje_sail/themes/automata/listitemscrollsmallselected.png",
+
+    "list_header" : "/interface/namje_sail/themes/automata/replayheader.png",
+    "list_info_back" : "/interface/namje_sail/themes/automata/missioninfoback.png",
+
+    "close_button" : {
+        "base" : "/interface/x.png",
+        "hover" : "/interface/xhover.png",
+        "pressed" : "/interface/xpress.png",
+        "disabled" : "/interface/x.png"
+    },
+
+    "home_button" : {
+        "base": "/interface/namje_sail/homebutton.png",
+        "hover": "/interface/namje_sail/homebuttonhover.png",
+        "pressed": "/interface/namje_sail/homebuttonpress.png",
+        "disabled" : "/interface/namje_sail/homebutton.png"
+    },
+
+    "left_buttons" : {
+        "base" : "/interface/namje_sail/themes/automata/leftmenuup.png",
+        "hover" : "/interface/namje_sail/themes/automata/leftmenuhover.png",
+        "pressed" : "/interface/namje_sail/themes/automata/leftmenudown.png",
+        "disabled" : "/interface/namje_sail/themes/automata/leftmenuup.png"
+    },
+
+    "deploy_button" : {
+        "base" : "/interface/namje_sail/themes/automata/deploybutton.png",
+        "hover" : "/interface/namje_sail/themes/automata/deploybuttonhover.png",
+        "pressed" : "/interface/namje_sail/themes/automata/deploybutton.png",
+        "disabledImage" : "/interface/namje_sail/themes/automata/deploybuttondisabled.png"
+    },
+
+    "dismiss_button" : {
+        "type" : "button",
+        "base" : "/interface/namje_sail/themes/automata/dismissbutton.png",
+        "hover" : "/interface/namje_sail/themes/automata/dismissbuttonhover.png",
+        "pressed" : "/interface/namje_sail/themes/automata/dismissbutton.png",
+        "disabledImage" : "/interface/namje_sail/themes/automata/dismissbuttondisabled.png"
+    }
+}

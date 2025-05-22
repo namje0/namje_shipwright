@@ -1,0 +1,65 @@
+{
+    "id" : "vista",
+    "name" : "Vista",
+
+    "fetch_ascii" : "^blue;  ####        ####  \n#         #    #         #\n#           ##           #\n  ##    ####    ##  \n    ^clear;.^blue;###@@@###    \n      ^clear;..^blue;##@@@##      \n    ^clear;.^blue;###@@@###    \n  ##    ####    ##  \n#           ##           #\n#         #    #         #\n  ####        ####",
+
+    "main_text_color" : "white",
+    "accent_text_color" : "cyan",
+    "accent2_text_color" : "yellow",
+    "os_text_color" : "gray",
+    "success_text_color" : "green",
+    "error_text_color" : "red",
+    "warn_text_color" : "orange",
+    "directory_text_color" : "white",
+
+
+    "body" : "/interface/namje_sail/themes/vista/body.png",
+    "footer" : "/interface/namje_sail/themes/vista/footer.png",
+    "header" : "/interface/namje_sail/themes/vista/header.png",
+
+    "icon" : "/interface/ai/AIicon.png",
+    "subtitle" : "^shadow;^gray;Ship-based Artificial Intelligence Lattice",
+
+    "list_item_bg" : "/interface/namje_sail/listitemscrollsmall.png",
+    "list_item_bg_select" : "/interface/namje_sail/listitemscrollsmallselected.png",
+
+    "list_header" : "/interface/namje_sail/replayheader.png",
+    "list_info_back" : "/interface/namje_sail/missioninfoback.png",
+
+    "close_button" : {
+        "base" : "/interface/x.png",
+        "hover" : "/interface/xhover.png",
+        "pressed" : "/interface/xpress.png",
+        "disabled" : "/interface/x.png"
+    },
+
+    "home_button" : {
+        "base": "/interface/namje_sail/homebutton.png",
+        "hover": "/interface/namje_sail/homebuttonhover.png",
+        "pressed": "/interface/namje_sail/homebuttonpress.png",
+        "disabled" : "/interface/namje_sail/homebutton.png"
+    },
+
+    "left_buttons" : {
+        "base" : "/interface/ai/leftmenuup.png",
+        "hover" : "/interface/ai/leftmenuhover.png",
+        "pressed" : "/interface/ai/leftmenudown.png",
+        "disabled" : "/interface/ai/leftmenuup.png"
+    },
+
+    "deploy_button" : {
+        "base" : "/interface/namje_sail/deploybutton.png",
+        "hover" : "/interface/namje_sail/deploybuttonhover.png",
+        "pressed" : "/interface/namje_sail/deploybuttonpress.png",
+        "disabledImage" : "/interface/namje_sail/deploybuttondisabled.png"
+    },
+
+    "dismiss_button" : {
+        "type" : "button",
+        "base" : "/interface/namje_sail/dismissbutton.png",
+        "hover" : "/interface/namje_sail/dismissbuttonhover.png",
+        "pressed" : "/interface/namje_sail/dismissbuttonpress.png",
+        "disabledImage" : "/interface/namje_sail/dismissbuttondisabled.png"
+    }
+}

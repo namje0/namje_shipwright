@@ -1,0 +1,47 @@
+{
+    "id" : "teal",
+    "name" : "Teal",
+
+    "fetch_ascii" : "^orange;  ####        ####  \n#         #    #         #\n#           ##           #\n  ##    ####    ##  \n    ^clear;.^orange;###@@@###    \n      ^clear;..^orange;##@@@##      \n    ^clear;.^orange;###@@@###    \n  ##    ####    ##  \n#           ##           #\n#         #    #         #\n  ####        ####",
+
+    "main_text_color" : "white",
+    "accent_text_color" : "cyan",
+    "accent2_text_color" : "yellow",
+    "os_text_color" : "gray",
+    "success_text_color" : "green",
+    "error_text_color" : "red",
+    "warn_text_color" : "orange",
+    "directory_text_color" : "white",
+
+
+    "body" : "/interface/namje_sail/themes/teal/body.png",
+    "footer" : "/interface/namje_sail/themes/teal/footer.png",
+    "header" : "/interface/namje_sail/themes/teal/header.png",
+
+    "list_item_bg" : "/interface/namje_sail/themes/teal/listitemscrollsmall.png",
+    "list_item_bg_select" : "/interface/namje_sail/themes/teal/listitemscrollsmallselected.png",
+
+    "icon" : "/interface/ai/AIicon.png",
+    "subtitle" : "^shadow;^gray;Ship-based Artificial Intelligence Lattice",
+
+    "close_button" : {
+        "base" : "/interface/x.png",
+        "hover" : "/interface/xhover.png",
+        "pressed" : "/interface/xpress.png",
+        "disabled" : "/interface/x.png"
+    },
+
+    "home_button" : {
+        "base": "/interface/namje_sail/homebutton.png",
+        "hover": "/interface/namje_sail/homebuttonhover.png",
+        "pressed": "/interface/namje_sail/homebuttonpress.png",
+        "disabled" : "/interface/namje_sail/homebutton.png"
+    },
+
+    "left_buttons" : {
+        "base" : "/interface/namje_sail/themes/teal/leftmenuup.png",
+        "hover" : "/interface/namje_sail/themes/teal/leftmenuhover.png",
+        "pressed" : "/interface/namje_sail/themes/teal/leftmenudown.png",
+        "disabled" : "/interface/namje_sail/themes/teal/leftmenuup.png"
+    }
+}
