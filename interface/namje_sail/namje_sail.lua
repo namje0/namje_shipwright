@@ -144,6 +144,9 @@ function swap_theme(new_theme)
     widget.setButtonImages("show_crew", current_theme.left_buttons or default.left_buttons)
     widget.setButtonImages("show_ship_info", current_theme.left_buttons or default.left_buttons)
     widget.setButtonImages("show_settings", current_theme.left_buttons or default.left_buttons)
+
+    --update the directory text
+    update_directory({"settings"})
 end
 
 function init_settings()

@@ -11,18 +11,18 @@
     "success_text_color" : "green",
     "error_text_color" : "red",
     "warn_text_color" : "orange",
-    "directory_text_color" : "white",
+    "directory_text_color" : "black",
 
 
     "body" : "/interface/namje_sail/themes/vista/body.png",
     "footer" : "/interface/namje_sail/themes/vista/footer.png",
     "header" : "/interface/namje_sail/themes/vista/header.png",
 
-    "icon" : "/interface/ai/AIicon.png",
+    "icon" : "/interface/namje_sail/themes/vista/icon.png",
     "subtitle" : "^shadow;^gray;Ship-based Artificial Intelligence Lattice",
 
-    "list_item_bg" : "/interface/namje_sail/listitemscrollsmall.png",
-    "list_item_bg_select" : "/interface/namje_sail/listitemscrollsmallselected.png",
+    "list_item_bg" : "/interface/namje_sail/themes/vista/listitemscrollsmall.png",
+    "list_item_bg_select" : "/interface/namje_sail/themes/vista/listitemscrollsmallselected.png",
 
     "list_header" : "/interface/namje_sail/replayheader.png",
     "list_info_back" : "/interface/namje_sail/missioninfoback.png",
@@ -42,10 +42,10 @@
     },
 
     "left_buttons" : {
-        "base" : "/interface/ai/leftmenuup.png",
-        "hover" : "/interface/ai/leftmenuhover.png",
-        "pressed" : "/interface/ai/leftmenudown.png",
-        "disabled" : "/interface/ai/leftmenuup.png"
+        "base" : "/interface/namje_sail/themes/vista/leftmenuup.png",
+        "hover" : "/interface/namje_sail/themes/vista/leftmenuhover.png",
+        "pressed" : "/interface/namje_sail/themes/vista/leftmenuup.png",
+        "disabled" : "/interface/namje_sail/themes/vista/leftmenuup.png"
     },
 
     "deploy_button" : {
