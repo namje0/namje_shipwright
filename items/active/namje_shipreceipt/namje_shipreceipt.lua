@@ -23,14 +23,16 @@ function activate()
 end
 
 function swap_ships()
-	local ship_type = config.getParameter("ship")
-	sb.logInfo(#ship_type)
+	local ship_type = player.getProperty("namje_last_ship", {})
+	if #ship_type == 0 then
+		interface.queueMessage("You don't have a previous ship to revert back to!")
+		return
+	end
 	local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
-	--world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
 
 	namje_byos.change_ships_from_table(ship_type)
+	player.setProperty("namje_last_ship", {})
 
 	player.playCinematic(cinematic)
-	--world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 7.0)
 	item.consume(1)
 end

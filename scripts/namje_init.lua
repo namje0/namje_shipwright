@@ -4,11 +4,10 @@ local ini = init or function() end
 
 function init() ini()
     message.setHandler("namje_give_bill", function(_, _, ship) 
+        player.setProperty("namje_last_ship", ship)
         local bill = {
             name = "namje_shipreceipt",
-            parameters = {
-                ship = ship
-            },
+            parameters = {},
             amount = 1
         }
         player.giveItem(bill)
