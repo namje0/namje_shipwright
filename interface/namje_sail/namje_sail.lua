@@ -145,8 +145,8 @@ function swap_theme(new_theme)
     widget.setButtonImages("show_ship_info", current_theme.left_buttons or default.left_buttons)
     widget.setButtonImages("show_settings", current_theme.left_buttons or default.left_buttons)
 
-    --update the directory text
-    update_directory({"settings"})
+    --update the settings page
+    settings_tab()
 end
 
 function init_settings()
@@ -260,11 +260,13 @@ end
 function ship_tab()
     namje_ai_typer.clear_queue()
     update_directory({"ship_info"})
+    widget.setText("main.ship_info.info_area.info", theme_format(localization.ship_info))
 end
 
 function settings_tab()
     namje_ai_typer.clear_queue()
     update_directory({"settings"})
+    widget.setText("main.settings.settings_area.lbl_theme", theme_format(localization.settings_theme_lbl))
 end
 
 function change_setting(setting_name)

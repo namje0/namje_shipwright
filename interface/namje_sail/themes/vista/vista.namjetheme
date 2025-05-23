@@ -2,7 +2,7 @@
     "id" : "vista",
     "name" : "Vista",
 
-    "fetch_ascii" : "^blue;  ####        ####  \n#         #    #         #\n#           ##           #\n  ##    ####    ##  \n    ^clear;.^blue;###@@@###    \n      ^clear;..^blue;##@@@##      \n    ^clear;.^blue;###@@@###    \n  ##    ####    ##  \n#           ##           #\n#         #    #         #\n  ####        ####",
+    "fetch_ascii" : "^clear;##############\n##############\n###^orange;██████^clear;#######\n#^orange;███████████^clear;##^orange;███^clear;#\n^orange;█████████████████^clear;##\n#^orange;███████████^clear;##^orange;███^clear;#\n###^orange;██████^clear;#######\n##############",
 
     "main_text_color" : "white",
     "accent_text_color" : "cyan",
