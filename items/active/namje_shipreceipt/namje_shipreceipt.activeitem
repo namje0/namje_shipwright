@@ -1,0 +1,17 @@
+{
+  "itemName" : "namje_shipreceipt",
+  "shortdescription" : "Ship Invoice",
+  "description" : "Allows reverting to your previous ship, free of charge. ^red;This action is irreversible.",
+  "rarity" : "essential",
+  "tooltipFields" : {
+    "rarityLabel" : ""
+  },
+  "twoHanded" : true,
+  "category" : "mysteriousReward",
+  "animation" : "animation.animation",
+  "inventoryIcon" : "namje_shipreceipt.png",
+  "maxStack" : 1,
+  "scripts" : ["namje_shipreceipt.lua"],
+
+  "ship" : {}
+}

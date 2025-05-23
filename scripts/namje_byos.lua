@@ -26,8 +26,15 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         sb.logInfo("namje // changing ship to " .. ship_type .. " on server for player " .. ply)
         
         world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_hold_size)
+
+        local previous_ship = not init and namje_byos.ship_to_table(true) or nil
+    
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
+            if previous_ship then
+                sb.logInfo(#previous_ship)
+                world.sendEntityMessage(ply, "namje_give_bill", previous_ship)
+            end
             if #items > 0 then
                 world.sendEntityMessage(ply, "namje_give_cargo", items)
             end
@@ -72,7 +79,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     end
 end
 
-function namje_byos.change_ships_from_save(ship)
+function namje_byos.change_ships_from_table(ship)
     local is_server = world.isServer()
     if is_server then
         if #ship == 0 then
@@ -103,7 +110,6 @@ function namje_byos.change_ships_from_save(ship)
         end
 
         world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
-        local ship = player.getProperty("current_ship", {})
         world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swapShip", player.id(), ship)
     end
 end

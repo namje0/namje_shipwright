@@ -1,0 +1,5 @@
+{
+  "sounds" : {
+    "activate" : [ "/sfx/interface/ship_confirm1.ogg" ]
+  }
+}
