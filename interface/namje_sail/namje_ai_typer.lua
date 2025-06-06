@@ -139,6 +139,7 @@ end
 
 --helper function for ai typing; extracting color mods and escape sequences from a string and putting them into an array
 --this was written by AI... im too lazy to write allat
+--this actually isn't needed, but well, im too lazy to change it now
 function extract_and_replace_modifiers(text)
     local modifiers = {}
     local replaced_text = ""

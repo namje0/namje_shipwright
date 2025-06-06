@@ -18,6 +18,8 @@ function activate()
 
 		animator.playSound("activate")
 
+		sb.logInfo(sb.print(player.shipUpgrades()))
+
 		activeItem.interact("ScriptPane", "/interface/scripted/namje_shipbill/namje_bill_swap_confirm.config", entity.id())
 	end
 end

@@ -1,6 +1,7 @@
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/rect.lua"
+require "/scripts/messageutil.lua"
 
 --utility module used for ship stuff
 
@@ -8,8 +9,39 @@ namje_byos = {}
 namje_byos.fu_enabled = nil
 namje_byos.current_ship = nil
 
+function namje_byos.get_ship_info()
+    local default = {
+        ship_id = "namje_startership",
+        stats = {
+            crew_amount = 0,
+            cargo_amount = 0,
+            fuel_amount = 0
+        },
+        upgrades = {
+            fuel_efficiency = 0,
+            max_fuel = 0,
+            ship_speed = 0,
+            crew_size = 0
+        }
+    }
+
+    if world.isClient() then
+        return player.getProperty("namje_ship_info", default)
+    else
+        error("namje // get_ship_info cannot be called on server")
+    end
+end
+
+function namje_byos.set_ship_info(player_id, ship_info)
+    if world.isClient() then
+        player.setProperty("namje_ship_info", ship_info)
+    else
+        world.sendEntityMessage(player_id, "namje_set_shipinfo")
+    end
+end
+
 function namje_byos.change_ships_from_config(ship_type, init, ...)
-    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.namjeship")
+    local ship_config = namje_byos.get_ship_config(ship_type)
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
@@ -17,8 +49,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         error("namje // ship config does not match ship type " .. ship_type)
     end
 
-    local is_server = world.isServer()
-    if is_server then
+    if world.isServer() then
         local items = init and {} or namje_byos.get_ship_items()
         local args = ...
         local ply = init and args[1] or args
@@ -32,7 +63,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
             if previous_ship then
-                sb.logInfo(#previous_ship)
                 world.sendEntityMessage(ply, "namje_give_bill", previous_ship)
             end
             if #items > 0 then
@@ -63,8 +93,11 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
             for _, entity_id in ipairs(entities) do
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
+
+            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship_config)
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
+            --TODO: revert to previous_ship
         end
     else
         --for the client, spawn the stagehand which will call this function on the server
@@ -80,8 +113,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
 end
 
 function namje_byos.change_ships_from_table(ship)
-    local is_server = world.isServer()
-    if is_server then
+    if world.isServer() then
         if #ship == 0 then
             error("namje // tried to change ship from save, but ship table is empty")
         end
@@ -362,25 +394,21 @@ function namje_byos.load_ship_from_table(ship_chunks)
     
 end
 
+--- creates a new ship using the provided ship table. will clear out the ship area and then place a new ship at {1024,1024}
+--- @param ship table
+--TODO: change ship_info back
 function namje_byos.create_ship_from_save(ship)
     clear_ship_area()
     namje_byos.load_ship_from_table(ship)
 end
 
---[[
-    creates a new ship using the provided .namjeship config.
-    will clear out the ship area and then place a new ship at {1024,1024}
-]]
+--- creates a new ship using the provided .namjeship config. will clear out the ship area and then place a new ship at {1024,1024}
+--- @param ply string
+--- @param ship_config table
 function namje_byos.create_ship_from_config(ply, ship_config)
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local ship_offset = ship_config.atelier_stats.ship_center_pos
     local ship_position = vec2.sub({1024, 1024}, {ship_offset[1], -ship_offset[2]})
-
-    if namje_byos.is_fu() then
-        namje_byos.reset_fu_stats()
-    end
-
-    world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
 
     clear_ship_area()
 
@@ -391,9 +419,19 @@ function namje_byos.create_ship_from_config(ply, ship_config)
         world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
     end
 
-    namje_byos.ship_to_table()
+    --namje_byos.ship_to_table()
+
+    if namje_byos.is_fu() then
+        namje_byos.reset_fu_stats()
+    end
+
+    world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
 end
 
+--- finds background tiles in a 100x100 area starting from pos_x, pos_y. returns true if any background tiles are found, false otherwise
+--- @param pos_x number
+--- @param pos_y number
+--- @return boolean
 function find_background_tiles(pos_x,pos_y)
     for x = pos_x, (pos_x + 99), 10 do
         for y = pos_y, (pos_y + 99), 10 do
@@ -406,7 +444,8 @@ function find_background_tiles(pos_x,pos_y)
     return false
 end
 
--- scans from 500,500 to 1500,1500 for tiles in chunks of 100. then returns a table of chunks with tiles in it
+--- scans from 500,500 to 1500,1500 for tiles in chunks of 100. then returns a table of chunks with tiles in it
+--- @return table
 function namje_byos.get_ship_chunks()
     local chunks = {}
     local start_x = 500
@@ -453,7 +492,7 @@ function namje_byos.get_ship_chunks()
     return chunks
 end
 
--- scan from 500,500 to 1500,1500 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
+--- scan from 500,500 to 1500,1500 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
 function clear_ship_area()
     local chunks = namje_byos.get_ship_chunks()
 
@@ -469,7 +508,8 @@ function clear_ship_area()
     end
 end
 
--- returns a list of items found in containers on the ship
+--- returns a list of items found in containers on the ship
+--- @return table
 function namje_byos.get_ship_items()
     local items = {}
     local objects = world.objectQuery({500, 500}, {1500, 1500})
@@ -484,6 +524,8 @@ function namje_byos.get_ship_items()
     return items
 end
 
+--- returns true if the Frackin Universe mod is enabled, false otherwise
+--- @return boolean
 function namje_byos.is_fu()
     if namje_byos.fu_enabled == nil then
         local player_config = root.assetJson("/player.config")
@@ -499,6 +541,40 @@ function namje_byos.is_fu()
     else
         return namje_byos.fu_enabled
     end
+end
+
+--- returns true if the player is on a ship, false otherwise
+--- @return boolean
+function namje_byos.is_on_ship()
+    if world.isClient() then
+        return string.find(player.worldId(), "ClientShipWorld") ~= nil
+    else
+        error("namje // is_on_ship cannot be called on server")
+    end
+end
+
+--- returns true if the player is on their own ship, false otherwise
+--- @return boolean
+function namje_byos.is_on_own_ship()
+    if world.isClient() then
+        return player.worldId() == player.ownShipWorldId()
+    else
+        error("namje // is_on_own_ship cannot be called on server")
+    end
+end
+
+--- returns the ship config for the given ship_id, or nil if not found
+--- @param ship_id string
+--- @return table|nil
+function namje_byos.get_ship_config(ship_id)
+    local ship_configs = root.assetsByExtension("namjeship")
+    for i = 1, #ship_configs do
+        local config = root.assetJson(ship_configs[i])
+        if config.id == ship_id then
+            return config
+        end
+    end
+    return nil
 end
 
 function namje_byos.reset_fu_stats()

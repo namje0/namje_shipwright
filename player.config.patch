@@ -8,7 +8,7 @@
     { 
       "op" : "add",
       "path" : "/companionsConfig/scripts/-",
-      "value" : "/scripts/namje_crewHandler.lua"
+      "value" : "/scripts/namje_companionHandler.lua"
     }
   ]
 ]

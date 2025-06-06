@@ -11,7 +11,7 @@ function activate()
 			return
 		end
 
-		if player.worldId() ~= player.ownShipWorldId() then
+		if not namje_byos.is_on_own_ship() then
 			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_invalidowner")
 			return
 		end

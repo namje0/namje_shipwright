@@ -22,6 +22,9 @@
         "cargo_hold_size" : 150,
         "ship_center_pos" : [74, 42]
     },
+    "stat_upgrades" : {
+        "fuel_efficiency" : {"levels" : 5, "cap" : 2}
+    },
 
     "ship" : "namje_aomkellion"
 }

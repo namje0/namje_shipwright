@@ -5,6 +5,7 @@ local ini = init or function() end
 function init() ini()
     message.setHandler("namje_give_bill", function(_, _, ship) 
         player.setProperty("namje_last_ship", ship)
+        player.setProperty("namje_last_ship_info", namje_byos.get_ship_info())
         local bill = {
             name = "namje_shipreceipt",
             parameters = {},
@@ -22,6 +23,38 @@ function init() ini()
             amount = 1
         }
         player.giveItem(cargo_box)
+    end)
+
+    message.setHandler("namje_upd_shipinfo", function(_, _, ship_config) 
+        local ship_info = namje_byos.get_ship_info()
+        sb.logInfo("namje // old ship info: " .. sb.print(ship_info))
+
+        local new_ship_info = {
+            ship_id = ship_config.id,
+            stats = {
+                crew_amount = ship_info.stats.crew_amount,
+                cargo_amount = ship_info.stats.cargo_amount,
+                fuel_amount = ship_info.stats.fuel_amount
+            },
+            upgrades = {
+                fuel_efficiency = 0,
+                max_fuel = 0,
+                ship_speed = 0,
+                crew_size = 0
+            }
+        }
+
+        --namje_byos.set_ship_info(player.id(), ship_info)
+        player.setProperty("namje_ship_info", new_ship_info)
+        sb.logInfo("namje // new ship info: " .. sb.print(new_ship_info))
+    end)
+
+    message.setHandler("namje_get_shipinfo", function(_, _, ship) 
+        return namje_byos.get_ship_info(player.id())
+    end)
+
+    message.setHandler("namje_set_shipinfo", function(_, _, ship_info) 
+        namje_byos.set_ship_info(player.id(), ship_info)
     end)
 
     if player.introComplete() and not player.getProperty("namje_byos_setup") then

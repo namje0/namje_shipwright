@@ -1,25 +1,43 @@
 require("/scripts/namje_byos.lua")
 require "/scripts/vec2.lua"
 
-local ini = init or function() end
 local fu_atmosphere = false
 local initial_outside = false
+local on_ship = false
+local on_own_ship = false
 
-function init() ini()
-    message.setHandler("namje_upgradeShip", upgrade_ship)
+function init()
     if namje_byos.is_fu() then
         fu_atmosphere = true
         sb.logInfo("namje // fu atmosphere detected")
     else
         message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
     end
+    if not namje_byos.is_on_ship() then
+        on_ship = false
+        mcontroller.clearControls()
+        initial_outside = true
+    else
+        on_ship = true
+    end
+    if namje_byos.is_on_own_ship() then
+        on_own_ship = true
+    else
+        on_own_ship = false
+    end
+
+    message.setHandler("namje_upgradeShip", function(_, _, ship_stats)
+        sb.logInfo("namje // upgrading ship with stats")
+        local capabilities = namje_byos.is_fu() and {} or ship_stats.capabilities
+        player.upgradeShip({capabilities = capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
+    end)
 end
 
 function update(dt)
     if fu_atmosphere then
         return
     end
-    if player.worldId() ~= player.ownShipWorldId() then
+    if not on_ship then
         if not initial_outside then
             mcontroller.clearControls()
             initial_outside = true
@@ -36,13 +54,17 @@ function update(dt)
         mcontroller.clearControls()
         initial_outside = true
     end
-end
 
---TODO: this doesn't work on the initial ship spawn, only on ship change (aside from changing crew size?)
---this shouldn't matter much, just use the default ship stats for the initial spawn
-function upgrade_ship(_, _, ship_stats)
-    local capabilities = namje_byos.is_fu() and {} or ship_stats.capabilities
-    player.upgradeShip({capabilities = capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
+    if on_own_ship then
+        --upd fuel in info
+        local fuel = world.getProperty("ship.fuel")
+        local ship_info = namje_byos.get_ship_info()
+        if ship_info.stats.fuel_amount ~= fuel then
+            ship_info.stats.fuel_amount = fuel
+            player.setProperty("namje_ship_info", ship_info)
+        end
+        --upd cargohold in info
+    end
 end
 
 function move_to_ship_spawn()

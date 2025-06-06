@@ -1,6 +1,6 @@
 require "/scripts/messageutil.lua"
 require "/interface/namje_sail/namje_ai_typer.lua"
-require "/interface/namje_sail/namje_ai_typer.lua"
+require "/scripts/namje_byos.lua"
 
 local tabs = {
     {"main.missions", "main.missions.mission_select.mission_list", "main.missions.mission_info"},
@@ -258,9 +258,27 @@ function home_tab()
 end
 
 function ship_tab()
+    local ship_info = namje_byos.get_ship_info()
+    local ship_config = namje_byos.get_ship_config(ship_info.ship_id)
+
+    local formatted_info = string.format(theme_format(localization.ship_info), 
+        ship_config.name,
+        ship_config.manufacturer,
+        ship_info.stats.fuel_amount .. "/" .. ship_config.base_stats.max_fuel,
+        ship_info.stats.crew_amount .. "/" .. ship_config.base_stats.crew_size,
+        ship_info.stats.cargo_amount,
+        ship_config.base_stats.fuel_efficiency,
+        ship_config.base_stats.max_fuel,
+        ship_config.base_stats.ship_speed,
+        ship_config.atelier_stats.cargo_hold_size,
+        ship_config.base_stats.crew_size
+    )
     namje_ai_typer.clear_queue()
     update_directory({"ship_info"})
-    widget.setText("main.ship_info.info_area.info", theme_format(localization.ship_info))
+
+    --TODO: make them separate text boxes in the case of ship name/manufacturer overflow
+    widget.setText("main.ship_info.info_area.info", formatted_info)
+    namje_ai_typer.push_request("main.ship_info.info_area.info", formatted_info, 2, "unique", nil)
 end
 
 function settings_tab()

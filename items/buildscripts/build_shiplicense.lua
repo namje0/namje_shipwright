@@ -1,6 +1,8 @@
+require "/scripts/namje_byos.lua"
+
 function build(directory, config, parameters, level, seed)
     local ship_type = config.shipType
-    local ship_config = root.assetJson("/namje_ships/ships/".. ship_type .."/ship.namjeship")
+    local ship_config = namje_byos.get_ship_config(ship_type)
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
     end
