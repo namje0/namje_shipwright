@@ -63,7 +63,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
             if previous_ship then
-                world.sendEntityMessage(ply, "namje_give_bill", previous_ship)
+                world.sendEntityMessage(ply, "namje_save_prev_ship", previous_ship)
             end
             if #items > 0 then
                 world.sendEntityMessage(ply, "namje_give_cargo", items)
@@ -94,7 +94,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
 
-            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship_config)
+            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship_config.id)
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
             --TODO: revert to previous_ship
@@ -112,12 +112,14 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     end
 end
 
-function namje_byos.change_ships_from_table(ship)
+--- changes ship from a table, comprised of the ship_info and the serialized ship
+--- @param ship table
+function namje_byos.change_ships_from_table(ship, ply)
     if world.isServer() then
         if #ship == 0 then
             error("namje // tried to change ship from save, but ship table is empty")
         end
-        local ship_create, err = pcall(namje_byos.create_ship_from_save, ship)
+        local ship_create, err = pcall(namje_byos.create_ship_from_save, ship[1])
         if ship_create then
             sb.logInfo("namje // loaded ship from table")
 
@@ -130,6 +132,8 @@ function namje_byos.change_ships_from_table(ship)
                     world.sendEntityMessage(player, "namje_moveToShipSpawn")
                 end
             end
+
+            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship[2].ship_id)
         else
             sb.logInfo("namje === ship load failed: " .. err)
         end

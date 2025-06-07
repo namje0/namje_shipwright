@@ -3,9 +3,8 @@ require("/scripts/namje_byos.lua")
 local ini = init or function() end
 
 function init() ini()
-    message.setHandler("namje_give_bill", function(_, _, ship) 
-        player.setProperty("namje_last_ship", ship)
-        player.setProperty("namje_last_ship_info", namje_byos.get_ship_info())
+    message.setHandler("namje_save_prev_ship", function(_, _, ship) 
+        player.setProperty("namje_last_ship", {ship, namje_byos.get_ship_info()})
         local bill = {
             name = "namje_shipreceipt",
             parameters = {},
@@ -25,12 +24,10 @@ function init() ini()
         player.giveItem(cargo_box)
     end)
 
-    message.setHandler("namje_upd_shipinfo", function(_, _, ship_config) 
+    message.setHandler("namje_upd_shipinfo", function(_, _, ship_id) 
         local ship_info = namje_byos.get_ship_info()
-        sb.logInfo("namje // old ship info: " .. sb.print(ship_info))
-
         local new_ship_info = {
-            ship_id = ship_config.id,
+            ship_id = ship_id,
             stats = {
                 crew_amount = ship_info.stats.crew_amount,
                 cargo_amount = ship_info.stats.cargo_amount,
@@ -43,10 +40,7 @@ function init() ini()
                 crew_size = 0
             }
         }
-
-        --namje_byos.set_ship_info(player.id(), ship_info)
         player.setProperty("namje_ship_info", new_ship_info)
-        sb.logInfo("namje // new ship info: " .. sb.print(new_ship_info))
     end)
 
     message.setHandler("namje_get_shipinfo", function(_, _, ship) 
@@ -78,6 +72,7 @@ function update(dt)
             else
                 namje_byos.change_ships_from_config("namje_startership", true)
                 player.setProperty("namje_byos_setup", true)
+                player.giveItem("shiplicense_namje_aomkellion")
             end
         end
     end

@@ -86,7 +86,6 @@ function draw()
 end
 
 function change_speaker_state(new_state)
-    sb.logInfo("namje // changing ai state to ".. new_state)
     speaker_state = new_state
     speaker_img = string.gsub("/ai/" .. ai_config.aiAnimations[speaker_state].frames, "<image>", racial_sail.aiFrames)
     speaker_frame = 0
@@ -114,7 +113,6 @@ function init_themes()
 end
 
 function swap_theme(new_theme)
-    sb.logInfo("namje // swapping theme to " .. new_theme)
     if not sail_themes[new_theme] then
         sb.logInfo("namje // warning: tried swapping to non existent theme, defaulting to default theme")
         new_theme = "default"
@@ -278,7 +276,7 @@ function ship_tab()
 
     --TODO: make them separate text boxes in the case of ship name/manufacturer overflow
     widget.setText("main.ship_info.info_area.info", formatted_info)
-    namje_ai_typer.push_request("main.ship_info.info_area.info", formatted_info, 2, "unique", nil)
+    --namje_ai_typer.push_request("main.ship_info.info_area.info", formatted_info, 2, "unique", nil)
 end
 
 function settings_tab()
@@ -289,7 +287,6 @@ end
 
 function change_setting(setting_name)
     if setting_name == "button_theme" then
-        sb.logInfo("change hteme")
         local theme, first_theme
         local player_theme = player.getProperty("namje_sail_theme", "default")
         local found_theme = false
@@ -300,12 +297,10 @@ function change_setting(setting_name)
                 first_theme = k
             end
             if found_theme then
-                sb.logInfo(sb.print(k))
                 theme = k
                 break
             end
             if k == player_theme then
-                sb.logInfo("right")
                 found_theme = true
                 if num >= #sail_themes then
                     theme = first_theme

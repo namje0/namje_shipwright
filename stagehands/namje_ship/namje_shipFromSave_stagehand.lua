@@ -7,6 +7,6 @@ function init()
 end
 
 function swap_ship(_, _, ply, ship)
-    namje_byos.change_ships_from_table(ship)
+    namje_byos.change_ships_from_table(ship, ply)
     stagehand.die()
 end

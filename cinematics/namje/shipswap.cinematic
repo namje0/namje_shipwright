@@ -1,0 +1,127 @@
+{
+  "muteSfx" : false,
+  "muteMusic" : true,
+  "skippable" : false,
+  "letterbox" : false,
+  "backgroundFadeTime" : 0.3,
+  "backgroundColor" : [0, 0, 0, 255],
+  "panels" : [
+      {
+      "drawables" : [
+        {
+          "image" : "/cinematics/upgrading/upgrading.png:<frame>"
+        }
+      ],
+      "animationFrames" : 15,
+      "keyframes" : [
+        {
+          "timecode" : 0,
+          "zoom" : 3.0,
+          "alpha" : 0,
+          "frame" : 0,
+          "position" : [510, 270]
+        },
+        {
+          "timecode" : 0.5,
+          "alpha" : 1.0,
+          "frame" : 0,
+          "position" : [510, 270]
+        },
+        {
+          "timecode" : 4.2,
+          "alpha" : 1.0,
+          "frame" : 29,
+          "position" : [510, 270]
+        },
+        {
+          "timecode" : 4.7,
+          "alpha" : 0,
+          "frame" : 29,
+          "position" : [510, 270]
+        }
+      ]
+    },
+    {
+      "text" : "CHANGING SHIPS...",
+      "fontSize" : 24,
+      "textPosition" : {
+        "position" : [-75, -100],
+        "hAnchor" : "mid",
+        "vAnchor" : "mid",
+        "wrapWidth" : 400
+      },
+      "keyframes" : [
+        {
+          "timecode" : 0.0,
+          "textPercentage" : 0
+        },
+        {
+          "timecode" : 0.01,
+          "zoom" : 500,
+          "alpha" : 0,
+          "position" : [480, 270]
+        },
+        {
+          "timecode" : 0.1,
+          "zoom" : 500,
+          "alpha" : 1,
+          "position" : [480, 270]
+        },
+        {
+          "timecode" : 0.5,
+          "zoom" : 500,
+          "alpha" : 1,
+          "position" : [480, 270],
+          "textPercentage" : 0
+        },
+        {
+          "timecode" : 3,
+          "zoom" : 500,
+          "alpha" : 1,
+          "position" : [480, 270],
+          "textPercentage" : 1
+        },
+        {
+          "timecode" : 4.2,
+          "zoom" : 500,
+          "alpha" : 1,
+          "position" : [480, 270],
+          "textPercentage" : 1
+        },
+        {
+          "timecode" : 4.7,
+          "zoom" : 500,
+          "alpha" : 0,
+          "position" : [480, 270],
+          "textPercentage" : 1
+        },
+        {
+          "timecode" : 4.7,
+          "zoom" : 500,
+          "alpha" : 0,
+          "position" : [480, 270]
+        }
+      ]
+    }
+  ],
+  "audio" : [
+    {
+      "timecode" : 0.5,
+      "resource" : "/sfx/objects/penguin_welding5.ogg"
+    },
+    {
+      "timecode" : 1.5,
+      "resource" : "/sfx/objects/penguin_welding4.ogg"
+    },
+    {
+      "timecode" : 2.8,
+      "resource" : "/sfx/objects/penguin_welding2.ogg"
+    },
+    {
+      "timecode" : 0.5,
+      "endTimecode" : 3,
+      "loops" : -1,
+      "resource" : "/sfx/interface/aichatter1_loop.ogg"
+    }
+  ]
+}

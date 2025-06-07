@@ -28,7 +28,7 @@ end
 
 function swap_ships()
 	local ship_type = config.getParameter("shipType")
-	local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
+	local cinematic = "/cinematics/namje/shipswap.cinematic"
 	--world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
 
 	namje_byos.change_ships_from_config(ship_type, false)

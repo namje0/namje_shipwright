@@ -16,23 +16,26 @@ function activate()
 			return
 		end
 
+		local last_ship = player.getProperty("namje_last_ship")
+		if not last_ship[1] then
+			interface.queueMessage("You don't have a previous ship to revert back to!")
+			return
+		end
+
 		animator.playSound("activate")
-
-		sb.logInfo(sb.print(player.shipUpgrades()))
-
 		activeItem.interact("ScriptPane", "/interface/scripted/namje_shipbill/namje_bill_swap_confirm.config", entity.id())
 	end
 end
 
 function swap_ships()
-	local ship_type = player.getProperty("namje_last_ship", {})
-	if #ship_type == 0 then
+	local last_ship = player.getProperty("namje_last_ship")
+	if not last_ship[1] then
 		interface.queueMessage("You don't have a previous ship to revert back to!")
 		return
 	end
-	local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
+	local cinematic = "/cinematics/namje/shipswap.cinematic"
 
-	namje_byos.change_ships_from_table(ship_type)
+	namje_byos.change_ships_from_table(last_ship)
 	player.setProperty("namje_last_ship", {})
 
 	player.playCinematic(cinematic)
