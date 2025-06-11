@@ -24,13 +24,33 @@ function init() ini()
         player.giveItem(cargo_box)
     end)
 
-    message.setHandler("namje_upd_shipinfo", function(_, _, ship_id) 
+    message.setHandler("namje_upd_cargoinfo", function(_, _, cargo_hold)
+        function deep_copy(original_table)
+            local copied_table = {}
+            for key, value in pairs(original_table) do
+                if type(value) == "table" then
+                    copied_table[key] = deep_copy(value)
+                else
+                    copied_table[key] = value
+                end
+            end
+
+            return copied_table
+        end
+
+        local ship_info = namje_byos.get_ship_info()
+        ship_info.stats.cargo_hold = deep_copy(cargo_hold)
+        sb.logInfo("new shipinfo: %s", ship_info)
+        player.setProperty("namje_ship_info", ship_info)
+    end)
+
+    message.setHandler("namje_upd_shipinfo_from_config", function(_, _, ship_id)
         local ship_info = namje_byos.get_ship_info()
         local new_ship_info = {
             ship_id = ship_id,
             stats = {
                 crew_amount = ship_info.stats.crew_amount,
-                cargo_amount = ship_info.stats.cargo_amount,
+                cargo_hold = ship_info.stats.cargo_hold,
                 fuel_amount = ship_info.stats.fuel_amount
             },
             upgrades = {

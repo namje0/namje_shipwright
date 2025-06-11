@@ -14,7 +14,7 @@ function namje_byos.get_ship_info()
         ship_id = "namje_startership",
         stats = {
             crew_amount = 0,
-            cargo_amount = 0,
+            cargo_hold = {},
             fuel_amount = 0
         },
         upgrades = {
@@ -94,7 +94,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
 
-            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship_config.id)
+            world.sendEntityMessage(ply, "namje_upd_shipinfo_from_config", ship_config.id)
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
             --TODO: revert to previous_ship
@@ -133,7 +133,7 @@ function namje_byos.change_ships_from_table(ship, ply)
                 end
             end
 
-            world.sendEntityMessage(ply, "namje_upd_shipinfo", ship[2].ship_id)
+            world.sendEntityMessage(ply, "namje_upd_shipinfo_from_config", ship[2].ship_id)
         else
             sb.logInfo("namje === ship load failed: " .. err)
         end

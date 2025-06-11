@@ -264,7 +264,7 @@ function ship_tab()
         ship_config.manufacturer,
         ship_info.stats.fuel_amount .. "/" .. ship_config.base_stats.max_fuel,
         ship_info.stats.crew_amount .. "/" .. ship_config.base_stats.crew_size,
-        ship_info.stats.cargo_amount,
+        #ship_info.stats.cargo_hold .. "/" .. ship_config.atelier_stats.cargo_hold_size,
         ship_config.base_stats.fuel_efficiency,
         ship_config.base_stats.max_fuel,
         ship_config.base_stats.ship_speed,

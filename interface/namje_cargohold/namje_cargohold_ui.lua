@@ -16,8 +16,9 @@ function update(dt)
     local item = world.containerItemAt(pane.containerEntityId(), 0)
     local cargo_hold = world.getProperty("namje_cargo_hold") or {}
     if item and #cargo_hold < cargo_size then
-        world.sendEntityMessage(pane.containerEntityId(), "namje_cargohold_insert", item)
+        world.sendEntityMessage(pane.containerEntityId(), "namje_cargohold_insert", item, player.worldId())
     end
+    --TODO: move this to init and recieve calls when moving cargohold to per-ship basis, as only the owner player will be able to access it then
     create_grid()
 end
 
@@ -63,5 +64,5 @@ function receive_item(_, data)
     --local pos = mcontroller.position()
     local pos = world.entityPosition(player.id())
 
-    world.sendEntityMessage(pane.containerEntityId(), "namje_receive_item", {data, pos})
+    world.sendEntityMessage(pane.containerEntityId(), "namje_receive_item", {data, pos}, player.worldId())
 end
