@@ -160,7 +160,55 @@ function namje_byos.ship_to_table(exclude_items)
     end
 
     local chunks = namje_byos.get_ship_chunks()
+    local mat_cache = {}
+    local mat_to_id = {}
     local ship_chunks = {}
+    local next_mat_id = 1
+
+    local function get_cached_mat_id(material_name)
+        -- skip metamaterials, they include objects and im pretty sure the player can't place down other metamaterials
+        if material_name == nil or not material_name or material_name and string.find(material_name, "metamaterial") then
+            if material_name == nil then
+                sb.logInfo("namje // WARNING: material_name returned nil, chunk is unloaded. ship will be incomplete")
+            end
+            return nil
+        end
+
+        if mat_to_id[material_name] then
+            return mat_to_id[material_name]
+        else
+            local id = next_mat_id
+            mat_to_id[material_name] = id
+            mat_cache[id] = material_name
+            next_mat_id = next_mat_id + 1
+            return id
+        end
+    end
+
+    --TODO: still doesn't get all dupes, fix later
+    local function trim_params(current_params, default_params)
+        if type(current_params) ~= "table" or type(default_params) ~= "table" then
+            return
+        end
+
+        for k, v in pairs(current_params) do
+            local default_v = default_params[k]
+
+            if type(v) == "table" and type(default_v) == "table" then
+                trim_params(v, default_v)
+                local is_table_empty = true
+                for _ in pairs(v) do
+                    is_table_empty = false
+                    break
+                end
+                if is_table_empty and default_v ~= nil then
+                    current_params[k] = nil
+                end
+            elseif v == default_v then
+                current_params[k] = nil
+            end
+        end
+    end
 
     for _, chunk in ipairs (chunks) do
         local top_left_x = chunk.top_left[1]
@@ -185,14 +233,9 @@ function namje_byos.ship_to_table(exclude_items)
 
             local direction = world.callScriptedEntity(object_id, "object.direction") or 0
 
-            table.insert(object_data, object_parameters.objectName)
+            table.insert(object_data, get_cached_mat_id(object_parameters.objectName))
 
-            --this just removes the non-table dupes, i dont feel like doing the whole table diffing stuff. shouldnt be a problem, probably
-            for k, v in pairs (object_parameters) do
-                if old_parameters[k] and old_parameters[k] == v then
-                    object_parameters[k] = nil
-                end
-            end
+            trim_params(object_parameters, old_parameters)
 
             table.insert(object_data, object_parameters)
             table.insert(object_data, direction)
@@ -210,7 +253,6 @@ function namje_byos.ship_to_table(exclude_items)
                 lowest tier; in upgradeablecraftingobject.lua the upgrade stage is only set for the item drop on 'die', so we will
                 call die on the object, get the item drop, get the upgrade stage parameters, then add it to the object data table.
             ]]
-            
             local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
             if object_upgrade_stage then
                 world.callScriptedEntity(object_id, "die")
@@ -239,22 +281,20 @@ function namje_byos.ship_to_table(exclude_items)
                 local fore_mod = world.mod({x, y}, "foreground")
                 local back_mod = world.mod({x, y}, "background")
 
-                if foreground_material and not string.find(foreground_material, "metamaterial") then
-                    -- skip metamaterials, they include objects and im pretty sure the player can't place down other metamaterials
+                local foreground_mat_id = get_cached_mat_id(foreground_material)
+                local background_mat_id = get_cached_mat_id(background_material)
+                if foreground_mat_id then
                     local mat_color = world.materialColor({x, y}, "foreground")
-                    table.insert(foreground_tiles, {{x, y}, foreground_material, mat_color})
+                    table.insert(foreground_tiles, {{x, y}, foreground_mat_id, mat_color})
                 end
-
-                if background_material and not string.find(background_material, "metamaterial") then
+                if background_mat_id then
                     local mat_color = world.materialColor({x, y}, "background")
-                    table.insert(background_tiles, {{x, y}, background_material, mat_color})
+                    table.insert(background_tiles, {{x, y}, background_mat_id, mat_color})
                 end
-
                 if fore_mod then
                     local mod_hue = world.modHueShift({x, y}, "foreground")
                     table.insert(mods, {{x, y}, "foreground", fore_mod, mod_hue})
                 end
-
                 if back_mod then
                     local mod_hue = world.modHueShift({x, y}, "background")
                     table.insert(mods, {{x, y}, "background", back_mod, mod_hue})
@@ -265,12 +305,17 @@ function namje_byos.ship_to_table(exclude_items)
         local ship_chunk = {{top_left_x, bottom_right_y}, {foreground_tiles, background_tiles, objects, mods}}
         table.insert(ship_chunks, ship_chunk)
     end
-    return ship_chunks
+    return {mat_cache, ship_chunks}
 end
 
-function namje_byos.load_ship_from_table(ship_chunks)
+function namje_byos.load_ship_from_table(ship_table)
     if not world.isServer() then
         error("namje // loading ship from table is not supported on client")
+    end
+
+    local mat_cache = ship_table[1]
+    if not mat_cache then
+        error("namje // no material cache found in ship table")
     end
 
     local total_object_count = 0
@@ -278,7 +323,7 @@ function namje_byos.load_ship_from_table(ship_chunks)
     local placed_objects = 0
 
     --due to how placematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
-    for _, chunk in pairs (ship_chunks) do
+    for _, chunk in pairs (ship_table[2]) do
         local top_left_x = chunk[1][1]
         local top_left_y = chunk[1][2]
 
@@ -290,16 +335,30 @@ function namje_byos.load_ship_from_table(ship_chunks)
         local mods = chunk[2][4]
 
         for _, tile in pairs (foreground_tiles) do
-            local place = world.placeMaterial(tile[1], "foreground", tile[2], 0, true)
-            if tile[3] > 0 then
-                world.setMaterialColor(tile[1], "foreground", tile[3])
+            local pos = tile[1]
+            local material_id = tile[2]
+            local mat_color = tile[3]
+            local material_name = mat_cache[material_id]
+
+            if material_name then
+                world.placeMaterial(pos, "foreground", material_name, 0, true)
+                if mat_color > 0 then
+                    world.setMaterialColor(pos, "foreground", mat_color)
+                end
             end
         end
 
         for _, tile in pairs (background_tiles) do
-            local place = world.replaceMaterials({tile[1]}, "background", tile[2], 0, false)
-            if tile[3] > 0 then
-                world.setMaterialColor(tile[1], "background", tile[3])
+            local pos = tile[1]
+            local material_id = tile[2]
+            local mat_color = tile[3]
+            local material_name = mat_cache[material_id]
+
+            if material_name then
+                world.replaceMaterials({pos}, "background", material_name, 0, false)
+                if mat_color > 0 then
+                    world.setMaterialColor(pos, "background", mat_color)
+                end
             end
         end
 
@@ -324,10 +383,15 @@ function namje_byos.load_ship_from_table(ship_chunks)
         for _, object in pairs (objects) do
             local pos = object[1]
             local object_data = object[2]
-            local object_name = object_data[1]
+            local object_id = object_data[1]
             local parameters = object_data[2]
             local dir = object_data[3]
             local container_items = object_data[4] or nil
+            local object_name = mat_cache[object_id]
+
+            if not object_name then
+                error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
+            end
 
             local place = world.placeObject(object_name, pos, dir or 0, parameters)
             if place then
@@ -342,7 +406,7 @@ function namje_byos.load_ship_from_table(ship_chunks)
                 end
                 placed_objects = placed_objects + 1
             else
-                sb.logInfo("namje // failed to place object " .. object[2][1] .. " at " .. object[1][1] .. "," .. object[1][2])
+                sb.logInfo("namje // failed to place object " .. mat_cache[object[2][1]] .. " at " .. object[1][1] .. "," .. object[1][2])
                 table.insert(failed_objects, object)
             end
         end
@@ -361,10 +425,16 @@ function namje_byos.load_ship_from_table(ship_chunks)
                     table.remove(failed_objects, k)
                 else
                     local object_data = object[2]
-                    local object_name = object_data[1]
+                    local object_id = object_data[1]
                     local parameters = object_data[2]
                     local dir = object_data[3]
                     local container_items = object_data[4] or nil
+                    local object_name = mat_cache[object_id]
+
+                    if not object_name then
+                        error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
+                    end
+
                     local place = world.placeObject(object_name, pos, dir or 0, parameters)
 
                     if place then
