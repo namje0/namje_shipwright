@@ -1,6 +1,5 @@
 require "/scripts/messageutil.lua"
 require "/scripts/namje_byos.lua"
-require "/scripts/namje_util.lua"
 
 function uninit()
 	root.setConfigurationPath("namje_ship_template", {})

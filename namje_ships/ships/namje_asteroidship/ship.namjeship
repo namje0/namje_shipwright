@@ -14,7 +14,7 @@
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],
         "fuel_efficiency" : 0,
         "max_fuel" : 5000,
-        "ship_speed" : 500,
+        "ship_speed" : 60,
         "crew_size" : 5
     },
     "atelier_stats" : {

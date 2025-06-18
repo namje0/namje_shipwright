@@ -1,0 +1,67 @@
+{
+  "objectName" : "shipyardjunk",
+  "colonyTags" : ["outpost"],
+  "rarity" : "Common",
+  "description" : "I can upgrade my ship or manage it's registration here.",
+  "shortdescription" : "Shipyard Services",
+  "race" : "generic",
+  "printable" : false,
+  // "hasObjectItem" : false,
+
+  "apexDescription" : "Is this really the only ship technician around here?",
+  "avianDescription" : "This penguin seems to be a ship technician.",
+  "floranDescription" : "Tasty penguin can work on my ssship.",
+  "glitchDescription" : "Concerned. I do not trust this penguin to work on my ship.",
+  "humanDescription" : "A penguin ship technician... I hope it knows what it's doing.",
+  "hylotlDescription" : "I've been told that this penguin is a ship technician.",
+  "novakidDescription" : "I reckon this bird's able to work on my ship.",
+
+  "lightColor" : [255, 255, 255],
+
+  "inventoryIcon" : "shipyardjunkicon.png",
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "shipyardjunk.png:<color>.<frame>", "fullbright" : true }, { "image" : "shipyardjunklit.png:<color>.<frame>" } ],
+      "imagePosition" : [-96, 0],
+      "direction" : "left",
+      "flipImages" : true,
+  
+      "lightPosition" : [0, 25],
+
+      "frames" : 42,
+      "animationCycle" : 7,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ]
+    },
+    {
+      
+      "imageLayers" : [ { "image" : "shipyardjunk.png:<color>.<frame>", "fullbright" : true }, { "image" : "shipyardjunklit.png:<color>.<frame>" } ],
+      "imagePosition" : [-120, 0],
+      "direction" : "right",
+
+      "lightPosition" : [0, 25],
+
+      "frames" : 42,
+      "animationCycle" : 7,
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ]
+    }
+  ],
+
+  "interactData" : {
+    "config" : "/interface/windowconfig/craftingfurniturestore.config"
+  },
+
+  "scripts" : [ "/objects/outpost/shipyardjunk/namje_shipyardservice.lua" ],
+  "scriptDelta" : 20,
+
+  "chatOptions" : [
+    "Can't work on ya ship till we get our erchius shipments dood.",
+    "Waiting on shipments, cant work on your ship dood.",
+    "We can't help ya out till we get those erchius crystals dood."
+  ],
+
+  "mouthPosition" : [-0.5, -30.5]
+}
