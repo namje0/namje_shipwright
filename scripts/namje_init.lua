@@ -49,6 +49,7 @@ function init() ini()
         local new_ship_info = {
             ship_id = ship_id,
             stats = {
+                name = ship_info.stats.name,
                 crew_amount = ship_info.stats.crew_amount,
                 cargo_hold = ship_info.stats.cargo_hold,
                 fuel_amount = ship_info.stats.fuel_amount
@@ -57,7 +58,8 @@ function init() ini()
                 fuel_efficiency = 0,
                 max_fuel = 0,
                 ship_speed = 0,
-                crew_size = 0
+                crew_size = 0,
+                cargo_size = 0
             }
         }
         player.setProperty("namje_ship_info", new_ship_info)
@@ -82,18 +84,7 @@ function update(dt)
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         self.tick_test = self.tick_test + 1
         if self.tick_test > 10 then
-            local existing_char = player.hasCompletedQuest("bootship")
-            if existing_char then
-                --being used on an existing character, show interface disclaimer thing and give the player an item to 
-                --enable byos systems and a starter shiplicense
-                player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
-                player.giveItem("namje_enablebyositem")
-                player.setProperty("namje_byos_setup", true)
-            else
-                namje_byos.change_ships_from_config("namje_startership", true)
-                player.setProperty("namje_byos_setup", true)
-                player.giveItem("shiplicense_namje_aomkellion")
-            end
+            namje_byos.init_byos()
         end
     end
 end

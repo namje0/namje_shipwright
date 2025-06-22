@@ -1,13 +1,100 @@
+--utility module for all ship related stuff
+
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/rect.lua"
 require "/scripts/messageutil.lua"
 
---utility module used for ship stuff
-
 namje_byos = {}
 namje_byos.fu_enabled = nil
 namje_byos.current_ship = nil
+
+--the upper limit of ships a player can have
+--currently set to 1, as ship changing does not have wiring support yet. This will be changed on release to 5-8
+local PLAYER_SHIP_CAP = 1
+
+--- register a new ship for the player, overwriting/adding to a slot
+--- @param slot number
+function namje_byos.register_new_ship(slot, ship_type, name, icon)
+    if world.isServer() then
+        error("namje // register_new_ship cannot be called on server")
+    end
+
+    local ship_config = namje_byos.get_ship_config(ship_type)
+    local ships = player.getProperty("namje_ships")
+    if not ships or not ship_config then
+        error("namje // missing namje_ships property or namje_ship_config for " .. ship_type)
+    end
+    if ship_config.id ~= ship_type then
+        error("namje // ship config does not match ship type " .. ship_type)
+    end
+    local ship_slot = ships["slot_" .. slot]
+    if not ship_slot then
+        error("namje // slot " .. slot .. " not found in namje_ships")
+    end
+
+    local old_info = nil
+    if ship_slot.ship_info then
+        old_info = ship_slot.ship_info
+    end
+
+    local ship_data = {
+        ship_info = {
+            ship_id = ship_config.id,
+            stats = {
+                name = name,
+                icon = icon,
+                crew_amount = old_info and old_info.stats.crew_amount or 0,
+                cargo_hold = old_info and old_info.stats.cargo_hold or {},
+                fuel_amount = old_info and old_info.stats.fuel_amount or 0
+            },
+            upgrades = {
+                fuel_efficiency = 0,
+                max_fuel = 0,
+                ship_speed = 0,
+                crew_size = 0,
+                cargo_size = 0
+            }
+        },
+        ship = {}
+    }
+
+    ship_slot = ship_data
+
+    if player.getProperty("namje_current_ship", 1) == slot then
+        namje_byos.change_ships_from_config(ship_config.id, ship_config.id == "namje_startership" and true or false)
+    end
+    return ship_slot
+end
+
+--- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
+--- @param num number
+--- @return table
+function namje_byos.add_ship_slots(num)
+    local current_slots = player.getProperty("namje_ship_slots", 0)
+    local ships = player.getProperty("namje_ships", {})
+
+    local num_slots = math.min(current_slots + num, PLAYER_SHIP_CAP)
+    player.setProperty("namje_ship_slots", num_slots)
+    for i = 1, num_slots do
+        local slot = "slot_" .. i
+        if not ships[slot] then
+            ships[slot] = {}
+        end
+    end
+    player.setProperty("namje_ships", ships)
+    return ships
+end
+
+--- sets the current ship slot for the player
+--- @param slot number
+function namje_byos.set_current_ship(slot)
+    local current_slots = player.getProperty("namje_ship_slots", 1)
+    if slot > current_slots or slot < 1 then
+        error("namje // tried to set current ship to slot " .. slot .. " but only " .. current_slots .. " slots are available")
+    end
+    return player.setProperty("namje_current_ship", slot)
+end
 
 function namje_byos.get_ship_info()
     local default = {
@@ -649,6 +736,25 @@ function namje_byos.get_ship_config(ship_id)
         end
     end
     return nil
+end
+
+--- initializes the BYOS system for players, usually before the bootship quest but a failsafe is implemented for existing characters
+function namje_byos.init_byos()
+    player.setProperty("namje_byos_setup", true)
+    namje_byos.add_ship_slots(1)
+    namje_byos.set_current_ship(1)
+
+    local existing_char = player.hasCompletedQuest("bootship")
+    if existing_char then
+        --being used on an existing character, show interface disclaimer thing and give the player an item to 
+        --enable byos systems and a starter shiplicense
+        player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
+        player.giveItem("namje_enablebyositem")
+    else
+        local ship = namje_byos.register_new_ship(1, "namje_startership", "testship", "testicon")
+        --namje_byos.change_ships_from_config("namje_startership", true)
+        player.giveItem("shiplicense_namje_aomkellion") --TODO: testing only, remove later
+    end
 end
 
 function namje_byos.reset_fu_stats()
