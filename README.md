@@ -15,7 +15,8 @@ If you want to make your own ship template, refer to [this guide](https://github
 
 ### FU Compatiblity
 
-This framework will automatically detect Frackin Universe and patch most things to use their BYOS system instead.
+~This framework will automatically detect Frackin Universe and patch most things to use their BYOS system instead.~
+Currently incompatible due to large BYOS changes.
 
 ### Cargo Hold
 
