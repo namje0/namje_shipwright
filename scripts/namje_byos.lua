@@ -11,10 +11,14 @@ namje_byos.current_ship = nil
 
 --the upper limit of ships a player can have
 --currently set to 1, as ship changing does not have wiring support yet. This will be changed on release to 5-8
-local PLAYER_SHIP_CAP = 1
+local PLAYER_SHIP_CAP = 3
 
 --- register a new ship for the player, overwriting/adding to a slot
 --- @param slot number
+--- @param ship_type string
+--- @param name string
+--- @param icon string
+--- @return table
 function namje_byos.register_new_ship(slot, ship_type, name, icon)
     if world.isServer() then
         error("namje // register_new_ship cannot be called on server")
@@ -42,8 +46,8 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         ship_info = {
             ship_id = ship_config.id,
             stats = {
-                name = name,
-                icon = icon,
+                name = name or "Unnamed Ship",
+                icon = icon or "/interface/bookmarks/icons/ship.png",
                 crew_amount = old_info and old_info.stats.crew_amount or 0,
                 cargo_hold = old_info and old_info.stats.cargo_hold or {},
                 fuel_amount = old_info and old_info.stats.fuel_amount or 0
@@ -59,8 +63,11 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         ship = {}
     }
 
-    ship_slot = ship_data
+    ships["slot_" .. slot] = ship_data
 
+    sb.logInfo("namje // registered new ship in slot " .. slot .. " with " .. ship_type)
+    player.setProperty("namje_ships", ships)
+    sb.logInfo("%s", player.getProperty("namje_ships"))
     if player.getProperty("namje_current_ship", 1) == slot then
         namje_byos.change_ships_from_config(ship_config.id, ship_config.id == "namje_startership" and true or false)
     end
@@ -741,7 +748,7 @@ end
 --- initializes the BYOS system for players, usually before the bootship quest but a failsafe is implemented for existing characters
 function namje_byos.init_byos()
     player.setProperty("namje_byos_setup", true)
-    namje_byos.add_ship_slots(1)
+    namje_byos.add_ship_slots(3)
     namje_byos.set_current_ship(1)
 
     local existing_char = player.hasCompletedQuest("bootship")
@@ -751,7 +758,7 @@ function namje_byos.init_byos()
         player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
         player.giveItem("namje_enablebyositem")
     else
-        local ship = namje_byos.register_new_ship(1, "namje_startership", "testship", "testicon")
+        local ship = namje_byos.register_new_ship(1, "namje_startership", "testship", "/interface/bookmarks/icons/ship.png")
         --namje_byos.change_ships_from_config("namje_startership", true)
         player.giveItem("shiplicense_namje_aomkellion") --TODO: testing only, remove later
     end

@@ -13,5 +13,5 @@ function onInteraction(args)
   end
 
   local interact_data = config.getParameter("interactData")
-  return { "OpenCraftingInterface", interact_data }
+  return { "ScriptPane", interact_data.gui }
 end

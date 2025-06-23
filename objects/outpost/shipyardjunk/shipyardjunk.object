@@ -51,7 +51,7 @@
   ],
 
   "interactData" : {
-    "config" : "/interface/windowconfig/craftingfurniturestore.config"
+    "gui" : "/interface/namje_shipservice/namje_shipservice.config"
   },
 
   "scripts" : [ "/objects/outpost/shipyardjunk/namje_shipyardservice.lua" ],

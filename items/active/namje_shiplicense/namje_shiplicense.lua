@@ -22,7 +22,8 @@ function activate()
 		end]]
 		animator.playSound("activate")
 
-		activeItem.interact("ScriptPane", "/interface/scripted/namje_shiplicense/namje_ship_swap_confirm.config", entity.id())
+		--activeItem.interact("ScriptPane", "/interface/scripted/namje_shiplicense/namje_ship_swap_confirm.config", entity.id())
+		activeItem.interact("ScriptPane", "/interface/namje_shipselect/namje_shipselect.config", entity.id())
 	end
 end
 
