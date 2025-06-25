@@ -3,6 +3,7 @@
   "shortdescription" : "Leftover Cargo",
   "description" : "Leftover cargo scrounged from your previous ship. ^red;This may drop a lot of items.^reset;",
   "rarity" : "essential",
+  "twoHanded" : true,
   "tooltipFields" : {
     "rarityLabel" : ""
   },

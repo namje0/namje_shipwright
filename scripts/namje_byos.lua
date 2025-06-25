@@ -67,11 +67,27 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
 
     sb.logInfo("namje // registered new ship in slot " .. slot .. " with " .. ship_type)
     player.setProperty("namje_ships", ships)
-    sb.logInfo("%s", player.getProperty("namje_ships"))
     if player.getProperty("namje_current_ship", 1) == slot then
-        namje_byos.change_ships_from_config(ship_config.id, ship_config.id == "namje_startership" and true or false)
+        local intro = ship_config.id == "namje_startership" and true or false
+        if not intro then
+            local cinematic = "/cinematics/namje/shipswap.cinematic"
+            player.playCinematic(cinematic)
+        end
+        namje_byos.change_ships_from_config(ship_config.id, intro)
     end
-    return ship_slot
+
+    --overwrite refund
+    if old_info then
+        local old_config = namje_byos.get_ship_config(old_info.ship_id)
+        if not old_config then
+            sb.logInfo("namje // error while refunding: old ship config not found for " .. old_info.ship_id)
+            return
+        end
+        local refund = math.floor(old_config.price * 0.25) or 0
+        interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
+        player.addCurrency("money", refund)
+    end
+    return ships["slot_" .. slot]
 end
 
 --- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
@@ -152,13 +168,10 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         
         world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_hold_size)
 
-        local previous_ship = not init and namje_byos.ship_to_table(true) or nil
+        --local previous_ship = not init and namje_byos.ship_to_table(true) or nil
     
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
-            if previous_ship then
-                world.sendEntityMessage(ply, "namje_save_prev_ship", previous_ship)
-            end
             if #items > 0 then
                 world.sendEntityMessage(ply, "namje_give_cargo", items)
             end
@@ -758,7 +771,7 @@ function namje_byos.init_byos()
         player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
         player.giveItem("namje_enablebyositem")
     else
-        local ship = namje_byos.register_new_ship(1, "namje_startership", "testship", "/interface/bookmarks/icons/ship.png")
+        local ship = namje_byos.register_new_ship(1, "namje_startership", "^orange;Vagabond's Hope^reset;", "/interface/bookmarks/icons/ship.png")
         --namje_byos.change_ships_from_config("namje_startership", true)
         player.giveItem("shiplicense_namje_aomkellion") --TODO: testing only, remove later
     end
