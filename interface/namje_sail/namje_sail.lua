@@ -6,7 +6,7 @@ local tabs = {
     {"main.missions", "main.missions.mission_select.mission_list", "main.missions.mission_info"},
     {"main.home"},
     {"main.crew", "main.crew.crew_select.crew_list", "main.crew.crew_info"},
-    {"main.ship_info"},
+    {"main.ships", "main.ships.ship_select.ship_list", "main.ships.ship_info"},
     {"main.settings"}
 }
 local typing_sound = "/sfx/interface/aichatter1_loop.ogg"
@@ -161,7 +161,7 @@ function refresh_crew()
             crew = result 
         end, 
         function(err) 
-            sb.logInfo("namje // crew promise error: ".. err) 
+            sb.logInfo("namje // crew promise error: ".. err)
         end
     )
 end
@@ -176,7 +176,7 @@ function swap_tabs(tab)
             crew_tab()
         end
     elseif tab == "show_ship_info" then
-        if swap_to_tab("main.ship_info") then
+        if swap_to_tab("main.ships") then
             ship_tab()
         end
     elseif tab == "show_settings" then
@@ -256,27 +256,106 @@ function home_tab()
 end
 
 function ship_tab()
-    local ship_info = namje_byos.get_ship_info()
-    local ship_config = namje_byos.get_ship_config(ship_info.ship_id)
+    local shipslot_info = tabs[4][3]
+    local ship_list = tabs[4][2]
 
-    local formatted_info = string.format(theme_format(localization.ship_info), 
-        ship_config.name,
-        ship_config.manufacturer,
-        ship_info.stats.fuel_amount .. "/" .. ship_config.base_stats.max_fuel,
-        ship_info.stats.crew_amount .. "/" .. ship_config.base_stats.crew_size,
-        #ship_info.stats.cargo_hold .. "/" .. ship_config.atelier_stats.cargo_hold_size,
-        ship_config.base_stats.fuel_efficiency,
-        ship_config.base_stats.max_fuel,
-        ship_config.base_stats.ship_speed,
-        ship_config.atelier_stats.cargo_hold_size,
-        ship_config.base_stats.crew_size
-    )
+    last_selected_widget = nil
+
     namje_ai_typer.clear_queue()
-    update_directory({"ship_info"})
+    update_directory({"ships"})
 
-    --TODO: make them separate text boxes in the case of ship name/manufacturer overflow
-    widget.setText("main.ship_info.info_area.info", formatted_info)
-    --namje_ai_typer.push_request("main.ship_info.info_area.info", formatted_info, 2, "unique", nil)
+    widget.setText(shipslot_info .. ".stats_1", "")
+    widget.setText(shipslot_info .. ".stats_num_1", "")
+    widget.setText(shipslot_info .. ".stats_2", "")
+    widget.setText(shipslot_info .. ".stats_num_2", "")
+    widget.clearListItems(ship_list)
+    widget.setButtonEnabled(shipslot_info .. ".dismiss_crew", false)
+    namje_ai_typer.push_request(shipslot_info .. ".description",  theme_format(localization.ship_info), 2, "talk", nil)
+
+    local player_ships = player.getProperty("namje_ships", {})
+
+    for slot, ship in pairs(player_ships) do
+        sb.logInfo("namje // ship slot: %s", ship)
+        local ship_info = ship.ship_info
+        if ship_info then
+            local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
+            local list_item = ship_list .. "."..widget.addListItem(ship_list)
+            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.stats.name)
+            widget.setText(list_item..".item_model", "^" .. current_theme.os_text_color .. ";" .. (ship_config and ship_config.name or ""))
+            widget.setImage(list_item..".item_icon", ship_info.stats.icon or "/namje_ships/ship_icons/generic_1.png")
+            widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
+            widget.setData(list_item, { slot })
+        end
+    end
+end
+
+function select_ship()
+    local shipslot_info = tabs[4][3]
+    local ship_list = tabs[4][2]
+    local selected_ship = widget.getListSelected(ship_list)
+
+    if not selected_ship then
+        return
+    end
+
+    local ship_slot = widget.getData(ship_list .. "." .. selected_ship)[1]
+
+    if not ship_slot then
+        return
+    end
+
+    local player_ships = player.getProperty("namje_ships", {})
+    local ship_data = player_ships[ship_slot]
+
+    if last_selected_widget then
+        widget.setImage(ship_list .. "." .. last_selected_widget .. ".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
+    end
+    widget.setImage(ship_list .. "." .. selected_ship .. ".item_background", current_theme.list_item_bg_select or sail_themes["default"].list_item_bg_select)
+
+    namje_ai_typer.clear_queue()
+    widget.setText(shipslot_info .. ".description", "")
+    widget.setText(shipslot_info .. ".stats_1", "")
+    widget.setText(shipslot_info .. ".stats_num_1", "")
+    widget.setText(shipslot_info .. ".stats_2", "")
+    widget.setText(shipslot_info .. ".stats_num_2", "")
+
+    local ship_info = ship_data.ship_info
+    if ship_info then
+        update_directory({"ship", string.lower(string.gsub(ship_info.stats.name, " ", "")) .. ".ship"})
+        local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
+        local stats_1 = string.format(
+            "^os_text_color;%s%%\n%s\n%s\n%s\n%s", 
+            math.floor(ship_config.base_stats.fuel_efficiency*10),
+            ship_config.base_stats.max_fuel,
+            ship_config.base_stats.ship_speed,
+            ship_config.base_stats.crew_size, 
+            ship_config.atelier_stats.cargo_hold_size
+        )
+        local stats_2 = string.format(
+            "^os_text_color;%s\n%s\n%s\n%s", 
+            #ship_info.stats.cargo_hold,
+            ship_info.stats.fuel_amount,
+            ship_info.stats.crew_amount,
+            0 
+        )
+
+        namje_ai_typer.push_request(shipslot_info .. ".stats_1", theme_format(localization.ship_stats_1), 2, "talk", nil)
+        namje_ai_typer.push_request(shipslot_info .. ".stats_num_1", theme_format(stats_1), 2, "talk", nil)
+        namje_ai_typer.push_request(shipslot_info .. ".stats_2", theme_format(localization.ship_stats_2), 2, "talk", nil)
+        namje_ai_typer.push_request(shipslot_info .. ".stats_num_2", theme_format(stats_2), 2, "talk", nil)
+
+    end
+    --[[
+    local member_desc = member_data.description
+    member_desc = string.gsub(member_desc, "cyan", current_theme.accent_text_color)
+
+    namje_ai_typer.clear_queue()
+    namje_ai_typer.push_request(ship_info..".description", member_desc, 2, "idle", nil)
+
+    widget.setText(ship_info..".description", member_data.description)
+    widget.setButtonEnabled(ship_info .. ".dismiss_crew", true)
+    ]]
+    last_selected_widget = selected_ship
 end
 
 function settings_tab()
