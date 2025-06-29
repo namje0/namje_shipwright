@@ -28,31 +28,13 @@ function init() ini()
             return copied_table
         end
 
-        local ship_info = namje_byos.get_ship_info()
-        ship_info.stats.cargo_hold = deep_copy(cargo_hold)
-        sb.logInfo("new shipinfo: %s", ship_info)
-        player.setProperty("namje_ship_info", ship_info)
-    end)
-
-    message.setHandler("namje_upd_shipinfo_from_config", function(_, _, ship_id)
-        local ship_info = namje_byos.get_ship_info()
-        local new_ship_info = {
-            ship_id = ship_id,
-            stats = {
-                name = ship_info.stats.name,
-                crew_amount = ship_info.stats.crew_amount,
-                cargo_hold = ship_info.stats.cargo_hold,
-                fuel_amount = ship_info.stats.fuel_amount
-            },
-            upgrades = {
-                fuel_efficiency = 0,
-                max_fuel = 0,
-                ship_speed = 0,
-                crew_size = 0,
-                cargo_size = 0
-            }
-        }
-        player.setProperty("namje_ship_info", new_ship_info)
+        local slot = player.getProperty("namje_current_ship", 1)
+        local ship_stats = namje_byos.get_stats(slot)
+        if not ship_stats then
+            sb.logInfo("namje // no ship stats found for slot %s", slot)
+            return
+        end
+        namje_byos.set_stats(slot, {["cargo_hold"] = deep_copy(cargo_hold)})
     end)
 
     message.setHandler("namje_get_shipinfo", function(_, _, ship) 

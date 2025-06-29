@@ -37,7 +37,10 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         error("namje // slot " .. slot .. " not found in namje_ships")
     end
 
-    local old_info = nil
+    local old_stats, old_info
+    if ship_slot.stats then
+        old_stats = ship_slot.stats
+    end
     if ship_slot.ship_info then
         old_info = ship_slot.ship_info
     end
@@ -45,22 +48,21 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
     local ship_data = {
         ship_info = {
             ship_id = ship_config.id,
-            stats = {
-                name = name or "Unnamed Ship",
-                icon = icon or "/interface/bookmarks/icons/ship.png",
-                crew_amount = old_info and old_info.stats.crew_amount or 0,
-                cargo_hold = old_info and old_info.stats.cargo_hold or {},
-                fuel_amount = old_info and old_info.stats.fuel_amount or 0
-            },
-            upgrades = {
-                fuel_efficiency = 0,
-                max_fuel = 0,
-                ship_speed = 0,
-                crew_size = 0,
-                cargo_size = 0
-            }
+            name = name or "Unnamed Ship",
+            icon = icon or "/interface/bookmarks/icons/ship.png"
         },
-        ship = {}
+        stats = {
+            crew_amount = old_stats and old_stats.crew_amount or 0,
+            cargo_hold = old_stats and old_stats.cargo_hold or {},
+            fuel_amount = old_stats and old_stats.fuel_amount or 0
+        },
+        upgrades = {
+            fuel_efficiency = 0,
+            max_fuel = 0,
+            ship_speed = 0,
+            crew_size = 0,
+            cargo_size = 0
+        }
     }
 
     ships["slot_" .. slot] = ship_data
@@ -119,35 +121,66 @@ function namje_byos.set_current_ship(slot)
     return player.setProperty("namje_current_ship", slot)
 end
 
-function namje_byos.get_ship_info()
-    local default = {
-        ship_id = "namje_startership",
-        stats = {
-            crew_amount = 0,
-            cargo_hold = {},
-            fuel_amount = 0
-        },
-        upgrades = {
-            fuel_efficiency = 0,
-            max_fuel = 0,
-            ship_speed = 0,
-            crew_size = 0
-        }
-    }
-
-    if world.isClient() then
-        return player.getProperty("namje_ship_info", default)
-    else
-        error("namje // get_ship_info cannot be called on server")
+--- returns the stats table for the ship in the given slot
+--- @param slot number
+--- @return table
+function namje_byos.get_stats(slot)
+    local ships = player.getProperty("namje_ships", {})
+    if not ships or not ships["slot_" .. slot] then
+        sb.logInfo("namje // no ship found in slot " .. slot)
+        return nil
     end
+    local ship = ships["slot_" .. slot]
+    return ship.stats or nil
 end
 
-function namje_byos.set_ship_info(player_id, ship_info)
-    if world.isClient() then
-        player.setProperty("namje_ship_info", ship_info)
-    else
-        world.sendEntityMessage(player_id, "namje_set_shipinfo")
+--- sets the stats for the given ship slot. stats should be a table with the keys matching the ship stats. returns the updated stats table or nil if the slot does not exist
+--- @param slot number
+--- @param stats table
+--- @return table
+function namje_byos.set_stats(slot, stats)
+    local ship_stats = namje_byos.get_stats(slot)
+    if not ship_stats then
+        return nil
     end
+    for stat, value in pairs(stats) do
+        if ship_stats[stat] ~= nil then
+            ship_stats[stat] = value
+        else
+            sb.logInfo("namje // tried to set unknown stat " .. stat .. " for ship in slot " .. slot)
+        end
+    end
+    local ships = player.getProperty("namje_ships", {})
+    local ship = ships["slot_" .. slot]
+    ship.stats = ship_stats
+    player.setProperty("namje_ships", ships)
+    return ship_stats
+end
+
+--- returns the upgrades table for the ship in the given slot
+--- @param slot number
+--- @return table
+function namje_byos.get_upgrades(slot)
+    local ships = player.getProperty("namje_ships", {})
+    if not ships or not ships["slot_" .. slot] then
+        sb.logInfo("namje // no ship found in slot " .. slot)
+        return nil
+    end
+    local ship = ships["slot_" .. slot]
+    return ship.upgrades or nil
+end
+
+--- returns the ship_info table for the ship in the given slot
+--- @param slot number
+--- @return table
+function namje_byos.get_ship_info(slot)
+    local ships = player.getProperty("namje_ships", {})
+    if not ships or not ships["slot_" .. slot] then
+        sb.logInfo("namje // no ship found in slot " .. slot)
+        return nil
+    end
+    local ship = ships["slot_" .. slot]
+    return ship.ship_info or nil
 end
 
 function namje_byos.change_ships_from_config(ship_type, init, ...)
@@ -200,8 +233,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
             for _, entity_id in ipairs(entities) do
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
-
-            world.sendEntityMessage(ply, "namje_upd_shipinfo_from_config", ship_config.id)
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
             --TODO: revert to previous_ship
@@ -239,8 +270,6 @@ function namje_byos.change_ships_from_table(ship, ply)
                     world.sendEntityMessage(player, "namje_moveToShipSpawn")
                 end
             end
-
-            world.sendEntityMessage(ply, "namje_upd_shipinfo_from_config", ship[2].ship_id)
         else
             sb.logInfo("namje === ship load failed: " .. err)
         end

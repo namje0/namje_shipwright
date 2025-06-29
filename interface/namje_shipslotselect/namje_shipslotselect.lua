@@ -33,9 +33,9 @@ function populate_ship_list()
       local ship_info = ship.ship_info
       local ship_config = ship_info and namje_byos.get_ship_config(ship_info.ship_id) or nil
       local list_item = scroll_area.."."..widget.addListItem(scroll_area)
-      widget.setText(list_item..".name", ship_info and ship_info.stats.name or "Empty Slot")
+      widget.setText(list_item..".name", ship_info and ship_info.name or "Empty Slot")
       widget.setText(list_item..".model", ship_config and ship_config.name or "")
-      widget.setImage(list_item..".icon", ship_info and ship_info.stats.icon or "")
+      widget.setImage(list_item..".icon", ship_info and ship_info.icon or "")
       widget.setData(list_item, {slot})
     end
   end

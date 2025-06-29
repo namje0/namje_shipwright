@@ -29,20 +29,29 @@ function init() ini()
 end
 
 function update(dt) original_upd(dt)
-    if on_own_ship then
-        --upd crew in info
-        local crew_amt = #playerCompanions.getCompanions("crew")
-        local ship_info = namje_byos.get_ship_info()
-        if ship_info.stats.crew_amount ~= crew_amt then
-            ship_info.stats.crew_amount = crew_amt
-            player.setProperty("namje_ship_info", ship_info)
-        end
+    if not on_own_ship then
+        return
+    end
+    --upd crew in info
+    local player_ships = player.getProperty("namje_ships", {})
+    local slot = player.getProperty("namje_current_ship")
+    local ship_stats = namje_byos.get_stats(slot)
+    if not ship_stats then
+        return
+    end
+    local crew_amt = #playerCompanions.getCompanions("crew")
+    if ship_stats.crew_amount ~= crew_amt then
+        namje_byos.set_stats(slot, {["crew_amount"] = crew_amt})
     end
 end
 
 --thanks to Silver Sokolova for assistance
 function updateShipUpgrades() original_ship_upgrades()
-    local ship_info = namje_byos.get_ship_info()
+    local slot = player.getProperty("namje_current_ship", 1)
+    local ship_info = namje_byos.get_ship_info(slot)
+    if not ship_info then
+        return
+    end
     local ship_config = namje_byos.get_ship_config(ship_info.ship_id)
     if not ship_config then
         --TODO: check if the player has the BYOS enabling item, then give them it if they dont

@@ -58,12 +58,14 @@ function update(dt)
     if on_own_ship then
         --upd fuel in info
         local fuel = world.getProperty("ship.fuel")
-        local ship_info = namje_byos.get_ship_info()
-        if ship_info.stats.fuel_amount ~= fuel then
-            ship_info.stats.fuel_amount = fuel
-            player.setProperty("namje_ship_info", ship_info)
+        local slot = player.getProperty("namje_current_ship", 1)
+        local ship_stats = namje_byos.get_stats(slot)
+        if not ship_stats then
+            return
         end
-        --upd cargohold in info
+        if ship_stats.fuel_amount ~= fuel then
+            namje_byos.set_stats(slot, {["fuel_amount"] = fuel})
+        end
     end
 end
 

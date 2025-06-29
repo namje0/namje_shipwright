@@ -280,9 +280,9 @@ function ship_tab()
         if ship_info then
             local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
             local list_item = ship_list .. "."..widget.addListItem(ship_list)
-            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.stats.name)
+            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name)
             widget.setText(list_item..".item_model", "^" .. current_theme.os_text_color .. ";" .. (ship_config and ship_config.name or ""))
-            widget.setImage(list_item..".item_icon", ship_info.stats.icon or "/namje_ships/ship_icons/generic_1.png")
+            widget.setImage(list_item..".item_icon", ship_info.icon or "/namje_ships/ship_icons/generic_1.png")
             widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
             widget.setData(list_item, { slot })
         end
@@ -320,8 +320,9 @@ function select_ship()
     widget.setText(shipslot_info .. ".stats_num_2", "")
 
     local ship_info = ship_data.ship_info
+    local ship_stats = ship_data.stats
     if ship_info then
-        update_directory({"ship", string.lower(string.gsub(ship_info.stats.name, " ", "")) .. ".ship"})
+        update_directory({"ship", string.lower(string.gsub(ship_info.name, " ", "")) .. ".ship"})
         local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
         local stats_1 = string.format(
             "^os_text_color;%s%%\n%s\n%s\n%s\n%s", 
@@ -333,9 +334,9 @@ function select_ship()
         )
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s", 
-            #ship_info.stats.cargo_hold,
-            ship_info.stats.fuel_amount,
-            ship_info.stats.crew_amount,
+            #ship_stats.cargo_hold,
+            ship_stats.fuel_amount,
+            ship_stats.crew_amount,
             0 
         )
 
