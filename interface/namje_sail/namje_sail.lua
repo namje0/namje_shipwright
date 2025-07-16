@@ -21,6 +21,8 @@ local static_frame = 0
 local scan_frame = 0
 local speaker_frame = 0
 
+local swap_confirm = false
+
 function init()
     promise = PromiseKeeper.new()
     player_save = player.save()
@@ -269,7 +271,10 @@ function ship_tab()
     widget.setText(shipslot_info .. ".stats_2", "")
     widget.setText(shipslot_info .. ".stats_num_2", "")
     widget.clearListItems(ship_list)
-    widget.setButtonEnabled(shipslot_info .. ".dismiss_crew", false)
+    widget.setButtonEnabled(shipslot_info .. ".swap_ship", false)
+    widget.setButtonEnabled(shipslot_info .. ".salvage_ship", false)
+    widget.setButtonEnabled(shipslot_info .. ".favorite_ship", false)
+    --widget.setVisible(shipslot_info .. ".swap_ship", false)
     namje_ai_typer.push_request(shipslot_info .. ".description",  theme_format(localization.ship_info), 2, "talk", nil)
 
     local player_ships = player.getProperty("namje_ships", {})
@@ -280,11 +285,11 @@ function ship_tab()
         if ship_info then
             local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
             local list_item = ship_list .. "."..widget.addListItem(ship_list)
-            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name)
+            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or ""))
             widget.setText(list_item..".item_model", "^" .. current_theme.os_text_color .. ";" .. (ship_config and ship_config.name or ""))
             widget.setImage(list_item..".item_icon", ship_info.icon or "/namje_ships/ship_icons/generic_1.png")
             widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
-            widget.setData(list_item, { slot })
+            widget.setData(list_item, { tonumber(string.match(slot, "slot_(%d)")) })
         end
     end
 end
@@ -305,12 +310,16 @@ function select_ship()
     end
 
     local player_ships = player.getProperty("namje_ships", {})
-    local ship_data = player_ships[ship_slot]
+    local ship_data = player_ships["slot_" .. ship_slot]
+
+    swap_confirm = false
+    widget.setText(shipslot_info .. ".swap_ship", "SWAP")
 
     if last_selected_widget then
         widget.setImage(ship_list .. "." .. last_selected_widget .. ".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
     end
     widget.setImage(ship_list .. "." .. selected_ship .. ".item_background", current_theme.list_item_bg_select or sail_themes["default"].list_item_bg_select)
+    widget.setVisible(shipslot_info .. ".swap_ship", true)
 
     namje_ai_typer.clear_queue()
     widget.setText(shipslot_info .. ".description", "")
@@ -319,11 +328,11 @@ function select_ship()
     widget.setText(shipslot_info .. ".stats_2", "")
     widget.setText(shipslot_info .. ".stats_num_2", "")
 
-    local ship_info = ship_data.ship_info
-    local ship_stats = ship_data.stats
-    if ship_info then
-        update_directory({"ship", string.lower(string.gsub(ship_info.name, " ", "")) .. ".ship"})
+    local ship_info = namje_byos.get_ship_info(ship_slot)
+    local ship_stats = namje_byos.get_stats(ship_slot)
+    if ship_info and ship_stats then
         local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
+        local current_slot = player.getProperty("namje_current_ship", 1)
         local stats_1 = string.format(
             "^os_text_color;%s%%\n%s\n%s\n%s\n%s", 
             math.floor(ship_config.base_stats.fuel_efficiency*10),
@@ -340,23 +349,89 @@ function select_ship()
             0 
         )
 
+        update_directory({"ship", string.lower(string.gsub(ship_info.name, " ", "")) .. ".ship"})
         namje_ai_typer.push_request(shipslot_info .. ".stats_1", theme_format(localization.ship_stats_1), 2, "talk", nil)
         namje_ai_typer.push_request(shipslot_info .. ".stats_num_1", theme_format(stats_1), 2, "talk", nil)
         namje_ai_typer.push_request(shipslot_info .. ".stats_2", theme_format(localization.ship_stats_2), 2, "talk", nil)
         namje_ai_typer.push_request(shipslot_info .. ".stats_num_2", theme_format(stats_2), 2, "talk", nil)
 
+        widget.setButtonEnabled(shipslot_info .. ".favorite_ship", true)
+        if string.find(ship_slot, tostring(current_slot)) then
+            local favorite = not ship_info.favorited
+            widget.setButtonEnabled(shipslot_info .. ".swap_ship", false)
+            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", favorite)
+        else
+            widget.setButtonEnabled(shipslot_info .. ".swap_ship", true)
+            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", false)
+        end
     end
-    --[[
-    local member_desc = member_data.description
-    member_desc = string.gsub(member_desc, "cyan", current_theme.accent_text_color)
-
-    namje_ai_typer.clear_queue()
-    namje_ai_typer.push_request(ship_info..".description", member_desc, 2, "idle", nil)
-
-    widget.setText(ship_info..".description", member_data.description)
-    widget.setButtonEnabled(ship_info .. ".dismiss_crew", true)
-    ]]
     last_selected_widget = selected_ship
+end
+
+function swap_ship()
+    local shipslot_info = tabs[4][3]
+    local ship_list = tabs[4][2]
+    local selected_ship = widget.getListSelected(ship_list)
+
+    if not swap_confirm then
+        swap_confirm = true
+        widget.setText(shipslot_info .. ".swap_ship", "CONFIRM")
+        return
+    end
+
+    if not selected_ship then
+        return
+    end
+
+    local ship_slot = widget.getData(ship_list .. "." .. selected_ship)[1]
+
+    if not ship_slot then
+        return
+    end
+
+    local player_ships = player.getProperty("namje_ships", {})
+    local ship_data = player_ships["slot_" .. ship_slot]
+
+    if not ship_data or not ship_data.ship_info then
+        return
+    end
+
+    sb.logInfo("namje // swapping ship to slot: %s", ship_slot)
+    sb.logInfo("namje // ship data: %s", ship_data)
+    namje_byos.swap_ships(ship_slot)
+end
+
+function favorite_ship()
+    local shipslot_info = tabs[4][3]
+    local ship_list = tabs[4][2]
+    local selected_ship = widget.getListSelected(ship_list)
+
+    if not selected_ship then
+        return
+    end
+
+    local ship_slot = widget.getData(ship_list .. "." .. selected_ship)[1]
+
+    if not ship_slot then
+        return
+    end
+    local current_slot = player.getProperty("namje_current_ship", 1)
+    local ship_info = namje_byos.get_ship_info(ship_slot)
+    if not ship_info then
+        return
+    end
+
+    ship_info.favorited = not ship_info.favorited
+    sb.logInfo("favorite %s", ship_info.favorited)
+    namje_byos.set_ship_info(ship_slot, {["favorited"] = ship_info.favorited})
+    widget.setText(ship_list .. "." .. selected_ship .. ".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or ""))
+    if current_slot == ship_slot then
+        widget.setButtonEnabled(shipslot_info .. ".salvage_ship", not ship_info.favorited)
+    end
+end
+
+function salvage_ship()
+    interface.queueMessage("Ship salvaging currently unavailable.")
 end
 
 function settings_tab()

@@ -19,7 +19,7 @@ function receive_item(_, _, args, world_id)
         return
     end
 
-    local cargo_hold = world.getProperty("namje_cargo_hold") or {}
+    local cargo_hold = world.getProperty("namje_cargo_hold", {})
     if #cargo_hold <= 0 then
         return
     end

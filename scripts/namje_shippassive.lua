@@ -57,6 +57,7 @@ function update(dt)
 
     if on_own_ship then
         --upd fuel in info
+        --TODO: compare fuel to last_fuel variable first, so we dont need to call get_stats everytime
         local fuel = world.getProperty("ship.fuel")
         local slot = player.getProperty("namje_current_ship", 1)
         local ship_stats = namje_byos.get_stats(slot)

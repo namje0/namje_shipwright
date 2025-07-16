@@ -4,6 +4,7 @@ require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/rect.lua"
 require "/scripts/messageutil.lua"
+require "/scripts/namje_util.lua"
 
 namje_byos = {}
 namje_byos.fu_enabled = nil
@@ -21,20 +22,20 @@ local PLAYER_SHIP_CAP = 3
 --- @return table
 function namje_byos.register_new_ship(slot, ship_type, name, icon)
     if world.isServer() then
-        error("namje // register_new_ship cannot be called on server")
+        error("namje_byos.register_new_ship // register_new_ship cannot be called on server")
     end
 
     local ship_config = namje_byos.get_ship_config(ship_type)
     local ships = player.getProperty("namje_ships")
     if not ships or not ship_config then
-        error("namje // missing namje_ships property or namje_ship_config for " .. ship_type)
+        error("namje_byos.register_new_ship // missing namje_ships property or namje_ship_config for " .. ship_type)
     end
     if ship_config.id ~= ship_type then
-        error("namje // ship config does not match ship type " .. ship_type)
+        error("namje_byos.register_new_ship // ship config does not match ship type " .. ship_type)
     end
     local ship_slot = ships["slot_" .. slot]
     if not ship_slot then
-        error("namje // slot " .. slot .. " not found in namje_ships")
+        error("namje_byos.register_new_ship // slot " .. slot .. " not found in namje_ships")
     end
 
     local old_stats, old_info
@@ -49,12 +50,13 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         ship_info = {
             ship_id = ship_config.id,
             name = name or "Unnamed Ship",
-            icon = icon or "/interface/bookmarks/icons/ship.png"
+            icon = icon or "/interface/bookmarks/icons/ship.png",
+            favorited = false
         },
         stats = {
             crew_amount = old_stats and old_stats.crew_amount or 0,
             cargo_hold = old_stats and old_stats.cargo_hold or {},
-            fuel_amount = old_stats and old_stats.fuel_amount or 0
+            fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500)
         },
         upgrades = {
             fuel_efficiency = 0,
@@ -67,7 +69,6 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
 
     ships["slot_" .. slot] = ship_data
 
-    sb.logInfo("namje // registered new ship in slot " .. slot .. " with " .. ship_type)
     player.setProperty("namje_ships", ships)
     if player.getProperty("namje_current_ship", 1) == slot then
         local intro = ship_config.id == "namje_startership" and true or false
@@ -92,6 +93,46 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
     return ships["slot_" .. slot]
 end
 
+function namje_byos.swap_ships(new_slot)
+    if world.isServer() then
+        error("namje_byos.swap_ships // swap_ships cannot be called on server")
+    end
+
+    local current_slot = player.getProperty("namje_current_ship", 1)
+    local player_ships = player.getProperty("namje_ships", {})
+    local ship_data = player_ships["slot_" .. new_slot]
+    if not ship_data then
+        sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
+        return
+    end
+    local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
+
+    local ship_info = namje_byos.get_ship_info(new_slot)
+    local ship_stats = namje_byos.get_stats(new_slot)
+    if not ship_info or not ship_stats then
+        error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
+        return
+    end
+
+    -- default to config ship
+    if isEmpty(ship_content) then
+        local cinematic = "/cinematics/namje/shipswap.cinematic"
+        player.playCinematic(cinematic)
+        namje_byos.change_ships_from_config(ship_info.ship_id, false)
+    else
+
+    end
+    
+    local previous_ship_stats = namje_byos.get_stats(current_slot)
+    if previous_ship_stats then
+        namje_byos.set_stats(current_slot, {["fuel_amount"] = previous_ship_stats.fuel_amount, ["cargo_hold"] = namje_util.deep_copy(previous_ship_stats.cargo_hold)})
+    end
+
+    namje_byos.set_current_ship(new_slot)
+    world.setProperty("ship.fuel", ship_stats.fuel_amount)
+    world.setProperty("namje_cargo_hold", namje_util.deep_copy(ship_stats.cargo_hold))
+end
+
 --- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
 --- @param num number
 --- @return table
@@ -108,6 +149,7 @@ function namje_byos.add_ship_slots(num)
         end
     end
     player.setProperty("namje_ships", ships)
+    player.setProperty("namje_slot_" .. num .. "_shipcontent", {})
     return ships
 end
 
@@ -181,6 +223,29 @@ function namje_byos.get_ship_info(slot)
     end
     local ship = ships["slot_" .. slot]
     return ship.ship_info or nil
+end
+
+--- sets the ship_info for the given ship slot. ship_info should be a table with the keys matching the ship info. returns the updated ship_info table or nil if the slot does not exist
+--- @param slot number
+--- @param info table
+--- @return table
+function namje_byos.set_ship_info(slot, info)
+    local ship_info = namje_byos.get_ship_info(slot)
+    if not ship_info then
+        return nil
+    end
+    for key, value in pairs(info) do
+        if ship_info[key] ~= nil then
+            ship_info[key] = value
+        else
+            sb.logInfo("namje // tried to set unknown info " .. key .. " for ship in slot " .. slot)
+        end
+    end
+    local ships = player.getProperty("namje_ships", {})
+    local ship = ships["slot_" .. slot]
+    ship.ship_info = ship_info
+    player.setProperty("namje_ships", ships)
+    return ship_info
 end
 
 function namje_byos.change_ships_from_config(ship_type, init, ...)
@@ -800,7 +865,7 @@ function namje_byos.init_byos()
         player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
         player.giveItem("namje_enablebyositem")
     else
-        local ship = namje_byos.register_new_ship(1, "namje_startership", "^orange;Vagabond's Hope^reset;", "/interface/bookmarks/icons/ship.png")
+        local ship = namje_byos.register_new_ship(1, "namje_startership", "^orange;¤ Vagabond's Hope^reset;", "/interface/bookmarks/icons/ship.png")
         --namje_byos.change_ships_from_config("namje_startership", true)
         player.giveItem("shiplicense_namje_aomkellion") --TODO: testing only, remove later
     end

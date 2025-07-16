@@ -1,4 +1,5 @@
-require("/scripts/namje_byos.lua")
+require "/scripts/namje_byos.lua"
+require "/scripts/namje_util.lua"
 
 local ini = init or function() end
 
@@ -15,26 +16,13 @@ function init() ini()
     end)
 
     message.setHandler("namje_upd_cargoinfo", function(_, _, cargo_hold)
-        function deep_copy(original_table)
-            local copied_table = {}
-            for key, value in pairs(original_table) do
-                if type(value) == "table" then
-                    copied_table[key] = deep_copy(value)
-                else
-                    copied_table[key] = value
-                end
-            end
-
-            return copied_table
-        end
-
         local slot = player.getProperty("namje_current_ship", 1)
         local ship_stats = namje_byos.get_stats(slot)
         if not ship_stats then
             sb.logInfo("namje // no ship stats found for slot %s", slot)
             return
         end
-        namje_byos.set_stats(slot, {["cargo_hold"] = deep_copy(cargo_hold)})
+        namje_byos.set_stats(slot, {["cargo_hold"] = namje_util.deep_copy(cargo_hold)})
     end)
 
     message.setHandler("namje_get_shipinfo", function(_, _, ship) 
