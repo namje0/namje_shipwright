@@ -9,34 +9,27 @@
       {
       "drawables" : [
         {
-          "image" : "/cinematics/upgrading/upgrading.png:<frame>"
+          "image" : "/cinematics/namje/swap.png:<frame>"
         }
       ],
-      "animationFrames" : 15,
+      "animationFrames" : 48,
       "keyframes" : [
         {
-          "timecode" : 0,
-          "zoom" : 3.0,
-          "alpha" : 0,
-          "frame" : 0,
-          "position" : [510, 270]
-        },
-        {
-          "timecode" : 0.5,
-          "alpha" : 1.0,
+          "timecode" : 0.01,
+          "zoom" : 2.0,
+          "alpha" : 1,
           "frame" : 0,
           "position" : [510, 270]
         },
         {
           "timecode" : 4.2,
-          "alpha" : 1.0,
-          "frame" : 29,
+          "alpha" : 1,
           "position" : [510, 270]
         },
         {
           "timecode" : 4.7,
           "alpha" : 0,
-          "frame" : 29,
+          "frame" : 48,
           "position" : [510, 270]
         }
       ]
@@ -45,7 +38,7 @@
       "text" : "CHANGING SHIPS...",
       "fontSize" : 24,
       "textPosition" : {
-        "position" : [-75, -100],
+        "position" : [-75, -130],
         "hAnchor" : "mid",
         "vAnchor" : "mid",
         "wrapWidth" : 400
@@ -105,18 +98,6 @@
     }
   ],
   "audio" : [
-    {
-      "timecode" : 0.5,
-      "resource" : "/sfx/objects/penguin_welding5.ogg"
-    },
-    {
-      "timecode" : 1.5,
-      "resource" : "/sfx/objects/penguin_welding4.ogg"
-    },
-    {
-      "timecode" : 2.8,
-      "resource" : "/sfx/objects/penguin_welding2.ogg"
-    },
     {
       "timecode" : 0.5,
       "endTimecode" : 3,
