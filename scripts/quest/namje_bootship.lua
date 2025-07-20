@@ -51,7 +51,9 @@ function update(dt)
 
   if self.questComplete then
 	  world.sendEntityMessage(self.techstationUid, "activateShip")
-    player.giveItem("statustablet")
+    if namje_byos.is_fu() then
+      player.giveItem("statustablet")
+    end
     quest.complete()
   end
 

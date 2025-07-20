@@ -1,0 +1,10 @@
+
+{
+    "type" : "namje_initBYOS_stagehand",
+    "scripts" : [
+        "/stagehands/namje_ship/namje_initBYOS_stagehand.lua"
+    ],
+    "scriptDelta" : 1,
+    "uniqueId" : "namje_initBYOS_stagehand",
+    "shipDungeonId" : 10101
+}

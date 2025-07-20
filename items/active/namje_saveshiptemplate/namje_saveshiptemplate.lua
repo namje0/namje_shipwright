@@ -6,7 +6,7 @@ function uninit()
 end
 
 function init()
-	message.setHandler("namje_getSavedShip", function(_, _, ship)
+	message.setHandler("namje_get_saved_ship", function(_, _, ship)
 		sb.logInfo("namje // saved current shipworld on client")
 		root.setConfigurationPath("namje_ship_template", ship)
 		interface.queueMessage("^orange;namje_ship_template^reset; will be cleared on item unload, so copy it beforehand")
@@ -29,12 +29,12 @@ function activate()
 
 		if mode == "alt" then
 			animator.playSound("activate")
-			world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
-			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id(), true)
+			world.spawnStagehand({500, 500}, "namje_saveShip_stagehand")
+			world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), true)
 		else
 			animator.playSound("activate")
-			world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
-			world.sendEntityMessage("namje_saveShip_stagehand", "namje_saveShip", player.id(), false)
+			world.spawnStagehand({500, 500}, "namje_saveShip_stagehand")
+			world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), false)
 		end
 	end
 end

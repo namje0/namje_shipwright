@@ -2,8 +2,10 @@ require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
 
 local ini = init or function() end
+local swap_promise
 
 function init() ini()
+    swap_promise = PromiseKeeper.new()
     message.setHandler("namje_give_cargo", function(_, _, items) 
         local cargo_box = {
             name = "namje_cargobox",
@@ -15,14 +17,13 @@ function init() ini()
         player.giveItem(cargo_box)
     end)
 
-    message.setHandler("namje_get_saved_ship", function(_, _, serialized_ship)
-        sb.logInfo("get ship serialization on player")
-        if not serialized_ship or isEmpty(serialized_ship) then
-            error("namje // serialized_ship is empty or nil")
+    message.setHandler("namje_swap_ships", function(_, _, slot)
+        local ship_swap, err = pcall(namje_byos.swap_ships, slot, swap_promise)
+        if not ship_swap then
+            sb.logInfo("namje_sail // ship swap failed: %s", err)
+            interface.queueMessage("^red;There was an error while swapping ships")
         end
-        local current_slot = player.getProperty("namje_current_ship", 1)
-        player.setProperty("namje_slot_" .. current_slot .. "_shipcontent", serialized_ship)
-	end)
+    end)
 
     message.setHandler("namje_upd_cargoinfo", function(_, _, cargo_hold)
         local slot = player.getProperty("namje_current_ship", 1)
@@ -44,6 +45,7 @@ function init() ini()
 end
 
 function update(dt)
+    swap_promise:update()
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         if namje_byos.is_on_ship() then
             namje_byos.init_byos()

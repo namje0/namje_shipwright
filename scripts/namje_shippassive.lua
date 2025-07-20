@@ -72,7 +72,7 @@ end
 
 function move_to_ship_spawn()
     sb.logInfo("namje === move to ship spawn")
-    --[[local spawn = world.getProperty("namje_ship_spawn", {1024, 1024})
+    --[[local spawn = world.getProperty("namje_ship_spawn", {500, 500})
     mcontroller.setPosition(vec2.add(spawn, {0, 2}))]]
     player.warp("nowhere")
 end

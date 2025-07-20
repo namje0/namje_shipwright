@@ -278,14 +278,15 @@ function ship_tab()
     namje_ai_typer.push_request(shipslot_info .. ".description",  theme_format(localization.ship_info), 2, "talk", nil)
 
     local player_ships = player.getProperty("namje_ships", {})
+    local current_slot = player.getProperty("namje_current_ship", 1)
 
     for slot, ship in pairs(player_ships) do
-        sb.logInfo("namje // ship slot: %s", ship)
         local ship_info = ship.ship_info
         if ship_info then
             local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
             local list_item = ship_list .. "."..widget.addListItem(ship_list)
-            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or ""))
+            widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or "") 
+                .. (string.find(slot, tostring(current_slot)) and " ^yellow;[Current]^reset;" or ""))
             widget.setText(list_item..".item_model", "^" .. current_theme.os_text_color .. ";" .. (ship_config and ship_config.name or ""))
             widget.setImage(list_item..".item_icon", ship_info.icon or "/namje_ships/ship_icons/generic_1.png")
             widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
@@ -396,9 +397,17 @@ function swap_ship()
         return
     end
 
-    sb.logInfo("namje // swapping ship to slot: %s", ship_slot)
-    sb.logInfo("namje // ship data: %s", ship_data)
-    namje_byos.swap_ships(ship_slot)
+    world.sendEntityMessage(player.id(), "namje_swap_ships", ship_slot)
+    pane.dismiss()
+    
+    --[[
+    local ship_swap, err = pcall(namje_byos.swap_ships, ship_slot, promise)
+    if ship_swap then
+        --pane.dismiss()
+    else
+        sb.logInfo("namje_sail // ship swap failed: %s", err)
+        interface.queueMessage("^red;There was an error while swapping ships")
+    end]]
 end
 
 function favorite_ship()
@@ -424,7 +433,8 @@ function favorite_ship()
     ship_info.favorited = not ship_info.favorited
     sb.logInfo("favorite %s", ship_info.favorited)
     namje_byos.set_ship_info(ship_slot, {["favorited"] = ship_info.favorited})
-    widget.setText(ship_list .. "." .. selected_ship .. ".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or ""))
+    widget.setText(ship_list .. "." .. selected_ship .. ".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or "")
+        .. (string.find(ship_slot, tostring(current_slot)) and " ^yellow;[Current]^reset;" or ""))
     if current_slot == ship_slot then
         widget.setButtonEnabled(shipslot_info .. ".salvage_ship", not ship_info.favorited)
     end

@@ -79,58 +79,99 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         namje_byos.change_ships_from_config(ship_config.id, intro)
     end
 
-    --overwrite refund
+    --overwrite
     if old_info then
         local old_config = namje_byos.get_ship_config(old_info.ship_id)
         if not old_config then
-            sb.logInfo("namje // error while refunding: old ship config not found for " .. old_info.ship_id)
+            sb.logInfo("namje // error during overwrite: old ship config not found for " .. old_info.ship_id)
             return
         end
+
+        local previous_ship_content = player.getProperty("namje_slot_" .. slot .. "_shipcontent", {})
+        if not isEmpty(previous_ship_content) then
+            local items = {}
+            for _, chunk in pairs (previous_ship_content[2]) do
+                local objects = chunk[2][3]
+                for _, object in pairs (objects) do
+                    local object_data = object[2]
+                    local container_items = object_data[4] or nil
+                    if container_items then
+                        for slot, item in pairs (container_items) do
+                            --TODO: items within the same chunk duplicated?
+                            table.insert(items, item)
+                        end
+                    end
+                end
+            end
+            if not isEmpty(items) then
+                interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
+                world.sendEntityMessage(player.id(), "namje_give_cargo", items)
+            end
+        end
+
         local refund = math.floor(old_config.price * 0.25) or 0
         interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
         player.addCurrency("money", refund)
     end
+
+    player.setProperty("namje_slot_" .. slot .. "_shipcontent", {})
     return ships["slot_" .. slot]
 end
 
-function namje_byos.swap_ships(new_slot)
+function namje_byos.swap_ships(new_slot, promise)
     if world.isServer() then
         error("namje_byos.swap_ships // swap_ships cannot be called on server")
     end
 
-    local current_slot = player.getProperty("namje_current_ship", 1)
-    local player_ships = player.getProperty("namje_ships", {})
-    local ship_data = player_ships["slot_" .. new_slot]
-    if not ship_data then
-        sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
-        return
-    end
-    local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
-
-    local ship_info = namje_byos.get_ship_info(new_slot)
-    local ship_stats = namje_byos.get_stats(new_slot)
-    if not ship_info or not ship_stats then
-        error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
-        return
-    end
-
-    -- default to config ship
-    if isEmpty(ship_content) then
-        local cinematic = "/cinematics/namje/shipswap.cinematic"
-        player.playCinematic(cinematic)
-        namje_byos.change_ships_from_config(ship_info.ship_id, false)
-    else
-
-    end
+    world.spawnStagehand({500, 500}, "namje_saveShip_stagehand")
     
-    local previous_ship_stats = namje_byos.get_stats(current_slot)
-    if previous_ship_stats then
-        namje_byos.set_stats(current_slot, {["fuel_amount"] = previous_ship_stats.fuel_amount, ["cargo_hold"] = namje_util.deep_copy(previous_ship_stats.cargo_hold)})
-    end
+    promise:add(world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), false), 
+        function(serialized_ship)
+            local current_slot = player.getProperty("namje_current_ship", 1)
+            player.setProperty("namje_slot_" .. current_slot .. "_shipcontent", serialized_ship)
 
-    namje_byos.set_current_ship(new_slot)
-    world.setProperty("ship.fuel", ship_stats.fuel_amount)
-    world.setProperty("namje_cargo_hold", namje_util.deep_copy(ship_stats.cargo_hold))
+            local player_ships = player.getProperty("namje_ships", {})
+            local ship_data = player_ships["slot_" .. new_slot]
+            if not ship_data then
+                sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
+                return false
+            end
+            local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
+
+            local ship_info = namje_byos.get_ship_info(new_slot)
+            local ship_stats = namje_byos.get_stats(new_slot)
+            if not ship_info or not ship_stats then
+                error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
+            end
+
+            -- default to config ship
+            if isEmpty(ship_content) then
+                local cinematic = "/cinematics/namje/shipswap.cinematic"
+                player.playCinematic(cinematic)
+                namje_byos.change_ships_from_config(ship_info.ship_id, false)
+            else
+                local cinematic = "/cinematics/namje/shipswap.cinematic"
+                player.playCinematic(cinematic)
+                namje_byos.change_ships_from_table(ship_content)
+            end
+            
+            local prev_ship_stats = namje_byos.get_stats(current_slot)
+            if prev_ship_stats then
+                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, 
+                    ["cargo_hold"] = namje_util.deep_copy(prev_ship_stats.cargo_hold)})
+            end
+
+            namje_byos.set_current_ship(new_slot)
+            world.setProperty("ship.fuel", ship_stats.fuel_amount)
+            world.setProperty("namje_cargo_hold", namje_util.deep_copy(ship_stats.cargo_hold))
+            
+            return true
+        end, 
+        function(err) 
+            sb.logInfo("namje // swap promise error: ".. err)
+            return false
+        end
+    )
 end
 
 --- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
@@ -258,7 +299,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     end
 
     if world.isServer() then
-        local items = init and {} or namje_byos.get_ship_items()
         local args = ...
         local ply = init and args[1] or args
 
@@ -270,10 +310,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
-            if #items > 0 then
-                world.sendEntityMessage(ply, "namje_give_cargo", items)
-            end
-
             --create the shiplocker treasurepool on init
             --FU also fills the shiplocker (or a random container if there is none) so just skip that part if FU is enabled
             if init and not namje_byos.is_fu() then
@@ -293,8 +329,8 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
             
             --move crew (and any other monsters/animals) to new ship spawn
             --TODO: occasional bug where they dont get moved? try to replicate more
-            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {1024, 1024}), {0, 2})
-            local entities = world.entityQuery({500, 500}, {1500, 1500}, {includedTypes = {"npc", "monster"}})
+            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 2})
+            local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc", "monster"}})
             for _, entity_id in ipairs(entities) do
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
             end
@@ -310,19 +346,19 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
             error("namje // tried to change ship on client while player world id is not their ship world id")
         end
 
-        world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
+        world.spawnStagehand({500, 500}, "namje_shipFromConfig_stagehand")
         world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swapShip", player.id(), ship_type, init, player.species())
     end
 end
 
 --- changes ship from a table, comprised of the ship_info and the serialized ship
 --- @param ship table
-function namje_byos.change_ships_from_table(ship, ply)
+function namje_byos.change_ships_from_table(ship)
     if world.isServer() then
-        if #ship == 0 then
+        if isEmpty(ship) then
             error("namje // tried to change ship from save, but ship table is empty")
         end
-        local ship_create, err = pcall(namje_byos.create_ship_from_save, ship[1])
+        local ship_create, err = pcall(namje_byos.create_ship_from_save, ship)
         if ship_create then
             sb.logInfo("namje // loaded ship from table")
 
@@ -346,7 +382,7 @@ function namje_byos.change_ships_from_table(ship, ply)
             error("namje // tried to change ship on client while player world id is not their ship world id")
         end
 
-        world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
+        world.spawnStagehand({500, 500}, "namje_shipFromSave_stagehand")
         world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swapShip", player.id(), ship)
     end
 end
@@ -410,12 +446,11 @@ function namje_byos.ship_to_table(exclude_items)
             end
         end
     end
-
     for _, chunk in ipairs (chunks) do
-        local top_left_x = chunk.top_left[1]
-        local top_left_y = chunk.top_left[2]
-        local bottom_right_x = chunk.bottom_right[1]
-        local bottom_right_y = chunk.bottom_right[2]
+        local top_left_x = chunk.bottom_left[1]
+        local top_left_y = chunk.bottom_left[2]
+        local bottom_right_x = chunk.top_right[1]
+        local bottom_right_y = chunk.top_right[2] + 1
 
         --TODO: tile hue shift
         local foreground_tiles = {}
@@ -429,12 +464,13 @@ function namje_byos.ship_to_table(exclude_items)
             local pos = world.entityPosition(object_id)
             local object_parameters = world.getObjectParameter(object_id,"")
 
-            local temp_obj_item = root.itemConfig(object_parameters.objectName)
+            local obj_name = object_parameters.objectName
+            local temp_obj_item = root.itemConfig(obj_name)
             local old_parameters = temp_obj_item.config
 
             local direction = world.callScriptedEntity(object_id, "object.direction") or 0
 
-            table.insert(object_data, get_cached_mat_id(object_parameters.objectName))
+            table.insert(object_data, get_cached_mat_id(obj_name))
 
             trim_params(object_parameters, old_parameters)
 
@@ -454,14 +490,16 @@ function namje_byos.ship_to_table(exclude_items)
                 lowest tier; in upgradeablecraftingobject.lua the upgrade stage is only set for the item drop on 'die', so we will
                 call die on the object, get the item drop, get the upgrade stage parameters, then add it to the object data table.
             ]]
+
             local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
             if object_upgrade_stage then
                 world.callScriptedEntity(object_id, "die")
-                local item_drops = world.itemDropQuery(pos, 5)
+                local item_drops = world.itemDropQuery(pos, 10)
                 if #item_drops > 0 then
+                    sb.logInfo("dropped items with upgrades: %s", item_drops)
                     for _, item_drop in ipairs (item_drops) do
                         local descriptor = world.itemDropItem(item_drop)
-                        if descriptor.name == object_parameters.objectName then
+                        if descriptor.name == obj_name then
                             local params = descriptor.parameters
                             local starting_stage = params.startingUpgradeStage or 0
                             object_parameters["startingUpgradeStage"] = starting_stage
@@ -481,9 +519,9 @@ function namje_byos.ship_to_table(exclude_items)
                 local background_material = world.material({x, y}, "background")
                 local fore_mod = world.mod({x, y}, "foreground")
                 local back_mod = world.mod({x, y}, "background")
-
                 local foreground_mat_id = get_cached_mat_id(foreground_material)
                 local background_mat_id = get_cached_mat_id(background_material)
+                
                 if foreground_mat_id then
                     local mat_color = world.materialColor({x, y}, "foreground")
                     table.insert(foreground_tiles, {{x, y}, foreground_mat_id, mat_color})
@@ -522,9 +560,8 @@ function namje_byos.load_ship_from_table(ship_table)
     local total_object_count = 0
     local failed_objects = {}
     local placed_objects = 0
-
     --due to how placematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
-    for _, chunk in pairs (ship_table[2]) do
+    for _, chunk in ipairs (ship_table[2]) do
         local top_left_x = chunk[1][1]
         local top_left_y = chunk[1][2]
 
@@ -542,7 +579,10 @@ function namje_byos.load_ship_from_table(ship_table)
             local material_name = mat_cache[material_id]
 
             if material_name then
-                world.placeMaterial(pos, "foreground", material_name, 0, true)
+                local placement = world.placeMaterial(pos, "foreground", material_name, 0, true)
+                if not placement then
+                    sb.logInfo("ERROR: failure to place at pos %s", pos)
+                end
                 if mat_color > 0 then
                     world.setMaterialColor(pos, "foreground", mat_color)
                 end
@@ -657,7 +697,7 @@ function namje_byos.load_ship_from_table(ship_table)
             if iterations >= iteration_cap then
                 sb.logInfo("namje // object placing timed out after " .. iteration_cap)
                 for k, object in pairs (failed_objects) do
-                    sb.logInfo("namje // failed to place object " .. object[2][1].objectName .. " at " .. object[1][1] .. "," .. object[1][2])
+                    sb.logInfo("namje // failed to place object %s at %s", object[2][1].objectName, object[1])
                 end
                 break
             end
@@ -666,7 +706,6 @@ function namje_byos.load_ship_from_table(ship_table)
     else
         sb.logInfo("namje // no failed objects")
     end
-    
 end
 
 --- creates a new ship using the provided ship table. will clear out the ship area and then place a new ship at {1024,1024}
@@ -683,7 +722,7 @@ end
 function namje_byos.create_ship_from_config(ply, ship_config)
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
     local ship_offset = ship_config.atelier_stats.ship_center_pos
-    local ship_position = vec2.sub({1024, 1024}, {ship_offset[1], -ship_offset[2]})
+    local ship_position = vec2.sub({500, 500}, {ship_offset[1], -ship_offset[2]})
 
     clear_ship_area()
 
@@ -719,22 +758,23 @@ function find_background_tiles(pos_x,pos_y)
     return false
 end
 
---- scans from 500,500 to 1500,1500 for tiles in chunks of 100. then returns a table of chunks with tiles in it
+--- scans from 0,0 to 1000,1000 for tiles in chunks of 100. then returns a table of chunks with tiles in it
 --- @return table
 function namje_byos.get_ship_chunks()
     local chunks = {}
-    local start_x = 500
-    local start_y = 500
+    local start_x = 0
+    local start_y = 0
 
     for i = 0, 10 - 1 do
         for j = 0, 10 - 1 do
-            local top_left_x = start_x + i * 100
-            local top_left_y = start_y + j * 100
-            local bottom_right_x = top_left_x + 99
-            local bottom_right_y = top_left_y + 99
+            local chunk_bl_x = start_x + i * 100
+            local chunk_bl_y = start_y + j * 100
 
-            local min_vec = {top_left_x, top_left_y}
-            local max_vec = {bottom_right_x + 1, bottom_right_y + 1}
+            local chunk_tr_x = chunk_bl_x + 99
+            local chunk_tr_y = chunk_bl_y + 99
+
+            local min_vec = {chunk_bl_x, chunk_bl_y}
+            local max_vec = {chunk_tr_x + 1, chunk_tr_y + 1}
 
             --[[
                 platforms and back walls arent detected by this, i'm assuming im missing platforms in the collisionSet, but starbound docs sucks
@@ -745,19 +785,22 @@ function namje_byos.get_ship_chunks()
                 TODO: detect platforms, detect objects; it only grabs foreground/background tiles atm
             ]]
 
-            local collision_detected = world.rectTileCollision(rect.fromVec2(min_vec, max_vec), {"Block", "Dynamic", "Slippery"})
+            local collision_detected = world.rectTileCollision(rect.fromVec2(
+                {chunk_bl_x, chunk_bl_y},
+                {chunk_tr_x + 1, chunk_tr_y + 1}
+            ), {"Block", "Dynamic", "Slippery"})
             if collision_detected then
                 local chunk = {
-                    top_left = {top_left_x, top_left_y},
-                    bottom_right = {bottom_right_x, bottom_right_y}
+                    bottom_left = {chunk_bl_x, chunk_bl_y},
+                    top_right = {chunk_tr_x, chunk_tr_y}
                 }
                 table.insert(chunks, chunk)
             else
-                if find_background_tiles(top_left_x, top_left_y) then
-                    sb.logInfo(sb.print("background tiles detected: ".. top_left_x .. "," .. top_left_y .. "|" .. bottom_right_x .. "," .. bottom_right_y))
+                if find_background_tiles(chunk_bl_x, chunk_bl_y) then
+                    sb.logInfo(sb.print("background tiles detected: ".. chunk_bl_x .. "," .. chunk_bl_y .. "|" .. chunk_tr_x .. "," .. chunk_tr_y))
                     local chunk = {
-                        top_left = {top_left_x, top_left_y},
-                        bottom_right = {bottom_right_x, bottom_right_y}
+                        bottom_left = {chunk_bl_x, chunk_bl_y},
+                        top_right = {chunk_tr_x, chunk_tr_y}
                     }
                     table.insert(chunks, chunk)
                 end
@@ -767,7 +810,7 @@ function namje_byos.get_ship_chunks()
     return chunks
 end
 
---- scan from 500,500 to 1500,1500 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
+--- scan from 0,0 to 1000,1000 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
 function clear_ship_area()
     local chunks = namje_byos.get_ship_chunks()
 
@@ -776,8 +819,8 @@ function clear_ship_area()
     end
 
     for _, chunk in ipairs (chunks) do
-        local top_left_x = chunk.top_left[1]
-        local bottom_right_y = chunk.bottom_right[2]
+        local top_left_x = chunk.bottom_left[1]
+        local bottom_right_y = chunk.top_right[2]
 
         world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
     end
@@ -787,7 +830,7 @@ end
 --- @return table
 function namje_byos.get_ship_items()
     local items = {}
-    local objects = world.objectQuery({500, 500}, {1500, 1500})
+    local objects = world.objectQuery({0, 0}, {1000, 1000})
     for _, v in ipairs (objects) do
         local container_items = world.containerItems(v)
         if container_items then
@@ -862,12 +905,14 @@ function namje_byos.init_byos()
     if existing_char then
         --being used on an existing character, show interface disclaimer thing and give the player an item to 
         --enable byos systems and a starter shiplicense
+        --TODO: review and revamp existing char failsafe
         player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
         player.giveItem("namje_enablebyositem")
     else
+        world.spawnStagehand({500, 500}, "namje_initBYOS_stagehand")
         local ship = namje_byos.register_new_ship(1, "namje_startership", "^orange;¤ Vagabond's Hope^reset;", "/interface/bookmarks/icons/ship.png")
-        --namje_byos.change_ships_from_config("namje_startership", true)
-        player.giveItem("shiplicense_namje_aomkellion") --TODO: testing only, remove later
+        player.warp("nowhere")
+        player.giveItem("shiplicense_namje_asteroidship") --TODO: testing only, remove later
     end
 end
 
@@ -935,7 +980,7 @@ function fill_shiplocker(species)
 
     }
     local containers = {}
-    local objects = world.objectQuery({500, 500}, {1500, 1500})
+    local objects = world.objectQuery({0, 0}, {1000, 1000})
     for _, v in ipairs (objects) do
         for _, container in ipairs (starter_ship_containers) do
             if string.find(world.entityName(v), container) then
