@@ -2,7 +2,7 @@
 
 ## Ship building guide
 
-- Ships need to be within `{500, 500}` and `{1500, 1500}` of the shipworld. If you are even halfway close to reaching these borders, your ship is too big which will cause issues.
+- Ships need to be within `{0, 0}` and `{1000, 1000}` of the shipworld. If you are even halfway close to reaching these borders, your ship is too big which will cause issues.
 - Vanilla ship teleporters are not supported as they do not set the new ship spawn. Please use the ones supplied in this framework, or make your own derived off of them. If you are making your ship for Frackin Universe, you can use their BYOS teleporters.
 - If you want to support Frackin Universe, add the `FTL Panel` to anywhere in your ship. It will be automatically patched to function as a Small FTL Drive, which is required to travel in FU.
 - Ships should have a pilot chair, a sail and a fuel hatch (obviously)
