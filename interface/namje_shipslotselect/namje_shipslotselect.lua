@@ -33,7 +33,7 @@ function populate_ship_list()
       local ship_info = ship.ship_info
       local ship_config = ship_info and namje_byos.get_ship_config(ship_info.ship_id) or nil
       local list_item = scroll_area.."."..widget.addListItem(scroll_area)
-      widget.setText(list_item..".name", ship_info and ship_info.name or "Empty Slot")
+      widget.setText(list_item..".name", ship_info and ship_info.name .. (ship_info.favorited and " " or "") or "Empty Slot")
       widget.setText(list_item..".model", ship_config and ship_config.name or "")
       widget.setImage(list_item..".icon", ship_info and ship_info.icon or "")
       widget.setData(list_item, {slot})
@@ -42,7 +42,22 @@ function populate_ship_list()
 end
 
 function select_slot()
-  widget.setButtonEnabled("btn_register", true)
+  local selected_slot = widget.getListSelected("slot_list.slot_item_list")
+  local ship_list = player.getProperty("namje_ships", {})
+  if not selected_slot then
+    return 
+  end
+  local data = widget.getData("slot_list.slot_item_list." .. selected_slot)
+  if not data then
+      return
+  end
+  local slot = data[1]
+  local ship_info = ship_list[slot].ship_info
+  if ship_info then
+    widget.setButtonEnabled("btn_register", not ship_info.favorited)
+  else
+    widget.setButtonEnabled("btn_register", false)
+  end
 end
 
 function confirm_slot()
