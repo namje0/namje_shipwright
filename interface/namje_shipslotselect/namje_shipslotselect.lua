@@ -56,7 +56,7 @@ function select_slot()
   if ship_info then
     widget.setButtonEnabled("btn_register", not ship_info.favorited)
   else
-    widget.setButtonEnabled("btn_register", false)
+    widget.setButtonEnabled("btn_register", true)
   end
 end
 
