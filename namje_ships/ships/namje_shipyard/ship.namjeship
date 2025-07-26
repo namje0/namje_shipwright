@@ -22,119 +22,44 @@
         "cargo_hold_size" : 200,
         "ship_center_pos" : [101, 62]
     },
-    "stat_upgrades" : {
-        "fuel_efficiency": {
-            "1": {
-            "stat": 0.1,
-            "description": "Improves fuel costs for FTL travel by 10%."
-            },
-            "2": {
-            "stat": 0.2,
-            "description": "Improves fuel costs for FTL travel by 20%."
-            },
-            "3": {
-            "stat": 0.3,
-            "description": "Improves fuel costs for FTL travel by 30%."
-            },
-            "4": {
-            "stat": 0.4,
-            "description": "Improves fuel costs for FTL travel by 40%."
-            },
-            "5": {
-            "stat": 0.5,
-            "description": "Improves fuel costs for FTL travel by 50%."
-            }
-        },
-        "max_fuel": {
-            "fu_modifier": 2,
-            "1": {
-            "stat": 5500,
-            "description": "Increases maximum fuel capacity to 5500."
-            },
-            "2": {
-            "stat": 6000,
-            "description": "Increases maximum fuel capacity to 6000."
-            },
-            "3": {
-            "stat": 6500,
-            "description": "Increases maximum fuel capacity to 6500."
-            },
-            "4": {
-            "stat": 7000,
-            "description": "Increases maximum fuel capacity to 7000."
-            },
-            "5": {
-            "stat": 7500,
-            "description": "Increases maximum fuel capacity to 7500."
-            }
-        },
-        "ship_speed": {
-            "1": {
-            "stat": 45,
-            "description": "Improves travel speed within a system by 50%."
-            },
-            "2": {
-            "stat": 60,
-            "description": "Improves travel speed within a system by 100%."
-            },
-            "3": {
-            "stat": 75,
-            "description": "Improves travel speed within a system by 150%."
-            },
-            "4": {
-            "stat": 90,
-            "description": "Improves travel speed within a system by 200%."
-            },
-            "5": {
-            "stat": 105,
-            "description": "Improves travel speed within a system by 250%."
-            }
-        },
-        "crew_size": {
-            "1": {
-            "stat": 6,
-            "description": "Increases maximum crew capacity to 6."
-            },
-            "2": {
-            "stat": 7,
-            "description": "Increases maximum crew capacity to 7."
-            },
-            "3": {
-            "stat": 8,
-            "description": "Increases maximum crew capacity to 8."
-            },
-            "4": {
-            "stat": 10,
-            "description": "Increases maximum crew capacity to 10."
-            },
-            "5": {
-            "stat": 12,
-            "description": "Increases maximum crew capacity to 12."
-            }
-        },
-        "cargo_hold_size": {
-            "1": {
-            "stat": 250,
-            "description": "Increases cargo hold capacity to 250 units."
-            },
-            "2": {
-            "stat": 300,
-            "description": "Increases cargo hold capacity to 300 units."
-            },
-            "3": {
-            "stat": 350,
-            "description": "Increases cargo hold capacity to 350 units."
-            },
-            "4": {
-            "stat": 400,
-            "description": "Increases cargo hold capacity to 400 units."
-            },
-            "5": {
-            "stat": 450,
-            "description": "Increases cargo hold capacity to 450 units."
-            }
-        }
+    "stat_upgrades": {
+        "fu_fuel_modifier": 2,
+        "max_fuel": [
+            { "stat": 5500, "description": "Increases maximum fuel capacity to 5500." },
+            { "stat": 6000, "description": "Increases maximum fuel capacity to 6000." },
+            { "stat": 6500, "description": "Increases maximum fuel capacity to 6500." },
+            { "stat": 7000, "description": "Increases maximum fuel capacity to 7000." },
+            { "stat": 7500, "description": "Increases maximum fuel capacity to 7500." }
+        ],
+        "fuel_efficiency": [
+            { "stat": 0.1, "description": "Improves fuel costs for FTL travel by 10%." },
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%." },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%." },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%." },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%." }
+        ],
+        "ship_speed": [
+            { "stat": 45, "description": "Improves travel speed within a system by 50%." },
+            { "stat": 60, "description": "Improves travel speed within a system by 100%." },
+            { "stat": 75, "description": "Improves travel speed within a system by 150%." },
+            { "stat": 90, "description": "Improves travel speed within a system by 200%." },
+            { "stat": 105, "description": "Improves travel speed within a system by 250%." }
+        ],
+        "crew_size": [
+            { "stat": 6, "description": "Increases maximum crew capacity to 6." },
+            { "stat": 8, "description": "Increases maximum crew capacity to 8." },
+            { "stat": 10, "description": "Increases maximum crew capacity to 10." },
+            { "stat": 11, "description": "Increases maximum crew capacity to 11." },
+            { "stat": 12, "description": "Increases maximum crew capacity to 12." }
+        ],
+        "cargo_hold_size": [
+            { "stat": 250, "description": "Increases cargo hold capacity by 50 units." },
+            { "stat": 300, "description": "Increases cargo hold capacity by 100 units." },
+            { "stat": 350, "description": "Increases cargo hold capacity by 150 units." },
+            { "stat": 400, "description": "Increases cargo hold capacity by 200 units." },
+            { "stat": 450, "description": "Increases cargo hold capacity by 250 units."}
+        ]
     },
-
+    
     "ship" : "namje_shipyard"
 }
