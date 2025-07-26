@@ -15,12 +15,125 @@
         "capabilities" : [],
         "fuel_efficiency" : 0,
         "max_fuel" : 1000,
-        "ship_speed" : 25,
+        "ship_speed" : 20,
         "crew_size" : 2
     },
     "atelier_stats" : {
         "cargo_hold_size" : 90,
         "ship_center_pos" : [74, 42]
+    },
+    "stat_upgrades" : {
+        "max_fuel" : {
+            "fu_modifier" : 2,
+            "1" : {
+                "stat" : 5000,
+                "description" : "Repairs fuel tanks back to default fuel capacity."
+            },
+            "2" : {
+                "stat" : 6000,
+                "description" : "Increases maximum fuel capacity to 6000."
+            },
+            "3" : {
+                "stat" : 6500,
+                "description" : "Increases maximum fuel capacity to 6500."
+            },
+            "4" : {
+                "stat" : 7000,
+                "description" : "Increases maximum fuel capacity to 7000."
+            },
+            "5" : {
+                "stat" : 7500,
+                "description" : "Increases maximum fuel capacity to 7500."
+            }
+        },
+        "fuel_efficiency" : {
+            "1" : {
+                "stat" : 0.1,
+                "description" : "Improves fuel costs for FTL travel by 10%."
+            },
+            "2" : {
+                "stat" : 0.2,
+                "description" : "Improves fuel costs for FTL travel by 20%."
+            },
+            "3" : {
+                "stat" : 0.3,
+                "description" : "Improves fuel costs for FTL travel by 30%."
+            },
+            "4" : {
+                "stat" : 0.4,
+                "description" : "Improves fuel costs for FTL travel by 40%."
+            },
+            "5" : {
+                "stat" : 0.5,
+                "description" : "Improves fuel costs for FTL travel by 50%."
+            }
+        },
+        "ship_speed": {
+            "1": {
+                "stat": 30,
+                "description": "Repairs thrusters back to default speed."
+            },
+            "2": {
+                "stat": 60,
+                "description": "Improves travel speed within a system by 100%."
+            },
+            "3": {
+                "stat": 75,
+                "description": "Improves travel speed within a system by 150%."
+            },
+            "4": {
+                "stat": 90,
+                "description": "Improves travel speed within a system by 200%."
+            },
+            "5": {
+                "stat": 105,
+                "description": "Improves travel speed within a system by 250%."
+            }
+        },
+        "crew_size": {
+            "1": {
+                "stat": 4,
+                "description": "Increases maximum crew capacity to 4."
+            },
+            "2": {
+                "stat": 6,
+                "description": "Increases maximum crew capacity to 6."
+            },
+            "3": {
+                "stat": 8,
+                "description": "Increases maximum crew capacity to 8."
+            },
+            "4": {
+                "stat": 10,
+                "description": "Increases maximum crew capacity to 10."
+            },
+            "5": {
+                "stat": 12,
+                "description": "Increases maximum crew capacity to 12."
+            }
+        },
+        "cargo_hold_size": {
+            "1": {
+                "stat": 200,
+                "description": "Repairs cargo hold back to default capacity."
+            },
+            "2": {
+                "stat": 250,
+                "description": "Increases cargo hold capacity by 100 units."
+            },
+            "3": {
+                "stat": 300,
+                "description": "Increases cargo hold capacity by 150 units."
+            },
+            "4": {
+                "stat": 350,
+                "description": "Increases cargo hold capacity by 200 units."
+            },
+            "5": {
+                "stat": 400,
+                "description": "Increases cargo hold capacity by 250 units."
+            }
+        }
     },
 
     "ship" : "namje_startership"
