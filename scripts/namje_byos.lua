@@ -50,7 +50,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         ship_info = {
             ship_id = ship_config.id,
             name = name or "Unnamed Ship",
-            icon = icon or "/interface/bookmarks/icons/ship.png",
+            icon = icon or "/namje_ships/ship_icons/generic_1.png",
             favorited = false
         },
         stats = {
@@ -156,14 +156,16 @@ function namje_byos.swap_ships(new_slot, promise)
             end
             
             local prev_ship_stats = namje_byos.get_stats(current_slot)
+            local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
             if prev_ship_stats then
-                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, 
-                    ["cargo_hold"] = namje_util.deep_copy(prev_ship_stats.cargo_hold)})
+                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold})
             end
 
             namje_byos.set_current_ship(new_slot)
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
-            world.setProperty("namje_cargo_hold", namje_util.deep_copy(ship_stats.cargo_hold))
+
+            local new_cargo_hold = isEmpty(ship_stats.cargo_hold) and {} or namje_util.deep_copy(ship_stats.cargo_hold)
+            world.setProperty("namje_cargo_hold", new_cargo_hold)
             
             return true
         end, 
@@ -253,6 +255,29 @@ function namje_byos.get_upgrades(slot)
     return ship.upgrades or nil
 end
 
+--- sets the upgrades for the given ship slot. stats should be a table with the keys matching the ship upgrades. returns the updated upgrades table or nil if the slot does not exist
+--- @param slot number
+--- @param upgrades table
+--- @return table
+function namje_byos.set_upgrades(slot, upgrades)
+    local ship_upgrades = namje_byos.get_upgrades(slot)
+    if not ship_upgrades then
+        return nil
+    end
+    for upgrade, value in pairs(upgrades) do
+        if ship_upgrades[upgrade] ~= nil then
+            ship_upgrades[upgrade] = value
+        else
+            sb.logInfo("namje // tried to set unknown upgrade " .. upgrade .. " for ship in slot " .. slot)
+        end
+    end
+    local ships = player.getProperty("namje_ships", {})
+    local ship = ships["slot_" .. slot]
+    ship.upgrades = ship_upgrades
+    player.setProperty("namje_ships", ships)
+    return ship_upgrades
+end
+
 --- returns the ship_info table for the ship in the given slot
 --- @param slot number
 --- @return table
@@ -304,7 +329,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
 
         sb.logInfo("namje // changing ship to " .. ship_type .. " on server for player " .. ply)
         
-        world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_hold_size)
+        world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_size)
 
         --local previous_ship = not init and namje_byos.ship_to_table(true) or nil
     
@@ -910,7 +935,7 @@ function namje_byos.init_byos()
         player.giveItem("namje_enablebyositem")
     else
         world.spawnStagehand({500, 500}, "namje_initBYOS_stagehand")
-        local ship = namje_byos.register_new_ship(1, "namje_startership", "^orange;¤ Vagabond's Hope^reset;", "/interface/bookmarks/icons/ship.png")
+        local ship = namje_byos.register_new_ship(1, "namje_startership", "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
         player.warp("nowhere")
         player.giveItem("shiplicense_namje_asteroidship") --TODO: testing only, remove later
     end
