@@ -18,7 +18,7 @@
         "crew_size" : 5
     },
     "atelier_stats" : {
-        "cargo_hold_size" : 150,
+        "cargo_size" : 150,
         "ship_center_pos" : [36, 19]
     },
     "stat_upgrades": {
@@ -31,18 +31,18 @@
             { "stat": 7500, "description": "Increases maximum fuel capacity to 7500." }
         ],
         "fuel_efficiency": [
-            { "stat": 0.1, "description": "Improves fuel costs for FTL travel by 10%." },
-            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%." },
-            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%." },
-            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%." },
-            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%." }
+            { "stat": 0.1, "description": "Improves fuel costs for FTL travel by 10%" },
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%" },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%" },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%" },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%" }
         ],
         "ship_speed": [
-            { "stat": 90, "description": "Improves travel speed within a system by 50%." },
-            { "stat": 120, "description": "Improves travel speed within a system by 100%." },
-            { "stat": 150, "description": "Improves travel speed within a system by 150%." },
-            { "stat": 180, "description": "Improves travel speed within a system by 200%." },
-            { "stat": 210, "description": "Improves travel speed within a system by 250%." }
+            { "stat": 90, "description": "Improves travel speed within a system by 50%" },
+            { "stat": 120, "description": "Improves travel speed within a system by 100%" },
+            { "stat": 150, "description": "Improves travel speed within a system by 150%" },
+            { "stat": 180, "description": "Improves travel speed within a system by 200%" },
+            { "stat": 210, "description": "Improves travel speed within a system by 250%" }
         ],
         "crew_size": [
             { "stat": 6, "description": "Increases maximum crew capacity to 6." },
@@ -51,7 +51,7 @@
             { "stat": 11, "description": "Increases maximum crew capacity to 11." },
             { "stat": 12, "description": "Increases maximum crew capacity to 12." }
         ],
-        "cargo_hold_size": [
+        "cargo_size": [
             { "stat": 200, "description": "Increases cargo hold capacity by 50 units." },
             { "stat": 250, "description": "Increases cargo hold capacity by 100 units." },
             { "stat": 300, "description": "Increases cargo hold capacity by 150 units." },

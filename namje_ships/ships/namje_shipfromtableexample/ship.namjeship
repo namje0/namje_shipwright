@@ -20,7 +20,7 @@
         "crew_size" : 2
     },
     "atelier_stats" : {
-        "cargo_hold_size" : 90,
+        "cargo_size" : 90,
         "ship_center_pos" : [74, 42]
     },
     "stat_upgrades" : {
