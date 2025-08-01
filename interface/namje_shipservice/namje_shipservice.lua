@@ -30,7 +30,6 @@ local ship_changes = {}
 local selected_ship = {
   slot = nil,
   ship_info = {},
-  stats = {},
   upgrades = {},
   ship_config = {}
 }
@@ -224,7 +223,6 @@ function select_slot()
     widget.setButtonEnabled("btn_checkout", false)
     return
   end
-  local ship_stats = namje_byos.get_stats(slot_num)
   local ship_upgrades = namje_byos.get_upgrades(slot_num)
 
   toggle_info(true)
@@ -235,7 +233,6 @@ function select_slot()
   selected_ship = {
     slot = slot_num,
     ship_info = ship_info,
-    stats = ship_stats,
     upgrades = ship_upgrades,
     ship_config = ship_config
   }
@@ -345,7 +342,6 @@ function checkout()
     selected_ship = {
       slot = selected_ship.slot,
       ship_info = ship_info,
-      stats = ship_stats,
       upgrades = ship_upgrades,
       ship_config = ship_config
     }
