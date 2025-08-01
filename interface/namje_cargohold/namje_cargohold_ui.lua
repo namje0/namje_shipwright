@@ -28,8 +28,8 @@ function create_grid()
     local num_items = 1
     local rows = {}
     local list = "cargoHoldScrollArea.itemList"
-    local cargo_hold = world.getProperty("namje_cargo_hold") or {}
- 
+    local cargo_hold = world.getProperty("namje_cargo_hold", {})
+
     local color = #cargo_hold >= cargo_size and "red" or #cargo_hold > cargo_size*.7 and "orange" or "white"
     widget.setText("count", "CAPACITY ^" .. color .. ";" .. #cargo_hold .. "/" .. cargo_size .. "^reset;")
 
