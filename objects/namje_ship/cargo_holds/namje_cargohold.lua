@@ -1,4 +1,5 @@
-local cargo_size
+require "/scripts/namje_util.lua"
+
 local ini = init or function() end
 
 function init() ini()
@@ -6,7 +7,6 @@ function init() ini()
         object.smash(false)
     end
     
-    cargo_size = world.getProperty("namje_cargo_size", 0)
     message.setHandler("namje_cargohold_insert", insert_item)
     message.setHandler("namje_receive_item", receive_item)
 end
@@ -49,14 +49,13 @@ function insert_item(_, _, item, world_id)
     if container_item and root.itemDescriptorsMatch(container_item, item, true) then
         local cargo_hold = world.getProperty("namje_cargo_hold") or {}
 
-        if #cargo_hold >= cargo_size then
+        if #cargo_hold >= world.getProperty("namje_cargo_size", 0) then
             return
         end
 
         world.containerTakeAll(entity.id())
         table.insert(cargo_hold, container_item)
         world.setProperty("namje_cargo_hold", cargo_hold)
-
 
         local uuid = world_id:match("ClientShipWorld:(.*)")
         if uuid then

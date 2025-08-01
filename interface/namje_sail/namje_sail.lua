@@ -340,7 +340,7 @@ function select_ship()
             ship_config.base_stats.max_fuel,
             ship_config.base_stats.ship_speed,
             ship_config.base_stats.crew_size, 
-            ship_config.atelier_stats.cargo_hold_size
+            ship_config.atelier_stats.cargo_size
         )
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s", 

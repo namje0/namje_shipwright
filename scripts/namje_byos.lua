@@ -231,8 +231,6 @@ function namje_byos.set_stats(slot, stats)
     for stat, value in pairs(stats) do
         if ship_stats[stat] ~= nil then
             ship_stats[stat] = value
-        else
-            sb.logInfo("namje // tried to set unknown stat " .. stat .. " for ship in slot " .. slot)
         end
     end
     local ships = player.getProperty("namje_ships", {})
@@ -267,8 +265,6 @@ function namje_byos.set_upgrades(slot, upgrades)
     for upgrade, value in pairs(upgrades) do
         if ship_upgrades[upgrade] ~= nil then
             ship_upgrades[upgrade] = value
-        else
-            sb.logInfo("namje // tried to set unknown upgrade " .. upgrade .. " for ship in slot " .. slot)
         end
     end
     local ships = player.getProperty("namje_ships", {})
@@ -303,8 +299,6 @@ function namje_byos.set_ship_info(slot, info)
     for key, value in pairs(info) do
         if ship_info[key] ~= nil then
             ship_info[key] = value
-        else
-            sb.logInfo("namje // tried to set unknown info " .. key .. " for ship in slot " .. slot)
         end
     end
     local ships = player.getProperty("namje_ships", {})
