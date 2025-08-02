@@ -2,6 +2,7 @@ require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
 
 local ini = init or function() end
+local updat = update or function() end
 local swap_promise
 
 function init() ini()
@@ -44,7 +45,7 @@ function init() ini()
     end)
 end
 
-function update(dt)
+function update(dt) updat(dt)
     swap_promise:update()
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         if namje_byos.is_on_ship() then
