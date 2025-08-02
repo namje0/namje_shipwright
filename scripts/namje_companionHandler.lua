@@ -6,6 +6,8 @@ local stat_lang = {
     shipSpeed = "ship_speed",
     crewSize = "crew_size"
 }
+local config_cache = {}
+
 local ini = init or function() end
 local original_upd = update or function(dt) end
 local original_ship_upgrades = updateShipUpgrades or function() end
@@ -52,10 +54,14 @@ function updateShipUpgrades() original_ship_upgrades()
     if not ship_info then
         return
     end
-    local ship_config = namje_byos.get_ship_config(ship_info.ship_id)
+    local ship_upgrades = namje_byos.get_upgrades(slot)
+    local ship_config = config_cache[ship_info.ship_id] or namje_byos.get_ship_config(ship_info.ship_id)
     if not ship_config then
         --TODO: check if the player has the BYOS enabling item, then give them it if they dont
         return
+    end
+    if config_cache[ship_info.ship_id] == nil then
+        config_cache[ship_info.ship_id] = ship_config
     end
 
     local crew_upgrades = recruitSpawner:getShipUpgrades()
@@ -68,7 +74,11 @@ function updateShipUpgrades() original_ship_upgrades()
         crew_size = ship_base_stats.crew_size
     }
 
-    --TODO: byos upgrade modifiers
+    for k, v in pairs(ship_upgrades) do
+        if v > 0 then
+            stats[k] = ship_config.stat_upgrades[k][v].stat
+        end
+    end
 
     for i = 1, #crew_upgrades do
         local upgrade = crew_upgrades[i]

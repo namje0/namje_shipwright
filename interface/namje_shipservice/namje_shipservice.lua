@@ -143,7 +143,6 @@ local function update_info_stats(ship_config, ship_upgrades)
   }
 
   for k, v in pairs(ship_upgrades) do
-    sb.logInfo("upg %s, lvl %s", k, v)
     if v > 0 then
       if k == "fuel_efficiency" then
         stats[k] = "^orange;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
@@ -154,12 +153,13 @@ local function update_info_stats(ship_config, ship_upgrades)
   end
 
   for k, v in pairs(ship_changes) do
-    sb.logInfo("upg %s, lvl %s", k, v)
-    if v > 0 then
-      if k == "fuel_efficiency" then
-        stats[k] = "^yellow;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
-      else
-        stats[k] = "^yellow;" .. ship_config.stat_upgrades[k][v].stat
+    if k ~= "icon" and k ~= "name" then
+      if v > 0 then
+        if k == "fuel_efficiency" then
+          stats[k] = "^yellow;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
+        else
+          stats[k] = "^yellow;" .. ship_config.stat_upgrades[k][v].stat
+        end
       end
     end
   end
@@ -304,9 +304,9 @@ function select_slot()
   if not reset_slot(slot_num) then
     toggle_info(false)
     widget.setButtonEnabled("btn_checkout", false)
+  else
+    widget.setButtonEnabled("btn_checkout", true)
   end
-  
-  widget.setButtonEnabled("btn_checkout", true)
 end
 
 function tb_ship_name()
