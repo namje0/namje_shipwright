@@ -13,7 +13,11 @@ local INFO_AREA = {
   "img_ship_name",
   "lbl_icon",
   "img_icon",
-  "spin_count"
+  "spin_count",
+  "lbl_stats_1",
+  "lbl_stats_2",
+  "lbl_stats_1_num",
+  "lbl_stats_2_num"
 }
 local UPG_BUTTONS = {
   "btn_upg_max_fuel",
@@ -123,10 +127,90 @@ local function toggle_info(toggle)
   end
 end
 
-local function update_stats()
+local function update_gui()
   for i = 1, #UPG_BUTTONS do
     widget.setButtonOverlayImage(UPG_BUTTONS[i], "/interface/namje_shipservice/".. UPG_BUTTONS[i] ..".png")
   end
+end
+
+local function update_info_stats(ship_config, ship_upgrades)
+  local stats = {
+    fuel_efficiency = nil,
+    max_fuel = nil,
+    ship_speed = nil,
+    crew_size = nil,
+    cargo_size = nil
+  }
+
+  for k, v in pairs(ship_upgrades) do
+    sb.logInfo("upg %s, lvl %s", k, v)
+    if v > 0 then
+      if k == "fuel_efficiency" then
+        stats[k] = "^orange;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
+      else
+        stats[k] = "^orange;" .. ship_config.stat_upgrades[k][v].stat
+      end
+    end
+  end
+
+  for k, v in pairs(ship_changes) do
+    sb.logInfo("upg %s, lvl %s", k, v)
+    if v > 0 then
+      if k == "fuel_efficiency" then
+        stats[k] = "^yellow;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
+      else
+        stats[k] = "^yellow;" .. ship_config.stat_upgrades[k][v].stat
+      end
+    end
+  end
+
+  local stats_1 = string.format(
+    "^white;%s%%\n%s\n%s", 
+    stats["fuel_efficiency"] or "^white;" .. math.floor(ship_config.base_stats.fuel_efficiency*100),
+    stats["max_fuel"] or "^white;" .. ship_config.base_stats.max_fuel,
+    stats["ship_speed"] or "^white;" .. ship_config.base_stats.ship_speed
+  )
+  local stats_2 = string.format(
+    "^white;%s\n%s", 
+    stats["crew_size"] or "^white;" .. ship_config.base_stats.crew_size, 
+    stats["cargo_size"] or "^white;" .. ship_config.atelier_stats.cargo_size
+  )
+  widget.setText("lbl_stats_1_num", stats_1)
+  widget.setText("lbl_stats_2_num", stats_2)
+end
+
+local function reset_slot(slot_num)
+  local ship_info = namje_byos.get_ship_info(slot_num)
+  if not ship_info then
+    return false
+  end
+  local ship_upgrades = namje_byos.get_upgrades(slot_num)
+
+  toggle_info(true)
+  toggle_shipstats(true)
+  local ship_id = ship_info.ship_id
+  local ship_config = namje_byos.get_ship_config(ship_id)
+
+  selected_ship = {
+    slot = slot_num,
+    ship_info = ship_info,
+    upgrades = ship_upgrades,
+    ship_config = ship_config
+  }
+
+  for k, v in pairs(ship_upgrades) do
+    widget.setImage("bar_" .. k, "/interface/namje_shipservice/stat_" .. v .. ".png")
+  end
+
+  update_info_stats(ship_config, ship_upgrades)
+
+  widget.setText("tb_ship_name", ship_info.name)
+  widget.setText("lbl_upg_info", "Select an upgrade to view its benefits")
+  local icon_num = string.match(ship_info.icon, "/namje_ships/ship_icons/generic_(%d)%.png")
+  widget.setImage("img_icon", ship_info.icon)
+  icon_index = tonumber(icon_num)
+
+  return true
 end
 
 function init()
@@ -138,7 +222,7 @@ end
 
 function update(dt)
   update_checkout()
-  update_stats()
+  update_gui()
 end
 
 function createTooltip(screen_pos)
@@ -217,36 +301,12 @@ function select_slot()
 
   local player_ships = player.getProperty("namje_ships", {})
   --local ship_data = player_ships[ship_slot]
-  local ship_info = namje_byos.get_ship_info(slot_num)
-  if not ship_info then
+  if not reset_slot(slot_num) then
     toggle_info(false)
     widget.setButtonEnabled("btn_checkout", false)
-    return
-  end
-  local ship_upgrades = namje_byos.get_upgrades(slot_num)
-
-  toggle_info(true)
-  toggle_shipstats(true)
-  local ship_id = ship_info.ship_id
-  local ship_config = namje_byos.get_ship_config(ship_id)
-
-  selected_ship = {
-    slot = slot_num,
-    ship_info = ship_info,
-    upgrades = ship_upgrades,
-    ship_config = ship_config
-  }
-
-  for k, v in pairs(ship_upgrades) do
-    widget.setImage("bar_" .. k, "/interface/namje_shipservice/stat_" .. v .. ".png")
   end
   
   widget.setButtonEnabled("btn_checkout", true)
-  widget.setText("tb_ship_name", ship_info.name)
-  widget.setText("lbl_upg_info", "Select an upgrade to view its benefits")
-  local icon_num = string.match(ship_info.icon, "/namje_ships/ship_icons/generic_(%d)%.png")
-  widget.setImage("img_icon", ship_info.icon)
-  icon_index = tonumber(icon_num)
 end
 
 function tb_ship_name()
@@ -300,6 +360,8 @@ function select_upgrade(button_name)
       widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. level .. ".png")
     end
   end
+
+  update_info_stats(selected_ship.ship_config, selected_ship.upgrades)
 end
 
 function checkout()
@@ -333,17 +395,6 @@ function checkout()
     local cinematic = "/cinematics/upgrading/shipupgrade.cinematic"
     player.playCinematic(cinematic)
 
-    -- reset the selected ship stats so that the new upgrades are reflected
-
-    local ship_info = namje_byos.get_ship_info(selected_ship.slot)
-    local ship_stats = namje_byos.get_stats(selected_ship.slot)
-    local ship_upgrades = namje_byos.get_upgrades(selected_ship.slot)
-
-    selected_ship = {
-      slot = selected_ship.slot,
-      ship_info = ship_info,
-      upgrades = ship_upgrades,
-      ship_config = ship_config
-    }
+    reset_slot(selected_ship.slot)
   end
 end
