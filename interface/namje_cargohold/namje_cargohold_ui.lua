@@ -1,15 +1,21 @@
-local ini = init or function() end
-
 local items_per_row = 10
 local cargo_size
 
 --TODO: make world property for last time cargo hold was checked, compare the seconds and increment the timeToRot for every food item, replacing with rotten food if 0
 
-function init() ini()
+function init()
     widget.registerMemberCallback("cargoHoldScrollArea.itemList", "take_item", receive_item)
     widget.registerMemberCallback("cargoHoldScrollArea.itemList", "take_item.right", receive_item)
 
     cargo_size = world.getProperty("namje_cargo_size", 0)
+
+    --[[
+    local test_id = "asdgfasgaa"
+    local uuid = test_id:match("ClientShipWorld:(.*)")
+    if not uuid then
+        pane.dismiss()
+        return
+    end]]
 end
 
 function update(dt)

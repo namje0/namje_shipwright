@@ -1,0 +1,6 @@
+{
+  "sounds" : {
+    "use" : [ "/sfx/objects/console_generic_switchon.ogg" ],
+    "error" : [ "/sfx/interface/clickon_error.ogg" ]
+  }
+}

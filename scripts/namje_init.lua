@@ -1,6 +1,7 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
 
+local cargo_config
 local ini = init or function() end
 local updat = update or function() end
 local swap_promise
@@ -42,6 +43,17 @@ function init() ini()
 
     message.setHandler("namje_set_shipinfo", function(_, _, ship_info) 
         namje_byos.set_ship_info(player.id(), ship_info)
+    end)
+
+    message.setHandler("namje_cargohold_open", function() 
+        local on_ship = namje_byos.is_on_own_ship()
+        if on_ship then
+            if not cargo_config then
+                cargo_config = root.assetJson("/interface/namje_cargohold/namje_cargohold_ui.config")
+            end
+            player.interact("ScriptPane", cargo_config)
+        end
+        return on_ship
     end)
 end
 

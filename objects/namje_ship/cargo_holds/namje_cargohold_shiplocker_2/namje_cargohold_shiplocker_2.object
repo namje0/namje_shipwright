@@ -1,8 +1,7 @@
 {
   "objectName" : "namje_cargohold_shiplocker_2",
   "rarity" : "Common",
-  "category" : "storage",
-  "objectType" : "container",
+  "category" : "furniture",
   "printable" : false,
 
   "description" : "This console will let me access the cargo hold of my ship.",
@@ -35,14 +34,7 @@
     }
   ],
 
+  "animation" : "/objects/namje_ship/cargo_holds/anim.animation",
   "scripts" : [ "/objects/namje_ship/cargo_holds/namje_cargohold.lua" ],
-  "scriptDelta" : 5,
-
-  "openSounds" : [ "/sfx/objects/console_generic_switchon.ogg" ],
-  "closeSounds" : [ "/sfx/objects/console_generic_switchoff.ogg" ],
-  "slotCount" : 1,
-  "uiConfig" : "/interface/namje_cargohold/namje_cargohold_ui.config",
-  "frameCooldown" : 5,
-  "openFrameIndex" : 4,
-  "autoCloseCooldown" : 3600
+  "scriptDelta" : 5
 }
