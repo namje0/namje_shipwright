@@ -357,7 +357,7 @@ function select_ship()
             stats["max_fuel"] or "^os_text_color;" .. ship_config.base_stats.max_fuel,
             stats["ship_speed"] or "^os_text_color;" .. ship_config.base_stats.ship_speed,
             stats["crew_size"] or "^os_text_color;" .. ship_config.base_stats.crew_size, 
-            stats["cargo_size"] or "^os_text_color;" .. ship_config.atelier_stats.cargo_size
+            stats["cargo_size"] or "^os_text_color;" .. ship_config.namje_stats.cargo_size
         )
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s", 

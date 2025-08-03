@@ -323,7 +323,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
 
         sb.logInfo("namje // changing ship to " .. ship_type .. " on server for player " .. ply)
         
-        world.setProperty("namje_cargo_size", ship_config.atelier_stats.cargo_size)
+        world.setProperty("namje_cargo_size", ship_config.namje_stats.cargo_size)
 
         --local previous_ship = not init and namje_byos.ship_to_table(true) or nil
     
@@ -740,7 +740,7 @@ end
 --- @param ship_config table
 function namje_byos.create_ship_from_config(ply, ship_config)
     local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
-    local ship_offset = ship_config.atelier_stats.ship_center_pos
+    local ship_offset = ship_config.namje_stats.ship_center_pos
     local ship_position = vec2.sub({500, 500}, {ship_offset[1], -ship_offset[2]})
 
     clear_ship_area()

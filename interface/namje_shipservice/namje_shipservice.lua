@@ -169,7 +169,7 @@ local function update_info_stats(ship_config, ship_upgrades)
   local stats_2 = string.format(
     "^white;%s\n%s", 
     stats["crew_size"] or "^white;" .. ship_config.base_stats.crew_size, 
-    stats["cargo_size"] or "^white;" .. ship_config.atelier_stats.cargo_size
+    stats["cargo_size"] or "^white;" .. ship_config.namje_stats.cargo_size
   )
   widget.setText("lbl_stats_1_num", stats_1)
   widget.setText("lbl_stats_2_num", stats_2)

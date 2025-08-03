@@ -18,7 +18,7 @@
         "ship_speed" : 30,
         "crew_size" : 2
     },
-    "atelier_stats" : {
+    "namje_stats" : {
         "cargo_size" : 150,
         "ship_center_pos" : [74, 42]
     },
