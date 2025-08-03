@@ -144,11 +144,7 @@ local function update_info_stats(ship_config, ship_upgrades)
 
   for k, v in pairs(ship_upgrades) do
     if v > 0 then
-      if k == "fuel_efficiency" then
-        stats[k] = "^orange;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
-      else
-        stats[k] = "^orange;" .. ship_config.stat_upgrades[k][v].stat
-      end
+      stats[k] = "^orange;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or ship_config.stat_upgrades[k][v].stat)
     end
   end
 

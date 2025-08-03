@@ -6,10 +6,10 @@
 
     "main_text_color" : "#4E4B42",
     "accent_text_color" : "#4E4B42",
-    "accent2_text_color" : "#898576",
+    "accent2_text_color" : "#68655A",
     "os_text_color" : "#4E4B42",
-    "success_text_color" : "#898576",
-    "error_text_color" : "#898576",
+    "success_text_color" : "#68655A",
+    "error_text_color" : "#68655A",
     "warn_text_color" : "#4E4B42",
     "directory_text_color" : "white",
 

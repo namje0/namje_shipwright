@@ -286,7 +286,7 @@ function ship_tab()
             local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
             local list_item = ship_list .. "."..widget.addListItem(ship_list)
             widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or "") 
-                .. (string.find(slot, tostring(current_slot)) and " ^yellow;[Current]^reset;" or ""))
+                .. (string.find(slot, tostring(current_slot)) and theme_format(" ^accent2_text_color;[Current]^reset;") or ""))
             widget.setText(list_item..".item_model", "^" .. current_theme.os_text_color .. ";" .. (ship_config and ship_config.name or ""))
             widget.setImage(list_item..".item_icon", ship_info.icon or "/namje_ships/ship_icons/generic_1.png")
             widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
@@ -331,16 +331,32 @@ function select_ship()
 
     local ship_info = namje_byos.get_ship_info(ship_slot)
     local ship_stats = namje_byos.get_stats(ship_slot)
+    local ship_upgrades = namje_byos.get_upgrades(ship_slot)
     if ship_info and ship_stats then
         local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
         local current_slot = player.getProperty("namje_current_ship", 1)
+
+        local stats = {
+            fuel_efficiency = nil,
+            max_fuel = nil,
+            ship_speed = nil,
+            crew_size = nil,
+            cargo_size = nil
+        }
+
+        for k, v in pairs(ship_upgrades) do
+            if v > 0 then
+                stats[k] = "^accent2_text_color;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or ship_config.stat_upgrades[k][v].stat)
+            end
+        end
+
         local stats_1 = string.format(
-            "^os_text_color;%s%%\n%s\n%s\n%s\n%s", 
-            math.floor(ship_config.base_stats.fuel_efficiency*10),
-            ship_config.base_stats.max_fuel,
-            ship_config.base_stats.ship_speed,
-            ship_config.base_stats.crew_size, 
-            ship_config.atelier_stats.cargo_size
+            "%s%%\n%s\n%s\n%s\n%s", 
+            stats["fuel_efficiency"] or "^os_text_color;" .. math.floor(ship_config.base_stats.fuel_efficiency*10),
+            stats["max_fuel"] or "^os_text_color;" .. ship_config.base_stats.max_fuel,
+            stats["ship_speed"] or "^os_text_color;" .. ship_config.base_stats.ship_speed,
+            stats["crew_size"] or "^os_text_color;" .. ship_config.base_stats.crew_size, 
+            stats["cargo_size"] or "^os_text_color;" .. ship_config.atelier_stats.cargo_size
         )
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s", 
