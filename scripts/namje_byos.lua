@@ -880,13 +880,13 @@ function namje_byos.is_fu()
     end
 end
 
---- returns true if the player is on a ship, false otherwise
+--- returns true if the player/ is on a ship on client, or if the world is a ship on the server, false otherwise
 --- @return boolean
 function namje_byos.is_on_ship()
     if world.isClient() then
         return string.find(player.worldId(), "ClientShipWorld") ~= nil
     else
-        error("namje // is_on_ship cannot be called on server")
+        return string.find(world.id(), "ClientShipWorld") ~= nil
     end
 end
 
