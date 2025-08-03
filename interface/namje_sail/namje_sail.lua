@@ -135,6 +135,7 @@ function swap_theme(new_theme)
     widget.setButtonImages("show_home", current_theme.home_button or default.home_button)
 
     widget.setImage("main.missions.mission_info.background", current_theme.list_info_back or default.list_info_back)
+    widget.setImage("main.ships.ship_info.background", current_theme.list_info_back or default.list_info_back)
     widget.setImage("main.crew.crew_info.background", current_theme.list_info_back or default.list_info_back)
 
     widget.setButtonImages("main.missions.mission_info.start_mission", current_theme.deploy_button or default.deploy_button)
