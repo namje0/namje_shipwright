@@ -348,7 +348,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
             
             --move crew (and any other monsters/animals) to new ship spawn
             --TODO: occasional bug where they dont get moved? try to replicate more
-            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 2})
+            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 1})
             local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc", "monster"}})
             for _, entity_id in ipairs(entities) do
                 world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
