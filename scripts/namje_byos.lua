@@ -7,11 +7,11 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_util.lua"
 
 namje_byos = {}
-namje_byos.fu_enabled = nil
 namje_byos.current_ship = nil
 
+local VERSION_ID = "namjeShipwright"
 --the upper limit of ships a player can have
---currently set to 1, as ship changing does not have wiring support yet. This will be changed on release to 5-8
+--currently set to 1-3, as ship changing does not have wiring support yet. This will be changed on release to 5-8
 local PLAYER_SHIP_CAP = 3
 
 --- register a new ship for the player, overwriting/adding to a slot
@@ -864,20 +864,7 @@ end
 --- returns true if the Frackin Universe mod is enabled, false otherwise
 --- @return boolean
 function namje_byos.is_fu()
-    if namje_byos.fu_enabled == nil then
-        local player_config = root.assetJson("/player.config")
-        local deployment_scripts = player_config.deploymentConfig.scripts
-        for i = 1, #deployment_scripts do
-            if string.find(deployment_scripts[i], "fu_player_init") then
-                namje_byos.fu_enabled = true
-                return true
-            end
-        end
-        namje_byos.fu_enabled = false
-        return false
-    else
-        return namje_byos.fu_enabled
-    end
+    return root.assetJson("/versioning.config").FrackinUniverse ~= nil
 end
 
 --- returns true if the player/ is on a ship on client, or if the world is a ship on the server, false otherwise
