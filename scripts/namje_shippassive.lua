@@ -54,20 +54,6 @@ function update(dt)
         mcontroller.clearControls()
         initial_outside = true
     end
-
-    if on_own_ship then
-        --upd fuel in info
-        --TODO: compare fuel to last_fuel variable first, so we dont need to call get_stats everytime
-        local fuel = world.getProperty("ship.fuel")
-        local slot = player.getProperty("namje_current_ship", 1)
-        local ship_stats = namje_byos.get_stats(slot)
-        if not ship_stats then
-            return
-        end
-        if ship_stats.fuel_amount ~= fuel then
-            namje_byos.set_stats(slot, {["fuel_amount"] = fuel})
-        end
-    end
 end
 
 function move_to_ship_spawn()

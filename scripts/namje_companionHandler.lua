@@ -1,4 +1,5 @@
 require "/scripts/namje_byos.lua"
+require "/scripts/util.lua"
 
 local stat_lang = {
     fuelEfficiency = "fuel_efficiency",
@@ -34,7 +35,8 @@ function update(dt) original_upd(dt)
     if not on_own_ship then
         return
     end
-    --upd crew in info
+    --upd crew, fuel in info
+    --TODO: compare fuel to last_fuel variable first, so we dont need to call get_stats everytime
     local player_ships = player.getProperty("namje_ships", {})
     local slot = player.getProperty("namje_current_ship")
     local ship_stats = namje_byos.get_stats(slot)
@@ -42,8 +44,17 @@ function update(dt) original_upd(dt)
         return
     end
     local crew_amt = #playerCompanions.getCompanions("crew")
+    local fuel = world.getProperty("ship.fuel")
+    local to_change = {}
+
+    if ship_stats.fuel_amount ~= fuel then
+        to_change["fuel_amount"] = fuel
+    end
     if ship_stats.crew_amount ~= crew_amt then
-        namje_byos.set_stats(slot, {["crew_amount"] = crew_amt})
+        to_change["crew_amount"] = crew_amt
+    end
+    if not isEmpty(to_change) then
+        namje_byos.set_stats(slot, to_change)
     end
 end
 
