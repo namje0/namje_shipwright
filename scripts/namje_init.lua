@@ -27,31 +27,13 @@ function init() ini()
         end
     end)
 
-    message.setHandler("namje_upd_cargoinfo", function(_, _, cargo_hold)
-        local slot = player.getProperty("namje_current_ship", 1)
-        local ship_stats = namje_byos.get_stats(slot)
-        if not ship_stats then
-            sb.logInfo("namje // no ship stats found for slot %s", slot)
-            return
-        end
-        namje_byos.set_stats(slot, {["cargo_hold"] = namje_util.deep_copy(cargo_hold)})
-    end)
-
-    message.setHandler("namje_get_shipinfo", function(_, _, ship) 
-        return namje_byos.get_ship_info(player.id())
-    end)
-
-    message.setHandler("namje_set_shipinfo", function(_, _, ship_info) 
-        namje_byos.set_ship_info(player.id(), ship_info)
-    end)
-
     message.setHandler("namje_cargohold_open", function() 
         local on_ship = namje_byos.is_on_own_ship()
         if on_ship then
             if not cargo_config then
                 cargo_config = root.assetJson("/interface/namje_cargohold/namje_cargohold_ui.config")
             end
-            player.interact("ScriptPane", cargo_config)
+            player.interact("ScriptPane", cargo_config, player.id())
         end
         return on_ship
     end)

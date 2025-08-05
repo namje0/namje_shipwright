@@ -424,9 +424,9 @@ function namje_byos.ship_to_table(exclude_items)
     local function get_cached_mat_id(material_name)
         -- skip metamaterials, they include objects and im pretty sure the player can't place down other metamaterials
         if material_name == nil or not material_name or material_name and string.find(material_name, "metamaterial") then
-            if material_name == nil then
+            --[[if material_name == nil then
                 sb.logInfo("namje // WARNING: material_name returned nil, chunk is unloaded. ship will be incomplete")
-            end
+            end]]
             return nil
         end
 

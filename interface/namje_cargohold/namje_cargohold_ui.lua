@@ -1,14 +1,14 @@
 require "/scripts/namje_byos.lua"
+require "/interface/namje_cargohold/namje_item_manager.lua"
 
-local slot_list = "cargo_scroll.slots"
-local items_per_row = 10
-local cargo_size
+local SLOT_LIST = "cargo_scroll.slots"
+
+local item_grid, cargo_size, cargo_content
+local search_filter = ""
 
 --TODO: make world property for last time cargo hold was checked, compare the seconds and increment the timeToRot for every food item, replacing with rotten food if 0
 
 function init()
-    widget.registerMemberCallback(slot_list, "take_item", receive_item)
-    widget.registerMemberCallback(slot_list, "take_item.right", receive_item)
     if not namje_byos.is_on_ship() then
         pane.dismiss()
         return
@@ -33,27 +33,21 @@ function init()
     end
 
     cargo_size = ship_upgrades.cargo_size > 0 and ship_config.stat_upgrades["cargo_size"][ship_upgrades.cargo_size].stat or ship_config.namje_stats.cargo_size
+    cargo_content = ship_stats.cargo_hold
+
+    item_grid = namje_item_manager.new(cargo_size, cargo_content, SLOT_LIST)
 end
 
 function update(dt)
-    populate_grid()
-end
-
-function populate_grid()
-    widget.clearListItems(slot_list)
-    for i = 1, cargo_size do
-        local item = widget.addListItem(slot_list)
-        widget.setItemSlotItem(item, { name = "dirtmaterial", count = 5 })
+    if item_grid then
+        item_grid:populate_grid(search_filter)
     end
 end
 
-function receive_item(_, data)
-    if not data then
+function filter()
+    if not item_grid then
         return
     end
-
-    --local pos = mcontroller.position()
-    --local pos = world.entityPosition(player.id())
-
-    --world.sendEntityMessage(pane.containerEntityId(), "namje_receive_item", {data, pos}, player.worldId())
+    local text = widget.getText("filter")
+    search_filter = text
 end
