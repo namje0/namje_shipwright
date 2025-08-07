@@ -1,6 +1,7 @@
 require "/scripts/messageutil.lua"
 require "/interface/namje_sail/namje_ai_typer.lua"
 require "/scripts/namje_byos.lua"
+require "/scripts/namje_util.lua"
 
 local tabs = {
     {"main.missions", "main.missions.mission_select.mission_list", "main.missions.mission_info"},
@@ -361,7 +362,7 @@ function select_ship()
         )
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s", 
-            #ship_stats.cargo_hold,
+            namje_util.dict_size(ship_stats.cargo_hold),
             ship_stats.fuel_amount,
             ship_stats.crew_amount,
             0 

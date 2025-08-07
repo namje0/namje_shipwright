@@ -4,7 +4,6 @@ require "/interface/namje_cargohold/namje_item_manager.lua"
 local SLOT_LIST = "cargo_scroll.slots"
 
 local item_grid, cargo_size, cargo_content
-local search_filter = ""
 
 --TODO: make world property for last time cargo hold was checked, compare the seconds and increment the timeToRot for every food item, replacing with rotten food if 0
 
@@ -36,12 +35,18 @@ function init()
     cargo_content = ship_stats.cargo_hold
 
     item_grid = namje_item_manager.new(cargo_size, cargo_content, SLOT_LIST)
+    item_grid:populate_grid("")
 end
 
 function update(dt)
-    if item_grid then
-        item_grid:populate_grid(search_filter)
+end
+
+function shiftItemFromInventory(item)
+    if not item_grid then
+        return
     end
+    local add = item_grid:add_item(item)
+    return add or true
 end
 
 function filter()
@@ -49,5 +54,5 @@ function filter()
         return
     end
     local text = widget.getText("filter")
-    search_filter = text
+    item_grid:populate_grid(text)
 end
