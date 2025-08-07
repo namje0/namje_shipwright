@@ -12,3 +12,11 @@ function namje_util.deep_copy(original_table)
 
     return copied_table
 end
+
+function namje_util.dict_size(dict)
+    local count = 0
+    for _, _ in pairs(dict) do
+        count = count + 1
+    end
+    return count
+end
