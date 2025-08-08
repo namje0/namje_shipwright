@@ -104,46 +104,44 @@ function namje_item_manager:add_item(item)
     end
 
     local max_stack = item.parameters.maxStack or root.itemConfig(item).config.maxStack or 1000
+    local empty_slot_index = nil
 
-    -- First pass: try to stack with existing items
     for i = 1, self.cargo_size do
-        local slot_item = self.cargo_content["slot_" .. i]
+        local slot_item = self:get_item(i)
+        
         if slot_item and self:items_match(i, item) then
             local space_available = max_stack - slot_item.count
-            
             if space_available > 0 then
                 local amount_to_add = math.min(item.count, space_available)
                 local new_count = slot_item.count + amount_to_add
                 
-                -- Call the new stack_items function with the final count
                 self:stack_items(i, new_count)
-
+                
                 item.count = item.count - amount_to_add
                 if item.count <= 0 then
                     self:update_stats()
                     return
                 end
             end
+        elseif not empty_slot_index and not slot_item then
+            empty_slot_index = i
         end
     end
 
-    -- Second pass: find an empty slot for the remaining item
-    for i = 1, self.cargo_size do
-        if not self.cargo_content["slot_" .. i] then
-            local item_to_add = {
-                name = item.name,
-                parameters = item.parameters,
-                count = item.count
-            }
-            
-            self.cargo_content["slot_" .. i] = item_to_add
-            if self.slots[i] then
-                self:set_item(self.slots[i], item_to_add, false)
-                widget.setItemSlotItem(self.slots[i].name .. ".slot", item_to_add)
-            end
-            self:update_stats()
-            return
+    if item.count > 0 and empty_slot_index then
+        local item_to_add = {
+            name = item.name,
+            parameters = item.parameters,
+            count = item.count
+        }
+        
+        self.cargo_content["slot_" .. empty_slot_index] = item_to_add
+        if self.slots[empty_slot_index] then
+            self:set_item(self.slots[empty_slot_index], item_to_add, false)
+            widget.setItemSlotItem(self.slots[empty_slot_index].name .. ".slot", item_to_add)
         end
+        self:update_stats()
+        return
     end
     
     self:update_stats()
