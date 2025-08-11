@@ -1,6 +1,8 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
 
+--TODO: kind of spaghetti so refactor later
+
 namje_item_manager = {}
 local mt = {__index = namje_item_manager}
 
@@ -84,13 +86,26 @@ end
 
 function namje_item_manager:items_match(index, item)
     if not item then
-        return
+        return false
     end
 
     return root.itemDescriptorsMatch(self.cargo_content["slot_" .. index], item, true)
 end
 
+function namje_item_manager:get_max_stack(item)
+    local default = 1000
+    return item.parameters.maxStack or root.itemConfig(item).config.maxStack or default
+end
+
 function namje_item_manager:stack_items(index, new_count)
+    if new_count <= 0 then
+        self.cargo_content["slot_" .. index] = nil
+        local slot = self.slots[index]
+        if slot then
+            widget.setItemSlotItem(slot.name .. ".slot", nil)
+        end
+        return
+    end
     self.cargo_content["slot_" .. index].count = new_count
     local slot = self.slots[index]
     if slot then
@@ -102,15 +117,13 @@ function namje_item_manager:add_item(item)
     if not item or item.count <= 0 then
         return
     end
-
-    local max_stack = item.parameters.maxStack or root.itemConfig(item).config.maxStack or 1000
     local empty_slot_index = nil
 
     for i = 1, self.cargo_size do
         local slot_item = self:get_item(i)
         
         if slot_item and self:items_match(i, item) then
-            local space_available = max_stack - slot_item.count
+            local space_available = self:get_max_stack(item) - slot_item.count
             if space_available > 0 then
                 local amount_to_add = math.min(item.count, space_available)
                 local new_count = slot_item.count + amount_to_add
@@ -148,6 +161,38 @@ function namje_item_manager:add_item(item)
     return item
 end
 
+function namje_item_manager:sort()
+    local rarity_order = {
+        ["common"] = 1,
+        ["rare"] = 2,
+        ["legendary"] = 3,
+        ["essential"] = 4
+    }
+
+    local sorted_items = {}
+    for i = 1, self.cargo_size do
+        local slot_item = self:get_item(i)
+        if slot_item then
+            table.insert(sorted_items, slot_item)
+        end
+    end
+
+    table.sort(sorted_items, function(a, b)
+        local a_rarity = (a.parameters.rarity or root.itemConfig(a).config.rarity):lower()
+        local b_rarity = (b.parameters.rarity or root.itemConfig(b).config.rarity):lower()
+        local a_type = root.itemType(a.name)
+        local b_type = root.itemType(b.name)
+        return rarity_order[a_rarity] > rarity_order[b_rarity]
+    end)
+
+    for i = 1, self.cargo_size do
+        self.cargo_content["slot_" .. i] = sorted_items[i]
+    end
+
+    self:update_stats()
+    self:populate_grid("")
+end
+
 function namje_item_manager:get_item(index)
     return self.cargo_content["slot_" .. index] or nil
 end
@@ -167,16 +212,44 @@ function namje_item_manager:set_item(slot, item, init)
 end
 
 function namje_item_manager:lmb_slot(slot)
-    local item = player.swapSlotItem()
     if not self.cargo_content then
         return
     end
+    local item = player.swapSlotItem()
     local slot_item = self.cargo_content["slot_" .. slot.index]
+    local has_matching = self:items_match(slot.index, item)
 
-    if slot_item and shift_held() then
-        self:set_item(slot, nil, false)
-        player.giveItem(slot_item)
-        return
+    if slot_item then
+        if shift_held() then
+            self:set_item(slot, nil, false)
+            player.giveItem(slot_item)
+            return
+        end
+
+        if has_matching then
+            local space_available = self:get_max_stack(item) - slot_item.count
+            if space_available <= 0 then
+                return
+            end
+            local amount_to_add = math.min(item.count, space_available)
+            local new_count = slot_item.count + amount_to_add
+            
+            self:stack_items(slot.index, new_count)
+            
+            local new_item = {
+                name = item.name,
+                parameters = item.parameters,
+                count = item.count - amount_to_add
+            }
+
+            if new_item.count <= 0 then
+                player.setSwapSlotItem(nil)
+                self:update_stats()
+                return
+            end
+            player.setSwapSlotItem(new_item)
+            return
+        end
     end
 
     self:set_item(slot, item or nil, false)
@@ -184,7 +257,33 @@ function namje_item_manager:lmb_slot(slot)
 end
 
 function namje_item_manager:rmb_slot(slot)
-    sb.logInfo("rmb from %s", slot)
+    if not self.cargo_content then
+        return
+    end
+    local item = player.swapSlotItem()
+    local slot_item = self.cargo_content["slot_" .. slot.index]
+
+    if slot_item then
+        local has_matching = self:items_match(slot.index, item)
+        if item and not has_matching then
+            return
+        end
+        if item and item.count >= self:get_max_stack(item) then
+            return
+        end
+
+        local count = slot_item.count
+        local items_to_move = shift_held() and (count == 1 and 1 or math.floor(count / 2)) or 1
+        local new_item = {
+            name = slot_item.name,
+            parameters = slot_item.parameters,
+            count = has_matching and item.count + items_to_move or items_to_move
+        }
+        self:stack_items(slot.index, count - items_to_move)
+        player.setSwapSlotItem(new_item)
+        self:update_stats()
+        return
+    end
 end
 
 function namje_item_manager:give_excess()

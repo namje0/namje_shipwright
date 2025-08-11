@@ -53,6 +53,13 @@ function filter()
     if not item_grid then
         return
     end
-    local text = widget.getText("filter")
+    local text = string.gsub(widget.getText("filter"), "%s+", "")
     item_grid:populate_grid(text)
+end
+
+function sort()
+    if not item_grid then
+        return
+    end
+    item_grid:sort()
 end
