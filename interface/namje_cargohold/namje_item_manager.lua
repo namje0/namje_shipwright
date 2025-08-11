@@ -162,6 +162,7 @@ function namje_item_manager:add_item(item)
 end
 
 function namje_item_manager:sort()
+    --TODO: stack duplicate items
     local rarity_order = {
         ["common"] = 1,
         ["rare"] = 2,
@@ -180,8 +181,8 @@ function namje_item_manager:sort()
     table.sort(sorted_items, function(a, b)
         local a_rarity = (a.parameters.rarity or root.itemConfig(a).config.rarity):lower()
         local b_rarity = (b.parameters.rarity or root.itemConfig(b).config.rarity):lower()
-        local a_type = root.itemType(a.name)
-        local b_type = root.itemType(b.name)
+        --local a_type = root.itemType(a.name)
+        --local b_type = root.itemType(b.name)
         return rarity_order[a_rarity] > rarity_order[b_rarity]
     end)
 
