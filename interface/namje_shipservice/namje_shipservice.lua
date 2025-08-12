@@ -106,6 +106,10 @@ local function update_checkout()
   if upg_total == 0 and money_total == 0 then
     widget.setButtonEnabled("btn_checkout", false)
   else
+    if player.isAdmin() then
+      widget.setButtonEnabled("btn_checkout", true)
+      return
+    end
     if module_count >= upg_total and money_count >= money_total then
       widget.setButtonEnabled("btn_checkout", true)
     else
@@ -370,10 +374,13 @@ function checkout()
   local module_count = player.hasCountOfItem("upgrademodule")
   local money_count = player.currency("money")
 
-  if module_count < upg_total or money_count < money_total then
+  if module_count < upg_total and not player.isAdmin() or money_count < money_total and not player.isAdmin() then
     sb.logInfo("namje // not enough modules or money to checkout")
     return
   end
+
+  upg_total = 0
+  money_total = 0
 
   sb.logInfo("checked out")
   if player.consumeItem({name = "upgrademodule", count = upg_total}) and player.consumeCurrency("money", money_total) then
