@@ -63,5 +63,6 @@
     "We can't help ya out till we get those erchius crystals dood."
   ],
 
-  "mouthPosition" : [-0.5, -30.5]
+  "mouthPosition" : [-0.5, -30.5],
+  "npcSpawned" : false
 }

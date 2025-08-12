@@ -1,7 +1,15 @@
 require "/scripts/vec2.lua"
+
 function init()
   object.setInteractive(true)
-  world.spawnNpc(vec2.add(entity.position(), {-5, 5}), "human", "namjeshipvendor", 1, 3)
+
+  --TODO: make a custom ui with tabs and give it to the merchant, cause wow its a mess
+
+  local npc_spawned = config.getParameter("npcSpawned")
+  if not npc_spawned then
+    object.setConfigParameter("npcSpawned", true)
+    world.spawnNpc(vec2.add(entity.position(), {-7, 5}), "human", "namjeshipvendor", 1, 3)
+  end
 end
 
 function onInteraction(args)

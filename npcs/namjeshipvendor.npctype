@@ -2,6 +2,11 @@
   "type" : "namjeshipvendor",
   "baseType" : "merchant",
 
+  "identity" : {
+    "name" : "Guy",
+    "gender" : "female"
+  },
+  "persistent" : true,
   "scriptConfig" : {
     "questGenerator" : { "pools" : [], "enableParticipation" : false },
 
@@ -12,15 +17,26 @@
       "categories" : {
         "override" : [ "namjeshippool" ]
       },
-      "buyFactorRange" : [ 2, 2 ],
+      "buyFactorRange" : [ 1, 1 ],
       "sellFactorRange" : [ 0.2, 0.2 ],
-      "numItems" : 3,
+      "numItems" : 50,
       "paneLayoutOverride" : {
         "windowtitle" : {
           "title" : "  Ship Part Vendor",
-          "subtitle" : "  Sells ship furniture and essentials!"
+          "subtitle" : "  Sells ship objects!"
         }
       }
+    },
+
+    "reactions" : {
+      "spontaneous" : []
+    },
+    "personalities" : [
+        [1.0, { "personality" : "normal", "reactions" : {} }]
+    ],
+    "behaviorConfig" : {
+      "play" : false,
+      "chat" : false
     },
 
     "dialog" : {
