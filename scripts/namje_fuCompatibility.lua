@@ -2,6 +2,8 @@
 local player_config = assets.json("/player.config")
 local fu = false
 
+--TODO: redo fu compatibility
+
 sb.logInfo("namje // checking for fu compatibility")
 local deployment_scripts = player_config.deploymentConfig.scripts
 for i = 1, #deployment_scripts do

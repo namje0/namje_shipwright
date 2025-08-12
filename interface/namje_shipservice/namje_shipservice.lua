@@ -72,7 +72,6 @@ spin_count.down = function()
 end
 
 local function update_checkout()
-  --TODO: make checkout free for admins
   upg_total = 0
   money_total = 0
 

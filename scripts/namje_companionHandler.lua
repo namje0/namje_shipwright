@@ -35,8 +35,8 @@ function update(dt) original_upd(dt)
     if not on_own_ship then
         return
     end
+    --TODO: get_stats every second may be performance decrease based on cargo_hold content?
     --upd crew, fuel in info
-    --TODO: compare fuel to last_fuel variable first, so we dont need to call get_stats everytime
     local player_ships = player.getProperty("namje_ships", {})
     local slot = player.getProperty("namje_current_ship")
     local ship_stats = namje_byos.get_stats(slot)

@@ -729,7 +729,6 @@ end
 
 --- creates a new ship using the provided ship table. will clear out the ship area and then place a new ship at {1024,1024}
 --- @param ship table
---TODO: change ship_info back
 function namje_byos.create_ship_from_save(ship)
     clear_ship_area()
     namje_byos.load_ship_from_table(ship)
@@ -918,7 +917,6 @@ function namje_byos.init_byos()
         world.spawnStagehand({500, 500}, "namje_initBYOS_stagehand")
         local ship = namje_byos.register_new_ship(1, "namje_startership", "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
         player.warp("nowhere")
-        player.giveItem("shiplicense_namje_asteroidship") --TODO: testing only, remove later
     end
 end
 

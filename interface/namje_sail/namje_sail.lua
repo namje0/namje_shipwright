@@ -23,6 +23,7 @@ local scan_frame = 0
 local speaker_frame = 0
 
 local swap_confirm = false
+local dismiss_confirm = false
 
 function init()
     promise = PromiseKeeper.new()
@@ -171,6 +172,8 @@ function refresh_crew()
 end
 
 function swap_tabs(tab)
+    dismiss_confirm = false
+    swap_confirm = false
     if tab == "show_missions" then
         if swap_to_tab("main.missions") then
             mission_tab()
@@ -540,6 +543,8 @@ function select_crew()
         return
     end
 
+    dismiss_confirm = false
+
     local member_index = widget.getData(crew_list .. "." .. selected_member)[1]
 
     if not member_index then
@@ -574,6 +579,13 @@ function dismiss_crew()
         return
     end
 
+    if not dismiss_confirm then
+        --TODO: create an actual dismiss confirm button graphic instead of this
+        dismiss_confirm = true
+        interface.queueMessage("^yellow;Press again to confirm dismissal.")
+        return
+    end
+
     local member_index = widget.getData(crew_list .. "." .. selected_member)[1]
 
     if not member_index then
@@ -582,10 +594,10 @@ function dismiss_crew()
 
     local member_data = crew[member_index]
 
-    --TODO: confirmation for dismissal
     world.sendEntityMessage(player.id(), "namje_dismiss_crew", member_data.podUuid)
     --refresh_crew() --doesn't update the crew for some reason here? likely cant grab the updated crew size until widget is reopened
     table.remove(crew, member_index)
+    dismiss_confirm = false
     --refresh tab
     crew_tab()
 end
