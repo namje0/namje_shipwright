@@ -212,7 +212,6 @@ end
 function namje_byos.get_stats(slot)
     local ships = player.getProperty("namje_ships", {})
     if not ships or not ships["slot_" .. slot] then
-        sb.logInfo("namje // no ship found in slot " .. slot)
         return nil
     end
     local ship = ships["slot_" .. slot]
@@ -246,7 +245,6 @@ end
 function namje_byos.get_upgrades(slot)
     local ships = player.getProperty("namje_ships", {})
     if not ships or not ships["slot_" .. slot] then
-        sb.logInfo("namje // no ship found in slot " .. slot)
         return nil
     end
     local ship = ships["slot_" .. slot]
@@ -280,7 +278,6 @@ end
 function namje_byos.get_ship_info(slot)
     local ships = player.getProperty("namje_ships", {})
     if not ships or not ships["slot_" .. slot] then
-        sb.logInfo("namje // no ship found in slot " .. slot)
         return nil
     end
     local ship = ships["slot_" .. slot]

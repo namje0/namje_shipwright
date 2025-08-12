@@ -1,0 +1,93 @@
+{
+  "type" : "namjeshipvendor",
+  "baseType" : "merchant",
+
+  "scriptConfig" : {
+    "questGenerator" : { "pools" : [], "enableParticipation" : false },
+
+    "merchant" : {
+      "waitTime" : 30,
+      "storeRadius" : 15,
+      "poolsFile" : "/npcs/namjeshippool.config",
+      "categories" : {
+        "override" : [ "namjeshippool" ]
+      },
+      "buyFactorRange" : [ 2, 2 ],
+      "sellFactorRange" : [ 0.2, 0.2 ],
+      "numItems" : 3,
+      "paneLayoutOverride" : {
+        "windowtitle" : {
+          "title" : "  Ship Part Vendor",
+          "subtitle" : "  Sells ship furniture and essentials!"
+        }
+      }
+    },
+
+    "dialog" : {
+      "merchant" : {
+        "tout" : {
+          "human" : {
+            "default" : [
+              "Ship essentials and furniture for sale, dood!"
+            ]
+          }
+        },
+        "follow" : {
+          "human" : {
+            "default" : [
+              "Need stuff for your ship? Follow me to the shipyard!"
+            ]
+          }
+        },
+        "welcome" : {
+          "human" : {
+            "default" : [
+              "Welcome to the shipyard dood!"
+            ]
+          }
+        },
+        "start" : {
+          "human" : {
+            "default" : [
+              "What're ya buyin?"
+            ]
+          }
+        },
+        "end" : {
+          "human" : {
+            "default" : [
+              "See ya dood!"
+            ]
+          }
+        }
+      }
+    }
+  },
+
+  "items" : {
+    "override" : [
+      [0, [
+          {
+            "cosmetic1" : [
+              { "name" : "fancaphead", "parameters" : { "colorIndex" : 1 } }
+            ],
+            "cosmetic2" : [
+              { "name" : "pilothead", "parameters" : { "colorIndex" : 5 } }
+            ],
+            "cosmetic3" : [
+              { "name" : "piratechest" }
+            ],
+            "cosmetic4" : [
+              { "name" : "workoutchest", "parameters" : { "colorIndex" : 1 } }
+            ],
+            "cosmetic5" : [
+              { "name" : "spacesuitlegs", "parameters" : { "colorIndex" : 2 } }
+            ],
+            "primary" : [
+              "broom"
+            ]
+          }
+        ] ]
+    ]
+  }
+}

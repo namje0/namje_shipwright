@@ -38,7 +38,7 @@ function update(dt) original_upd(dt)
     --TODO: get_stats every second may be performance decrease based on cargo_hold content?
     --upd crew, fuel in info
     local player_ships = player.getProperty("namje_ships", {})
-    local slot = player.getProperty("namje_current_ship")
+    local slot = player.getProperty("namje_current_ship", 1)
     local ship_stats = namje_byos.get_stats(slot)
     if not ship_stats then
         return

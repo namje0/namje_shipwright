@@ -3,6 +3,7 @@
   "rarity" : "Common",
   "category" : "teleporter",
   "printable" : false,
+  "price" : 5000,
 
   "description" : "Trusty teleporter, what would we do without you? Sets your ship spawn. Extract to return the ship teleporter.",
   "shortdescription" : "Flat Ship Teleporter",

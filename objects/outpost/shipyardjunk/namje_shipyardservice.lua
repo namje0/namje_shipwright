@@ -1,5 +1,7 @@
+require "/scripts/vec2.lua"
 function init()
   object.setInteractive(true)
+  world.spawnNpc(vec2.add(entity.position(), {-5, 5}), "human", "namjeshipvendor", 1, 3)
 end
 
 function onInteraction(args)
