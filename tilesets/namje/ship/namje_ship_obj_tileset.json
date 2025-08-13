@@ -8,7 +8,7 @@
  "tileheight":8,
  "tilewidth":8,
 
- "tilecount":12,
+ "tilecount":13,
  "type":"tileset",
 
  "tileproperties":
@@ -84,6 +84,12 @@
         "imagePositionY" : "0",
         "object" : "namje_cargohold_shiplocker_2",
         "tilesetDirection" : "right"
+      },
+      "12" : {
+        "imagePositionX" : "-16",
+        "imagePositionY" : "0",
+        "object" : "namje_shipteleporterfuture",
+        "tilesetDirection" : "right"
       }
     },
   "tiles":
@@ -123,6 +129,9 @@
         },
         "11" : {
           "image" : "namje_cargohold_shiplocker_2.png"
+        },
+        "12" : {
+          "image" : "futureteleporter.png"
         }
       }
   
