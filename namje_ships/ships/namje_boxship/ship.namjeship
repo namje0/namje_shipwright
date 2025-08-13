@@ -1,0 +1,63 @@
+{
+    "id" : "namje_boxship",
+
+    "name" : "Longsnoot",
+    "description" : "Contributed by ^yellow;boxofcuriosity",
+    "manufacturer" : "",
+    "recommended_crew_size" : "1-2",
+    "auto_create_license" : true,
+    "price" : 35000,
+    "add_to_penguin_bay" : true,
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0,
+        "max_fuel" : 3000,
+        "ship_speed" : 80,
+        "crew_size" : 2
+    },
+    "namje_stats" : {
+        "cargo_size" : 200,
+        "ship_center_pos" : [101, 62]
+    },
+    "stat_upgrades": {
+        "fu_fuel_modifier": 2,
+        "max_fuel": [
+            { "stat": 3500, "description": "Increases maximum fuel capacity to 3500." },
+            { "stat": 4000, "description": "Increases maximum fuel capacity to 4000." },
+            { "stat": 4500, "description": "Increases maximum fuel capacity to 4500." },
+            { "stat": 5000, "description": "Increases maximum fuel capacity to 5000." },
+            { "stat": 5500, "description": "Increases maximum fuel capacity to 5500." }
+        ],
+        "fuel_efficiency": [
+            { "stat": 0.1, "description": "Improves fuel costs for FTL travel by 10%" },
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%" },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%" },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%" },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%" }
+        ],
+        "ship_speed": [
+            { "stat": 120, "description": "Improves travel speed within a system by 50%" },
+            { "stat": 160, "description": "Improves travel speed within a system by 100%" },
+            { "stat": 200, "description": "Improves travel speed within a system by 150%" },
+            { "stat": 240, "description": "Improves travel speed within a system by 200%" },
+            { "stat": 280, "description": "Improves travel speed within a system by 250%" }
+        ],
+        "crew_size": [
+            { "stat": 4, "description": "Increases maximum crew capacity to 4." },
+            { "stat": 6, "description": "Increases maximum crew capacity to 6." },
+            { "stat": 8, "description": "Increases maximum crew capacity to 8." },
+            { "stat": 10, "description": "Increases maximum crew capacity to 10." },
+            { "stat": 12, "description": "Increases maximum crew capacity to 12." }
+        ],
+        "cargo_size": [
+            { "stat": 250, "description": "Increases cargo hold capacity by 50 units." },
+            { "stat": 300, "description": "Increases cargo hold capacity by 100 units." },
+            { "stat": 350, "description": "Increases cargo hold capacity by 150 units." },
+            { "stat": 400, "description": "Increases cargo hold capacity by 200 units." },
+            { "stat": 450, "description": "Increases cargo hold capacity by 250 units."}
+        ]
+    },
+    
+    "ship" : "namje_boxship"
+}

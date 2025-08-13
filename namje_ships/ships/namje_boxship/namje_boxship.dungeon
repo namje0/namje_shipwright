@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "namje_boxship",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "namje_boxship" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "namje_boxship",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "namje_boxship.json" ]
+    }
+  ]
+}
