@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_shipyard",
+    "name" : "namje_islandtemplate",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_shipyard" ],
+    "anchor" : [ "namje_islandtemplate" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_shipyard",
+      "name" : "namje_islandtemplate",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_shipyard.json" ]
+      "def" : [ "tmx", "namje_islandtemplate.json" ]
     }
   ]
 }

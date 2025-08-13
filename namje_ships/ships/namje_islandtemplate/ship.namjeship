@@ -1,15 +1,14 @@
 {
-    "id" : "namje_shipyard",
+    "id" : "namje_islandtemplate",
 
-    "name" : "Keeper Shipyard",
-    "description" : "An old decommissioned mobile shipyard from a defunct company. Technically a ship and has been retrofitted with ^cyan;FTL^reset; capabilities. The actual shipyard doesn't work anymore, but the space can be utilized for making your own ship within it and then removing the platform afterwards. Or, make something cool with the shipyard itself!",
-    "manufacturer" : "Phare Astroneering",
-    "manufacturer_icon" : "/namje_ships/manufacturers/phare_astroneering.png",
-    "recommended_crew_size" : "1-5",
+    "name" : "Island Template",
+    "description" : "Does not legally qualify as a ship.",
+    "manufacturer" : "",
+    "recommended_crew_size" : "1-12",
     "auto_create_license" : true,
-    "price" : 45000,
+    "price" : 30000,
     "add_to_penguin_bay" : true,
-    "license_icon" : "/namje_ships/ships/namje_shipyard/license_icon.png",
+    "license_icon" : "/namje_ships/ships/namje_islandtemplate/license_icon.png",
 
     "base_stats" : {
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],
@@ -61,5 +60,5 @@
         ]
     },
     
-    "ship" : "namje_shipyard"
+    "ship" : "namje_islandtemplate"
 }

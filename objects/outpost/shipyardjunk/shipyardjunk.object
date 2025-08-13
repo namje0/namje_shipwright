@@ -6,7 +6,6 @@
   "shortdescription" : "Shipyard Services",
   "race" : "generic",
   "printable" : false,
-  // "hasObjectItem" : false,
 
   "apexDescription" : "Is this really the only ship technician around here?",
   "avianDescription" : "This penguin seems to be a ship technician.",
