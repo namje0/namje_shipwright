@@ -1,24 +1,37 @@
 ![bongbong](https://i.imgur.com/FN9fjwi.gif)
 # namjeShipwright
+> This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound)
 
-### This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound)
+> [!WARNING]
+> namjeShipwright is still in development and shouldn't be used in an actual playthrough.
 
-A BYOS and ship-swapping framework.
+A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 
-Steam Link(tba)
+Steam Link (TBA)
 
 ## For Modders
+Contributions to the framework are welcome!
 
-If you want to make your own ship template, refer to [this guide](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/making_ships.md)
+Refer to [this guide](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/making_ships.md) for making ship templates.
 
 ## Features
-
-### FU Compatiblity
-
-~This framework will automatically detect Frackin Universe and patch most things to use their BYOS system instead.~
-Currently incompatible due to large BYOS changes.
-
+### Ship templates
+This framework allows you to create and use ship templates.
+- Automatic ship license generation for `.namjeship` files.
+- Choose to either use a dungeon file for templates, or save your current in-game ship's design as a template.
+    - `.dungeon` files take up less space.
+### Owning multiple ships
+Multiple ships can be owned by a player in this framework, and players can freely swap between them.
+- Due to a **Starbound limitation**, any wiring will be disconnected when swapping back to a ship. This may be fixed in an future update. Don't count on it though
+- This framework allows you to increase ship slots up to a set maximum limit. You can use this to create rewards for quests, craftables, and more.
+### New Upgrade System
+Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
+- Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.
+- Ship icon and name can also be changed at a ship service technician.
 ### Cargo Hold
-
-Ships come with a custom cargo hold separate from the ship locker. The cargo hold is a custom inventory tied to the shipworld, and has a variable storage size based on the ship.    
-The cargo hold is optional, and ships can exclude it.
+Ships come with a cargo hold, which is a storage container linked to the ship.
+- When you overwrite a ship, its cargo is automatically moved to the new one.
+### Ship Modules
+TBA
+### FrackinUniverse Compatiblity
+Currently incompatible.
