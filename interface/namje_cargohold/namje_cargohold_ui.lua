@@ -5,8 +5,6 @@ local SLOT_LIST = "cargo_scroll.slots"
 
 local item_grid, cargo_size, cargo_content
 
---TODO: make world property for last time cargo hold was checked, compare the seconds and increment the timeToRot for every food item, replacing with rotten food if 0
-
 function init()
     if not namje_byos.is_on_ship() then
         pane.dismiss()

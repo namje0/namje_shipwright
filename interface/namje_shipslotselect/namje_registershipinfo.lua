@@ -47,5 +47,14 @@ function cancel()
 end
 
 function randomize()
-  widget.setText("name", string.format("%s %s", name_prefixes[math.random(1, #name_prefixes)], name_affixes[math.random(1, #name_affixes)]))
+  local function getRandomIndex(array)
+    local random_value = sb.nrand(array / 6)
+    local index = math.floor(random_value + (array / 2))
+    return math.max(1, math.min(array, index))
+  end
+
+  local name_prefix = name_prefixes[getRandomIndex(#name_prefixes)]
+  local name_affix = name_affixes[getRandomIndex(#name_affixes)]
+  
+  widget.setText("name", string.format("%s %s", name_prefix, name_affix))
 end

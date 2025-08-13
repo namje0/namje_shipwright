@@ -36,10 +36,6 @@ function activate()
 			return
 		end
 
-		--[[if not world.getProperty("fu_byos") then
-			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_invalidbyos")
-			return
-		end]]
 		animator.playSound("activate")
 
 		--activeItem.interact("ScriptPane", "/interface/scripted/namje_shiplicense/namje_ship_swap_confirm.config", entity.id())
