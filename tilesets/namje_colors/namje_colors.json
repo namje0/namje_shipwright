@@ -5,49 +5,58 @@
 
     },
  "spacing":0,
- "tilecount":4,
+ "tilecount":5,
  "tileheight":8,
  "tileproperties":
     {
-     "0":
-        {
-         "material":"heavypipe",
-         "colorVariant" : "7"
-        },
-     "1":
-        {
-         "material":"sewerpipe",
-         "colorVariant" : "7"
-        },
-     "2":
-        {
-         "material":"girder",
-         "colorVariant" : "7"
-        },
-     "3":
-        {
-         "material":"namje_darkslopedinsetpanel",
-         "colorVariant" : "7"
-        }
+      "0":
+         {
+            "material":"heavypipe",
+            "colorVariant" : "7"
+         },
+      "1":
+         {
+            "material":"sewerpipe",
+            "colorVariant" : "7"
+         },
+      "2":
+         {
+            "material":"girder",
+            "colorVariant" : "7"
+         },
+      "3":
+         {
+            "material":"namje_darkslopedinsetpanel",
+            "colorVariant" : "7"
+         },
+      "4":
+         {
+            "material":"namje_darkslopedinsetpanel",
+            "colorVariant" : "8"
+         }
     },
  "tiles":
     {
-     "0":
-        {
-         "image":"heavypipe.png"
-        },
-     "1":
-        {
-         "image":"sewerpipe.png"
-        },
-     "2":
-        {
-         "image":"girdermaterial.png"
-        },
-     "3":
-        {
-         "image":"namje_darkslopedinsetpanel.png"
-        }
+      "0":
+         {
+            "image":"heavypipe.png"
+         },
+      "1":
+         {
+            "image":"sewerpipe.png"
+         },
+      "2":
+         {
+            "image":"girdermaterial.png"
+         },
+      "3":
+         {
+            "image":"namje_darkslopedinsetpanel.png"
+         },
+      "4":
+         {
+            "image":"namje_darkslopedinsetpanel2.png"
+         }
     },
  "tilewidth":8
 }
