@@ -1,5 +1,5 @@
 {
-  "muteSfx" : false,
+  "muteSfx" : true,
   "muteMusic" : true,
   "skippable" : false,
   "letterbox" : false,

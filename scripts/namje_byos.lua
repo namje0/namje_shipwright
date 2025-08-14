@@ -145,14 +145,12 @@ function namje_byos.swap_ships(new_slot, promise)
                 error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
             end
 
+            local cinematic = "/cinematics/namje/shipswap.cinematic"
+            player.playCinematic(cinematic)
             -- default to config ship
             if isEmpty(ship_content) then
-                local cinematic = "/cinematics/namje/shipswap.cinematic"
-                player.playCinematic(cinematic)
                 namje_byos.change_ships_from_config(ship_info.ship_id, false)
             else
-                local cinematic = "/cinematics/namje/shipswap.cinematic"
-                player.playCinematic(cinematic)
                 namje_byos.change_ships_from_table(ship_content)
             end
             
@@ -908,6 +906,9 @@ function namje_byos.init_byos()
         world.spawnStagehand({500, 500}, "namje_initBYOS_stagehand")
         local ship = namje_byos.register_new_ship(1, "namje_startership", "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
         player.warp("nowhere")
+        --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
+        local cinematic = "/cinematics/namje/shipintro.cinematic"
+        player.playCinematic(cinematic, true)
     end
 end
 
