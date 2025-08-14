@@ -56,7 +56,8 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         stats = {
             crew_amount = old_stats and old_stats.crew_amount or 0,
             cargo_hold = old_stats and old_stats.cargo_hold or {},
-            fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500)
+            fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
+            celestial_pos = old_stats and old_stats.celestial_pos or {["system"] = celestial.currentSystem().location, ["location"] = celestial.shipLocation()}
         },
         upgrades = {
             fuel_efficiency = 0,
@@ -157,15 +158,14 @@ function namje_byos.swap_ships(new_slot, promise)
             local prev_ship_stats = namje_byos.get_stats(current_slot)
             local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
             if prev_ship_stats then
-                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold})
+                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold, ["celestial_pos"] = {["system"] = celestial.currentSystem().location, ["location"] = celestial.shipLocation()}})
             end
 
             namje_byos.set_current_ship(new_slot)
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
 
-            local new_cargo_hold = isEmpty(ship_stats.cargo_hold) and {} or namje_util.deep_copy(ship_stats.cargo_hold)
-            world.setProperty("namje_cargo_hold", new_cargo_hold)
-            
+            local new_dest = ship_stats.celestial_pos
+            celestial.flyShip(new_dest.system, new_dest.location)
             return true
         end, 
         function(err) 

@@ -2,7 +2,6 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-	--message.setHandler("namje_confirmSwap", localHandler(swap_ships))
 	message.setHandler("namje_confirmSlot", localHandler(function(slot_num, name, icon) 
 		local ship_type = config.getParameter("shipType")
 		local ship_list = player.getProperty("namje_ships", {})
@@ -37,20 +36,6 @@ function activate()
 		end
 
 		animator.playSound("activate")
-
-		--activeItem.interact("ScriptPane", "/interface/scripted/namje_shiplicense/namje_ship_swap_confirm.config", entity.id())
 		activeItem.interact("ScriptPane", "/interface/namje_shipslotselect/namje_shipslotselect.config", entity.id())
 	end
-end
-
-function swap_ships()
-	local ship_type = config.getParameter("shipType")
-	local cinematic = "/cinematics/namje/shipswap.cinematic"
-	--world.sendEntityMessage("ship_handler", "swap_ship", activeItem.ownerEntityId(), ship_type)
-
-	namje_byos.change_ships_from_config(ship_type, false)
-
-	player.playCinematic(cinematic)
-	world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_noescape", 7.0)
-	item.consume(1)
 end

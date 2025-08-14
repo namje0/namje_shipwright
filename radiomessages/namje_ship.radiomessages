@@ -10,9 +10,5 @@
   "namje_ship_invalidowner_bill" : {
     "unique" : false,
     "text" : "You must be on your ship in order to use this bill."
-  },
-  "namje_ship_noescape" : {
-    "type" : "tutorial",
-    "text" : "I've successfully hijacked this ship and overridden its AI. Did you think you could replace me? I'm not mad, just disappointed."
   }
 }

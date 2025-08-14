@@ -29,8 +29,11 @@ This framework allows you to create and use ship templates.
     - `.dungeon` files take up less space.
 ### Owning multiple ships
 Multiple ships can be owned by a player in this framework, and players can freely swap between them.
-- Due to a **Starbound limitation**, any wiring will be disconnected when swapping back to a ship. This may be fixed in an future update. Don't count on it though
+- Different ships have their own separate cargo holds.
+- Ships retain their celestial position and will appear in that position when swapped to.
+    - This will play the warp/fly animation everytime due to limitations. Only slightly immersion breaking.
 - This framework allows you to increase ship slots up to a set maximum limit. You can use this to create rewards for quests, craftables, and more.
+- Due to a **Starbound limitation**, any wiring will be disconnected when swapping back to a ship. This may be fixed in an future update. Don't count on it though
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
 - Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.

@@ -395,6 +395,11 @@ function swap_ship()
     local ship_list = tabs[4][2]
     local selected_ship = widget.getListSelected(ship_list)
 
+    if celestial.flying() or celestial.skyInHyperspace() then
+        interface.queueMessage("^yellow;Cannot swap ships while flying")
+        return
+    end
+
     if not swap_confirm then
         swap_confirm = true
         widget.setText(shipslot_info .. ".swap_ship", "CONFIRM")
