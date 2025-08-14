@@ -15,6 +15,10 @@ Contributions to the framework are welcome!
 Refer to [this guide](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/making_ships.md) for making ship templates.
 
 ## Features
+### Build Your Own Ship (BYOS)
+This framework removes racial ships and replaces them with ships made out of blocks, letting you edit and shape them as needed.
+- Your starter ship is replaced with a non-racial generic ship.
+- BYOS cannot be turned off, it is an integral part of this framework.
 ### Ship templates
 This framework allows you to create and use ship templates.
 - Automatic ship license generation for `.namjeship` files.
