@@ -3,8 +3,10 @@
 > This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound)
 
 > [!WARNING]
-> namjeShipwright is still in development and shouldn't be used in an actual playthrough.
-> **Please report any bugs**
+> namjeShipwright is still in development and shouldn't be used in an actual playthrough. **Please report any bugs**
+
+> [!WARNING]
+> Don't use it on a pre-existing character.
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 
