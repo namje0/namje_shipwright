@@ -339,6 +339,9 @@ function select_ship()
     local ship_upgrades = namje_byos.get_upgrades(ship_slot)
     if ship_info and ship_stats then
         local function shorten_name(name)
+            if not name then
+                return
+            end
             local words = {}
             for word in string.gmatch(name, "%S+") do
                 table.insert(words, word)
