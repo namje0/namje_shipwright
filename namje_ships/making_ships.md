@@ -1,14 +1,13 @@
 # Making your own ship template
 
 ## Ship building guide
-
-- Ships need to be within `{0, 0}` and `{1000, 1000}` of the shipworld. If you are even halfway close to reaching these borders, your ship is too big which will cause issues.
-- Vanilla ship teleporters are not supported as they do not set the new ship spawn. Please use the ones supplied in this framework, or make your own derived off of them. If you are making your ship for Frackin Universe, you can use their BYOS teleporters.
-- If you want to support Frackin Universe, add the `FTL Panel` to anywhere in your ship. It will be automatically patched to function as a Small FTL Drive, which is required to travel in FU.
-- Ships should have a pilot chair, a sail and a fuel hatch (obviously)
-- If you plan on using the Cargo Hold feature supplied in this framework, include one of the cargo hold accesses. Please note that if you don't plan on including the Cargo Hold, other ships probably will, reducing the effectiveness of your ship.
-- If you are making your ship **from table**, it will not support wiring. Any wired objects will be reset.
-- If you intend on making a regular ship template, items and objects on your ship template should be balanced. Giving the player a fully upgraded crafting area and a bunch of pixels is probably unbalanced. Giving the player a minifridge and microwave with their ship is balanced enough. Ships are intended to be mostly canvases to put stuff in.
+Keep in mind that ship templates are intended to be a canvas for the player to build off of. Leave some empty space for the player to put stuff in!
+- Ships cannot exceed 1000 tiles in width or height.
+    - The shipworld is resized in this framework, and the bounds are {0, 0} to {1000, 1000}, with the ship being placed at the center at {500, 500} based off of their `ship_center_pos`.
+- All ships must include a pilot chair, a SAIL interface, and a fuel hatch.
+- Vanilla ship teleporters are not supported. Please use the ones supplied in this framework.
+- Ships come with a cargo hold feature. If you would like your ship to make use of it, please include any variation of the **Cargo Hold Access** in your ship.
+- Ships that are not using the `.dungeon` format will currently not support wiring. This is a **starbound limitation**.
 
 ## Ship format
 
@@ -16,34 +15,32 @@ There are two methods for building the actual ship:
 
 ### From Dungeon
 
-namjeShipwright templates support using dungeons. **This is the recommended ship format and has no limitations.**
+namjeShipwright templates support the `.dungeons` format. **This is the recommended ship format and has no limitations.**
 
 If you don't know how to make a dungeon in Starbound, [refer to this article](https://starbounder.org/Modding:Tiled)
 
-### From Table (WIP)
+### From Table
 
-This framework comes with the ability to serialize your in-game ship into a table, which can be further turned into a string that can be used in place of a dungeon id. namjeShipwright will build the ship from the table.
+TBA
 
-Temporarily, the item `namje_saveshiptemplate` can be used to save your ship to `starbound.config`. Copy the ship template from there and use it as the `ship` in your .namjeship file.
-
-Limitations:
-- Wiring is not supported. This is a Starbound limitation.
 
 ## Ship folder structure
 
-Copy one of the [existing ship folders in the framework](https://github.com/namje0/namje_shipwright/tree/main/namje_ships/ships/namje_startership) and replace it with your own dungeon and information. For best practices, the name of the template folder, dungeon, and json file should be consistent with the id set in your **ship.namjeship** file.
+The ship folder is pretty simple, review one of the [existing ships in the framework](https://github.com/namje0/namje_shipwright/tree/main/namje_ships/ships/namje_startership).
 
-Ship folders should have a **ship_preview.png** that is 1210 x 432 in size (or the same aspect ratio) for best results. 
+The `ship.namjeship` file is required to create the ship template. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
+
+Ship folders should have a `ship_preview.png` that is 1210 x 432 in size (or the same aspect ratio) for best results. 
 
 ![Ship preview example](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/namje_startership/ship_preview.png)
 
-The most important part of a ship template is the **ship.namjeship** file. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
-
 ## Ship licenses
 
-The primary method of obtaining and changing to a new ship in this framework is through ship license items.    
-namjeShipwright will automatically generate ship licenses for any mod that **is loaded before this mod.** (unless you've disabled it for the ship)
+The primary method of obtaining ships in this framework is through ship license items.    
+namjeShipwright will automatically generate ship licenses for any mod that **is loaded before this mod**, unless `auto_create_license` is false.
 
-This framework provides functionality for changing ships without licenses, so it is not required. You can also opt for making your own ship license instead of having it be generated.
+The ship license appearance can be changed with `license_icon`. Remove it to use the default ship license appearance.
 
-The option to sell the ship license at penguin bay is provided for generated licenses. Other than that, you will have to implement your own method of acquiring them, either through a vendor or something else.
+This framework also provides functionality for registering ships without licenses.
+
+Penguin Bay at the outpost is automatically patched to sell any licenses for ships that have `add_to_penguin_bay` set to true.
