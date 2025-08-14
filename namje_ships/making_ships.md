@@ -28,7 +28,7 @@ TBA
 
 The ship folder is pretty simple, review one of the [existing ships in the framework](https://github.com/namje0/namje_shipwright/tree/main/namje_ships/ships/namje_startership).
 
-The `ship.namjeship` file is required to create the ship template. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.config) for how to customize the ship's stats and information.
+The `ship.namjeship` file is required to create the ship template. Refer to the [template](https://github.com/namje0/namje_shipwright/blob/main/namje_ships/ships/template.md) for how to customize the ship's stats and information.
 
 Ship folders should have a `ship_preview.png` that is 1210 x 432 in size (or the same aspect ratio) for best results. 
 
