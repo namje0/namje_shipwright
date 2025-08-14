@@ -35,3 +35,12 @@ Ships come with a cargo hold, which is a storage container linked to the ship.
 TBA
 ### FrackinUniverse Compatiblity
 Currently incompatible.
+
+## Upcoming Features
+- Make crew members and animals per-ship
+- Customizable SAIL pet
+- Slotable ship modules that allow for stuff like stratagems
+
+## Bugs
+- Crew members and animals currently do not teleport to the ship spawn on ship swap. Crew members will respawn but animals will die.
+- Items may be duplicated if overwriting a ship that has items in storage containers that aren't the cargo hold
