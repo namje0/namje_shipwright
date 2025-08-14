@@ -4,6 +4,7 @@
 
 > [!WARNING]
 > namjeShipwright is still in development and shouldn't be used in an actual playthrough.
+> **Please report any bugs**
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 
@@ -41,6 +42,7 @@ TBA
 Currently incompatible.
 
 ## Upcoming Features
+- "Save as template" option on SAIL
 - Make crew members and animals per-ship
 - Customizable SAIL pet
 - Slotable ship modules that allow for stuff like stratagems
