@@ -338,6 +338,25 @@ function select_ship()
     local ship_stats = namje_byos.get_stats(ship_slot)
     local ship_upgrades = namje_byos.get_upgrades(ship_slot)
     if ship_info and ship_stats then
+        local function shorten_name(name)
+            local words = {}
+            for word in string.gmatch(name, "%S+") do
+                table.insert(words, word)
+            end
+
+            if #words <= 1 then
+                return name
+            end
+
+            local shortened_parts = {}
+            for i = 1, #words - 1 do
+                table.insert(shortened_parts, string.sub(words[i], 1, 1) .. ".")
+            end
+
+            table.insert(shortened_parts, words[#words])
+            return table.concat(shortened_parts, " ")
+        end
+        
         local ship_config = namje_byos.get_ship_config(ship_info.ship_id) or nil
         local current_slot = player.getProperty("namje_current_ship", 1)
 
@@ -364,11 +383,12 @@ function select_ship()
             stats["cargo_size"] or "^os_text_color;" .. ship_config.namje_stats.cargo_size
         )
         local stats_2 = string.format(
-            "^os_text_color;%s\n%s\n%s\n%s", 
+            "^os_text_color;%s\n%s\n%s\n%s\n%s", 
             namje_util.dict_size(ship_stats.cargo_hold),
             ship_stats.fuel_amount,
             ship_stats.crew_amount,
-            0 
+            0,
+            string.sub(shorten_name(celestial.planetName(ship_stats.celestial_pos.system)), 1, 12)
         )
 
         update_directory({"ship", string.lower(string.gsub(ship_info.name, " ", "")) .. ".ship"})
@@ -396,7 +416,7 @@ function swap_ship()
     local selected_ship = widget.getListSelected(ship_list)
 
     if celestial.flying() or celestial.skyInHyperspace() then
-        interface.queueMessage("^yellow;Cannot swap ships while flying")
+        interface.queueMessage("^yellow;Cannot swap ships while in transit")
         return
     end
 
