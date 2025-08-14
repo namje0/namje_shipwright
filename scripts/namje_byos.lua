@@ -109,6 +109,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             end
         end
 
+        --TODO: include upgrade levels in refund
         local refund = math.floor(old_config.price * 0.25) or 0
         interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
         player.addCurrency("money", refund)
@@ -305,6 +306,23 @@ function namje_byos.set_ship_info(slot, info)
     return ship_info
 end
 
+function namje_byos.move_all_to_ship_spawn()
+    local players = world.players()
+    for _, player in ipairs (players) do
+        if namje_byos.is_fu() then
+            world.sendEntityMessage(player, "fs_respawn")
+        else
+            world.sendEntityMessage(player, "namje_moveToShipSpawn")
+        end
+    end
+    
+    local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 1})
+    local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc", "monster"}})
+    for _, entity_id in ipairs(entities) do
+        world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
+    end
+end
+
 function namje_byos.change_ships_from_config(ship_type, init, ...)
     local ship_config = namje_byos.get_ship_config(ship_type)
     if not ship_config then
@@ -333,23 +351,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
                 fill_shiplocker(species)
             end
 
-            --move players to new ship spawn
-            local players = world.players()
-            for _, player in ipairs (players) do
-                if namje_byos.is_fu() then
-                    world.sendEntityMessage(player, "fs_respawn")
-                else
-                    world.sendEntityMessage(player, "namje_moveToShipSpawn")
-                end
-            end
-            
-            --move crew (and any other monsters/animals) to new ship spawn
-            --TODO: occasional bug where they dont get moved? try to replicate more
-            local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 1})
-            local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc", "monster"}})
-            for _, entity_id in ipairs(entities) do
-                world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
-            end
+            namje_byos.move_all_to_ship_spawn()
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
             --TODO: revert to previous_ship
@@ -378,15 +380,7 @@ function namje_byos.change_ships_from_table(ship)
         if ship_create then
             sb.logInfo("namje // loaded ship from table")
 
-            --move players to new ship spawn
-            local players = world.players()
-            for _, player in ipairs (players) do
-                if namje_byos.is_fu() then
-                    world.sendEntityMessage(player, "fs_respawn")
-                else
-                    world.sendEntityMessage(player, "namje_moveToShipSpawn")
-                end
-            end
+            namje_byos.move_all_to_ship_spawn()
         else
             sb.logInfo("namje === ship load failed: " .. err)
         end
