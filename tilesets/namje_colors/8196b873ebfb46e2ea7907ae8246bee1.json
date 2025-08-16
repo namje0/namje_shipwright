@@ -1,0 +1,47 @@
+{
+    "name": "generated_tiles",
+    "tilewidth": 8,
+    "tileheight": 8,
+    "spacing": 0,
+    "margin": 0,
+    "tilecount": 5,
+    "tiles": {
+        "0": {
+            "image": "./../../../../tiled/packed/../packed/invalid.png"
+        },
+        "1": {
+            "image": "./../../../../tiled/packed/../packed/invalid.png"
+        },
+        "2": {
+            "image": "./../../../../tiled/packed/../packed/invalid.png"
+        },
+        "3": {
+            "image": "./../../../../tiled/packed/../packed/invalid.png"
+        },
+        "4": {
+            "image": "./../../../../tiled/packed/../packed/invalid.png"
+        }
+    },
+    "tileproperties": {
+        "0": {
+            "material": "slopedrustypanel",
+            "colorVariant": "8"
+        },
+        "1": {
+            "material": "slopedhullpanel",
+            "colorVariant": "8"
+        },
+        "2": {
+            "material": "heavypipe",
+            "colorVariant": "7"
+        },
+        "3": {
+            "material": "slopedinsetpanel",
+            "colorVariant": "8"
+        },
+        "4": {
+            "material": "lunarbaseblock",
+            "colorVariant": "8"
+        }
+    }
+}

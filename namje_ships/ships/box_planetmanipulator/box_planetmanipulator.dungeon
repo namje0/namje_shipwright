@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_boxship",
+    "name" : "box_planetmanipulator",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_boxship" ],
+    "anchor" : [ "box_planetmanipulator" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_boxship",
+      "name" : "box_planetmanipulator",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_boxship.json" ]
+      "def" : [ "tmx", "box_planetmanipulator.json" ]
     }
   ]
 }

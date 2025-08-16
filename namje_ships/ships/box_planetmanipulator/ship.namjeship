@@ -1,0 +1,63 @@
+{
+    "id" : "box_planetmanipulator",
+
+    "name" : "Planet Manipulator",
+    "description" : "Manipulates everything that matters!\nContributed by ^yellow;boxofcuriosity",
+    "manufacturer" : "",
+    "recommended_crew_size" : "1-4",
+    "auto_create_license" : true,
+    "price" : 75000,
+    "add_to_penguin_bay" : true,
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0,
+        "max_fuel" : 6000,
+        "ship_speed" : 30,
+        "crew_size" : 3
+    },
+    "namje_stats" : {
+        "cargo_size" : 300,
+        "ship_center_pos" : [101, 62]
+    },
+    "stat_upgrades": {
+        "fu_fuel_modifier": 2,
+        "max_fuel": [
+            { "stat": 7500, "description": "Increases maximum fuel capacity to 7500." },
+            { "stat": 8000, "description": "Increases maximum fuel capacity to 8000." },
+            { "stat": 8500, "description": "Increases maximum fuel capacity to 8500." },
+            { "stat": 9000, "description": "Increases maximum fuel capacity to 9000." },
+            { "stat": 9500, "description": "Increases maximum fuel capacity to 9500." }
+        ],
+        "fuel_efficiency": [
+            { "stat": 0.1, "description": "Improves fuel costs for FTL travel by 10%" },
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%" },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%" },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%" },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%" }
+        ],
+        "ship_speed": [
+            { "stat": 45, "description": "Improves travel speed within a system by 50%" },
+            { "stat": 60, "description": "Improves travel speed within a system by 100%" },
+            { "stat": 75, "description": "Improves travel speed within a system by 150%" },
+            { "stat": 90, "description": "Improves travel speed within a system by 200%" },
+            { "stat": 105, "description": "Improves travel speed within a system by 250%" }
+        ],
+        "crew_size": [
+            { "stat": 5, "description": "Increases maximum crew capacity to 5." },
+            { "stat": 7, "description": "Increases maximum crew capacity to 7." },
+            { "stat": 9, "description": "Increases maximum crew capacity to 9." },
+            { "stat": 11, "description": "Increases maximum crew capacity to 11." },
+            { "stat": 12, "description": "Increases maximum crew capacity to 12." }
+        ],
+        "cargo_size": [
+            { "stat": 400, "description": "Increases cargo hold capacity by 100 units." },
+            { "stat": 500, "description": "Increases cargo hold capacity by 200 units." },
+            { "stat": 600, "description": "Increases cargo hold capacity by 300 units." },
+            { "stat": 700, "description": "Increases cargo hold capacity by 400 units." },
+            { "stat": 800, "description": "Increases cargo hold capacity by 500 units."}
+        ]
+    },
+    
+    "ship" : "box_planetmanipulator"
+}
