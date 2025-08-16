@@ -1,0 +1,65 @@
+{
+    "id" : "namje_shuttle",
+
+    "name" : "C-5 Micro Shuttle",
+    "description" : "A transport shuttle designed for short trips, retrofitted with an FTL Drive. Not much room, but gives the space to build your own ship",
+    "manufacturer" : "Phare Astroneering",
+    "manufacturer_icon" : "/namje_ships/manufacturers/phare_astroneering.png",
+    "recommended_crew_size" : "1-12",
+    "auto_create_license" : true,
+    "price" : 25000,
+    "add_to_penguin_bay" : true,
+    "license_icon" : "/namje_ships/ships/namje_shuttle/license_icon.png",
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0.1,
+        "max_fuel" : 2500,
+        "ship_speed" : 30,
+        "crew_size" : 2
+    },
+    "namje_stats" : {
+        "cargo_size" : 200,
+        "ship_center_pos" : [50, 50]
+    },
+    "stat_upgrades": {
+        "fu_fuel_modifier": 2,
+        "max_fuel": [
+            { "stat": 3000, "description": "Increases maximum fuel capacity to 3000." },
+            { "stat": 4000, "description": "Increases maximum fuel capacity to 4000." },
+            { "stat": 5000, "description": "Increases maximum fuel capacity to 5000." },
+            { "stat": 6000, "description": "Increases maximum fuel capacity to 6000." },
+            { "stat": 7000, "description": "Increases maximum fuel capacity to 7000." }
+        ],
+        "fuel_efficiency": [
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%" },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%" },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%" },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%" },
+            { "stat": 0.6, "description": "Improves fuel costs for FTL travel by 60%" }
+        ],
+        "ship_speed": [
+            { "stat": 45, "description": "Improves travel speed within a system by 50%" },
+            { "stat": 60, "description": "Improves travel speed within a system by 100%" },
+            { "stat": 75, "description": "Improves travel speed within a system by 150%" },
+            { "stat": 90, "description": "Improves travel speed within a system by 200%" },
+            { "stat": 105, "description": "Improves travel speed within a system by 250%" }
+        ],
+        "crew_size": [
+            { "stat": 4, "description": "Increases maximum crew capacity to 4." },
+            { "stat": 6, "description": "Increases maximum crew capacity to 6." },
+            { "stat": 8, "description": "Increases maximum crew capacity to 8." },
+            { "stat": 10, "description": "Increases maximum crew capacity to 10." },
+            { "stat": 12, "description": "Increases maximum crew capacity to 12." }
+        ],
+        "cargo_size": [
+            { "stat": 350, "description": "Increases cargo hold capacity by 150 units." },
+            { "stat": 500, "description": "Increases cargo hold capacity by 300 units." },
+            { "stat": 650, "description": "Increases cargo hold capacity by 450 units." },
+            { "stat": 800, "description": "Increases cargo hold capacity by 600 units." },
+            { "stat": 950, "description": "Increases cargo hold capacity by 750 units."}
+        ]
+    },
+    
+    "ship" : "namje_shuttle"
+}
