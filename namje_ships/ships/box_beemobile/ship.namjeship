@@ -1,0 +1,64 @@
+{
+    "id" : "box_beemobile",
+
+    "name" : "Beemobile",
+    "description" : "Contributed by ^yellow;boxofcuriosity",
+    "manufacturer" : "",
+    "recommended_crew_size" : "1-2",
+    "auto_create_license" : true,
+    "price" : 35000,
+    "add_to_penguin_bay" : true,
+    "license_icon" : "/namje_ships/ships/box_beemobile/license_icon.png",
+
+    "base_stats" : {
+        "capabilities" : ["teleport", "planetTravel", "systemTravel"],
+        "fuel_efficiency" : 0.1,
+        "max_fuel" : 4500,
+        "ship_speed" : 50,
+        "crew_size" : 2
+    },
+    "namje_stats" : {
+        "cargo_size" : 200,
+        "ship_center_pos" : [160, 104]
+    },
+    "stat_upgrades": {
+        "fu_fuel_modifier": 2,
+        "max_fuel": [
+            { "stat": 5000, "description": "Increases maximum fuel capacity to 5000." },
+            { "stat": 5500, "description": "Increases maximum fuel capacity to 5500." },
+            { "stat": 6000, "description": "Increases maximum fuel capacity to 6000." },
+            { "stat": 6500, "description": "Increases maximum fuel capacity to 6500." },
+            { "stat": 7000, "description": "Increases maximum fuel capacity to 7000." }
+        ],
+        "fuel_efficiency": [
+            { "stat": 0.2, "description": "Improves fuel costs for FTL travel by 20%" },
+            { "stat": 0.3, "description": "Improves fuel costs for FTL travel by 30%" },
+            { "stat": 0.4, "description": "Improves fuel costs for FTL travel by 40%" },
+            { "stat": 0.5, "description": "Improves fuel costs for FTL travel by 50%" },
+            { "stat": 0.6, "description": "Improves fuel costs for FTL travel by 60%" }
+        ],
+        "ship_speed": [
+            { "stat": 75, "description": "Improves travel speed within a system by 50%" },
+            { "stat": 100, "description": "Improves travel speed within a system by 100%" },
+            { "stat": 125, "description": "Improves travel speed within a system by 150%" },
+            { "stat": 150, "description": "Improves travel speed within a system by 200%" },
+            { "stat": 175, "description": "Improves travel speed within a system by 250%" }
+        ],
+        "crew_size": [
+            { "stat": 4, "description": "Increases maximum crew capacity to 4." },
+            { "stat": 6, "description": "Increases maximum crew capacity to 6." },
+            { "stat": 8, "description": "Increases maximum crew capacity to 8." },
+            { "stat": 10, "description": "Increases maximum crew capacity to 10." },
+            { "stat": 12, "description": "Increases maximum crew capacity to 12." }
+        ],
+        "cargo_size": [
+            { "stat": 300, "description": "Increases cargo hold capacity by 100 units." },
+            { "stat": 400, "description": "Increases cargo hold capacity by 200 units." },
+            { "stat": 500, "description": "Increases cargo hold capacity by 300 units." },
+            { "stat": 600, "description": "Increases cargo hold capacity by 400 units." },
+            { "stat": 700, "description": "Increases cargo hold capacity by 500 units."}
+        ]
+    },
+    
+    "ship" : "box_beemobile"
+}

@@ -1,0 +1,22 @@
+{
+  "metadata" : {
+    "name" : "box_beemobile",
+    "species" : "human",
+    "rules" : [],
+    "anchor" : [ "box_beemobile" ],
+    "maxRadius" : 1000000,
+    "maxParts" : 1,
+    "protected" : false
+  },
+
+  "parts" : [
+    {
+      "name" : "box_beemobile",
+      "clearAnchoredObjects" : false,
+      "rules" : [
+        [ "maxSpawnCount", [1] ]
+      ],
+      "def" : [ "tmx", "box_beemobile.json" ]
+    }
+  ]
+}
