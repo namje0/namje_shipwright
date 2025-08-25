@@ -501,7 +501,7 @@ function namje_byos.ship_to_table(...)
             return {}
         end
 
-        -- compact rows of empty spaces into one table.
+        -- compact rows of empty spaces into one table
         for i = 1, #output_table do
             local entry = output_table[i]
             local data = (type(entry) == "table") and entry[2] or entry
@@ -535,7 +535,7 @@ function namje_byos.ship_to_table(...)
         for _, chunk in ipairs (chunks) do
             local min_x = chunk.bottom_left[1]
             local max_x = chunk.top_right[1]
-            local min_y = chunk.bottom_left[2] - 2 -- I dont know man, for some reason the bottom 2 rows just dont exist, check chunk code later
+            local min_y = chunk.bottom_left[2] - 2 -- i dont know man, for some reason the bottom 2 rows just dont exist, check chunk code later
             local max_y = chunk.top_right[2] 
             local chunk_width = max_x - min_x + 1
             local chunk_height = max_y - min_y + 1
@@ -767,7 +767,6 @@ function namje_byos.table_to_ship(ship_table)
                             if color and color > 0 then world.setMaterialColor({current_pos_x + i, current_pos_y}, "background", color) end
                         elseif layer_type == "foreground_mods" or layer_type == "background_mods" then
                             local mod_layer = layer_type == "foreground_mods" and "foreground" or "background"
-                            --TODO: set mod
                             world.placeMod({current_pos_x + i, current_pos_y}, mod_layer, material_name, hue, true)
                         end
                     end
@@ -857,7 +856,7 @@ function namje_byos.table_to_ship(ship_table)
 
         -- recursive placement loop for failed objects
         local iterations = 0
-        local iteration_cap = 500
+        local iteration_cap = 1000
         if #failed_objects > 0 then
             while placed_objects < total_object_count do
                 for k, object in ipairs (failed_objects) do
@@ -896,9 +895,7 @@ function namje_byos.table_to_ship(ship_table)
                 iterations = iterations + 1
                 if iterations >= iteration_cap then
                     sb.logInfo("namje // object placing timed out after " .. iteration_cap)
-                    for k, object in pairs (failed_objects) do
-                        sb.logInfo("namje // failed to place object %s at %s", object[2][1].objectName, object[1])
-                    end
+                    sb.logInfo("failed objects: %s", failed_objects)
                     break
                 end
             end
