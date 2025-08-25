@@ -88,6 +88,8 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             return
         end
 
+        --TODO: redo for new ship table
+        --[[
         local previous_ship_content = player.getProperty("namje_slot_" .. slot .. "_shipcontent", {})
         if not isEmpty(previous_ship_content) then
             local items = {}
@@ -109,7 +111,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
                 world.sendEntityMessage(player.id(), "namje_give_cargo", items)
             end
         end
-
+        ]]
         --TODO: include upgrade levels in refund
         local refund = math.floor(old_config.price * 0.25) or 0
         interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
@@ -120,59 +122,15 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
     return ships["slot_" .. slot]
 end
 
-function namje_byos.swap_ships(new_slot, promise)
+function namje_byos.swap_ships(new_slot)
     if world.isServer() then
         error("namje_byos.swap_ships // swap_ships cannot be called on server")
     end
 
+    local current_slot = player.getProperty("namje_current_ship", 1)
+
     world.spawnStagehand({500, 500}, "namje_saveShip_stagehand")
-    
-    promise:add(world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), false), 
-        function(serialized_ship)
-            local current_slot = player.getProperty("namje_current_ship", 1)
-            player.setProperty("namje_slot_" .. current_slot .. "_shipcontent", serialized_ship)
-
-            local player_ships = player.getProperty("namje_ships", {})
-            local ship_data = player_ships["slot_" .. new_slot]
-            if not ship_data then
-                sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
-                return false
-            end
-            local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
-
-            local ship_info = namje_byos.get_ship_info(new_slot)
-            local ship_stats = namje_byos.get_stats(new_slot)
-            if not ship_info or not ship_stats then
-                error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
-            end
-
-            local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
-            -- default to config ship
-            if isEmpty(ship_content) then
-                namje_byos.change_ships_from_config(ship_info.ship_id, false)
-            else
-                namje_byos.change_ships_from_table(ship_content)
-            end
-            
-            local prev_ship_stats = namje_byos.get_stats(current_slot)
-            local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
-            if prev_ship_stats then
-                namje_byos.set_stats(current_slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold, ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}})
-            end
-
-            namje_byos.set_current_ship(new_slot)
-            world.setProperty("ship.fuel", ship_stats.fuel_amount)
-
-            local new_dest = ship_stats.celestial_pos
-            celestial.flyShip(new_dest.system.location, new_dest.location)
-            return true
-        end, 
-        function(err) 
-            sb.logInfo("namje // swap promise error: ".. err)
-            return false
-        end
-    )
+    world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), current_slot, 1, new_slot)
 end
 
 --- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
@@ -363,7 +321,7 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         end
 
         world.spawnStagehand({500, 500}, "namje_shipFromConfig_stagehand")
-        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swapShip", player.id(), ship_type, init, player.species())
+        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_type, init, player.species())
     end
 end
 
@@ -374,353 +332,584 @@ function namje_byos.change_ships_from_table(ship)
         if isEmpty(ship) then
             error("namje // tried to change ship from save, but ship table is empty")
         end
-        local ship_create, err = pcall(namje_byos.create_ship_from_save, ship)
-        if ship_create then
-            sb.logInfo("namje // loaded ship from table")
 
-            namje_byos.move_all_to_ship_spawn()
-        else
-            sb.logInfo("namje === ship load failed: " .. err)
+        if not namje_byos.is_on_ship() then
+            error("namje // tried to change ship on server while not on shipworld")
         end
+
+        world.spawnStagehand({500, 500}, "namje_shipFromSave_stagehand")
+        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship)
     else
         --for the client, spawn the stagehand which will call this function on the server
         sb.logInfo("namje // changing ship using a save on client")
 
-        if player.worldId() ~= player.ownShipWorldId() then
+        if not namje_byos.is_on_own_ship() then
             error("namje // tried to change ship on client while player world id is not their ship world id")
         end
 
         world.spawnStagehand({500, 500}, "namje_shipFromSave_stagehand")
-        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swapShip", player.id(), ship)
+        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship)
     end
 end
 
---[[
-    saves the ship as a table of chunks and returns the table
-]]
-function namje_byos.ship_to_table(exclude_items)
+-- TODO: Duplicate objects being grabbed
+function namje_byos.ship_to_table(...)
     if not world.isServer() then
-        --getting an object's direction isn't available on the client
         error("namje // saving ship to table is not supported on client")
     end
 
+    local bit_range = 16
+    local temp_obj_cache = {}
     local chunks = namje_byos.get_ship_chunks()
-    local mat_cache = {}
+    local id_cache = {}
     local mat_to_id = {}
     local ship_chunks = {}
     local next_mat_id = 1
 
-    local function get_cached_mat_id(material_name)
-        -- skip metamaterials, they include objects and im pretty sure the player can't place down other metamaterials
-        if material_name == nil or not material_name or material_name and string.find(material_name, "metamaterial") then
-            --[[if material_name == nil then
-                sb.logInfo("namje // WARNING: material_name returned nil, chunk is unloaded. ship will be incomplete")
-            end]]
+    local function get_cached_id(material_name)
+        if not material_name or string.find(material_name, "metamaterial") then
             return nil
-        end
+        end 
 
         if mat_to_id[material_name] then
             return mat_to_id[material_name]
         else
             local id = next_mat_id
             mat_to_id[material_name] = id
-            mat_cache[id] = material_name
+            id_cache[id] = material_name
             next_mat_id = next_mat_id + 1
             return id
         end
     end
 
-    --TODO: still doesn't get all dupes, fix later
-    local function trim_params(current_params, default_params)
-        if type(current_params) ~= "table" or type(default_params) ~= "table" then
-            return
+    local function remove_duplicate_keys(table_1, table_2)
+        local function find_in_table2(key_to_find, value_to_compare, search_table)
+            for k, v in pairs(search_table) do
+            if k == key_to_find and compare(v, value_to_compare) then
+                return true
+            end
+            if type(v) == "table" then
+                if find_in_table2(key_to_find, value_to_compare, v) then
+                return true
+                end
+            end
+            end
+            return false
         end
 
-        for k, v in pairs(current_params) do
-            local default_v = default_params[k]
+        local keys_to_remove = {}
 
-            if type(v) == "table" and type(default_v) == "table" then
-                trim_params(v, default_v)
-                local is_table_empty = true
-                for _ in pairs(v) do
-                    is_table_empty = false
-                    break
-                end
-                if is_table_empty and default_v ~= nil then
-                    current_params[k] = nil
-                end
-            elseif v == default_v then
-                current_params[k] = nil
+        for k, v in pairs(table_1) do
+            if find_in_table2(k, v, table_2) then
+            table.insert(keys_to_remove, k)
             end
         end
+
+        for _, key in ipairs(keys_to_remove) do
+            table_1[key] = nil
+        end
+
+        for k, v in pairs(table_1) do
+            if type(v) == "table" then
+            remove_duplicate_keys(v, table_2)
+            end
+        end
+
+        return table_1
     end
-    for _, chunk in ipairs (chunks) do
-        local top_left_x = chunk.bottom_left[1]
-        local top_left_y = chunk.bottom_left[2]
-        local bottom_right_x = chunk.top_right[1]
-        local bottom_right_y = chunk.top_right[2] + 1
 
-        --TODO: tile hue shift
-        local foreground_tiles = {}
-        local background_tiles = {}
-        local objects = {}
-        local mods = {}
+    -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
+    -- total bits: 32
+    local function pack_tile_vals(length, id, color, hue)
+        local packed_length = length or 0
+        local packed_id = id or 0
+        local packed_color = color or 0
+        local packed_hue = math.floor((hue or 0) + 0.5)
+        return packed_length | (packed_id << 14) | (packed_color << 24) | (packed_hue << 28)
+    end
+    
+    -- bit allocation: 12 bits, 12 bits, 10 bits, 1 bits
+    -- total bits: 35
+    function pack_obj_vals(pos, id, direction)
+        local x = (pos and pos[1]) or 0
+        local y = (pos and pos[2]) or 0
+        local packed_id = id or 0
+        local packed_direction = direction or 0
+        return x | (y << 12) | (packed_id << 24) | (packed_direction << 34)
+    end
+
+    local function process_run(current_id, current_color, current_hue, run_table, output_table, linear_pos)
+        local is_same_color = (current_color == run_table.last_color)
+        local is_same_hue = (current_hue == run_table.last_hue)
+        local is_contiguous = run_table.last_pos == nil or linear_pos == run_table.last_pos + 1
         
-        local chunk_objects = world.objectQuery({top_left_x, top_left_y}, {bottom_right_x, bottom_right_y})
-        for _, object_id in ipairs (chunk_objects) do
-            local object_data = {}
-            local pos = world.entityPosition(object_id)
-            local object_parameters = world.getObjectParameter(object_id,"")
-
-            local obj_name = object_parameters.objectName
-            local temp_obj_item = root.itemConfig(obj_name)
-            local old_parameters = temp_obj_item.config
-
-            local direction = world.callScriptedEntity(object_id, "object.direction") or 0
-
-            table.insert(object_data, get_cached_mat_id(obj_name))
-
-            trim_params(object_parameters, old_parameters)
-
-            table.insert(object_data, object_parameters)
-            table.insert(object_data, direction)
-
-            if not exclude_items then
-                local container_items = world.containerItems(object_id)
-                if container_items then
-                    table.insert(object_data, container_items)
+        if current_id == run_table.last_id and is_same_color and is_same_hue and is_contiguous then
+            run_table.length = run_table.length + 1
+        else
+            if run_table.start_pos then
+                local packed_data = pack_tile_vals(run_table.length, run_table.last_id, run_table.last_color, run_table.last_hue)
+                if run_table.is_first then
+                    table.insert(output_table, {run_table.start_pos, packed_data})
+                    run_table.is_first = false
+                else
+                    table.insert(output_table, packed_data)
                 end
             end
+            
+            run_table.last_id = current_id
+            run_table.last_color = current_color
+            run_table.last_hue = current_hue
+            run_table.start_pos = linear_pos
+            run_table.length = 1
+        end
+        run_table.last_pos = linear_pos
+    end
 
-            --[[
-                very jank system:
-                for crafting stations with upgrade stages that were upgraded without being broken and placed again, the upgradeStage is still set to the
-                lowest tier; in upgradeablecraftingobject.lua the upgrade stage is only set for the item drop on 'die', so we will
-                call die on the object, get the item drop, get the upgrade stage parameters, then add it to the object data table.
-            ]]
+    local function finalize_run(run_table, output_table, chunk_width, total_tiles)
+        local compacted_output = {}
+        local empty_row_buffer = nil
 
-            local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
-            if object_upgrade_stage then
-                world.callScriptedEntity(object_id, "die")
-                local item_drops = world.itemDropQuery(pos, 10)
-                if #item_drops > 0 then
-                    sb.logInfo("dropped items with upgrades: %s", item_drops)
-                    for _, item_drop in ipairs (item_drops) do
-                        local descriptor = world.itemDropItem(item_drop)
-                        if descriptor.name == obj_name then
-                            local params = descriptor.parameters
-                            local starting_stage = params.startingUpgradeStage or 0
-                            object_parameters["startingUpgradeStage"] = starting_stage
-                            world.takeItemDrop(item_drop)
-                            break
-                        end
+        local function flush_empty_buffer()
+            if empty_row_buffer then
+                table.insert(compacted_output, empty_row_buffer)
+                empty_row_buffer = nil
+            end
+        end
+
+        if run_table.start_pos then
+            local packed_data = pack_tile_vals(run_table.length, run_table.last_id, run_table.last_color, run_table.last_hue)
+            if run_table.is_first then
+                table.insert(output_table, {run_table.start_pos, packed_data})
+            else
+                table.insert(output_table, packed_data)
+            end
+        end
+
+        -- remove tables with only empty spaces.
+        if #output_table == 0 then return output_table end
+        local empty_table = true
+        for i = 1, #output_table do
+            local entry = output_table[i]
+            local data = (type(entry) == "table") and entry[2] or entry
+            local length = data & 0x3FFF
+            local id = (data >> 14) & 0x3FF
+            if id ~= 0 then
+                empty_table = false
+            end
+        end
+        if empty_table then
+            return {}
+        end
+
+        -- compact rows of empty spaces into one table.
+        for i = 1, #output_table do
+            local entry = output_table[i]
+            local data = (type(entry) == "table") and entry[2] or entry
+            local length = data & 0x3FFF
+            local id = (data >> 14) & 0x3FF
+
+            if id == 0 and length == chunk_width then
+                if not empty_row_buffer then
+                    empty_row_buffer = entry
+                else
+                    local empty_row_data = (type(empty_row_buffer) == "table") and empty_row_buffer[2] or empty_row_buffer
+                    local current_len = (empty_row_data & 0x3FFF)
+                    local new_len = current_len + chunk_width
+                    if type(empty_row_buffer) == "table" then
+                        empty_row_buffer[2] = (empty_row_data & ~0x3FFF) | new_len
+                    else
+                        empty_row_buffer = (empty_row_data & ~0x3FFF) | new_len
                     end
                 end
+            else
+                flush_empty_buffer()
+                table.insert(compacted_output, entry)
             end
-
-            table.insert(objects, {pos, object_data})
         end
+        flush_empty_buffer()
         
-        for x = top_left_x, bottom_right_x do
-            for y = top_left_y, bottom_right_y do
-                local foreground_material = world.material({x, y}, "foreground")
-                local background_material = world.material({x, y}, "background")
-                local fore_mod = world.mod({x, y}, "foreground")
-                local back_mod = world.mod({x, y}, "background")
-                local foreground_mat_id = get_cached_mat_id(foreground_material)
-                local background_mat_id = get_cached_mat_id(background_material)
-                
-                if foreground_mat_id then
-                    local mat_color = world.materialColor({x, y}, "foreground")
-                    table.insert(foreground_tiles, {{x, y}, foreground_mat_id, mat_color})
-                end
-                if background_mat_id then
-                    local mat_color = world.materialColor({x, y}, "background")
-                    table.insert(background_tiles, {{x, y}, background_mat_id, mat_color})
-                end
-                if fore_mod then
-                    local mod_hue = world.modHueShift({x, y}, "foreground")
-                    table.insert(mods, {{x, y}, "foreground", fore_mod, mod_hue})
-                end
-                if back_mod then
-                    local mod_hue = world.modHueShift({x, y}, "background")
-                    table.insert(mods, {{x, y}, "background", back_mod, mod_hue})
+        return compacted_output
+    end
+
+    local serialize_coroutine = coroutine.create(function()
+        for _, chunk in ipairs (chunks) do
+            local min_x = chunk.bottom_left[1]
+            local max_x = chunk.top_right[1]
+            local min_y = chunk.bottom_left[2] - 2 -- I dont know man, for some reason the bottom 2 rows just dont exist, check chunk code later
+            local max_y = chunk.top_right[2] 
+            local chunk_width = max_x - min_x + 1
+            local chunk_height = max_y - min_y + 1
+            local total_tiles = chunk_width * chunk_height
+
+            local foreground_tiles = {}
+            local background_tiles = {}
+            local objects = {}
+            local monsters = {}
+            local npcs = {}
+            local foreground_mods = {}
+            local background_mods = {}
+            local fore_run = {
+                last_id = nil,
+                last_color = nil,
+                last_hue = nil,
+                start_pos = nil,
+                length = 0,
+                is_first = true,
+                last_pos = nil
+            }
+            local back_run = {
+                last_id = nil,
+                last_color = nil,
+                last_hue = nil,
+                start_pos = nil,
+                length = 0,
+                is_first = true,
+                last_pos = nil
+            }
+            local fore_mod_run = {
+                last_id = nil,
+                last_color = nil,
+                last_hue = nil,
+                start_pos = nil,
+                length = 0,
+                is_first = true,
+                last_pos = nil
+            }
+            local back_mod_run = {
+                last_id = nil,
+                last_color = nil,
+                last_hue = nil,
+                start_pos = nil,
+                length = 0,
+                is_first = true,
+                last_pos = nil
+            }
+
+            --process tiles
+            for y = min_y, max_y do
+                for x = min_x, max_x do
+                    local foreground_material = world.material({x, y}, "foreground")
+                    local background_material = world.material({x, y}, "background")
+                    local fore_mod = world.mod({x, y}, "foreground")
+                    local back_mod = world.mod({x, y}, "background")
+                    local foreground_mat_id = get_cached_id(foreground_material)
+                    local background_mat_id = get_cached_id(background_material)
+                    local foreground_mod_id = get_cached_id(fore_mod)
+                    local background_mod_id = get_cached_id(back_mod)
+
+                    local linear_pos = (y << bit_range) | x
+                    
+                    local fore_color = foreground_mat_id and world.materialColor({x, y}, "foreground") or nil
+                    local fore_hue = foreground_mat_id and world.materialHueShift({x, y}, "foreground") or nil
+                    process_run(foreground_mat_id, fore_color, fore_hue, fore_run, foreground_tiles, linear_pos)
+                    
+                    local back_color = background_mat_id and world.materialColor({x, y}, "background") or nil
+                    local back_hue = background_mat_id and world.materialHueShift({x, y}, "background") or nil
+                    process_run(background_mat_id, back_color, back_hue, back_run, background_tiles, linear_pos)
+
+                    local fore_mod_hue = foreground_mod_id and world.modHueShift({x, y}, "foreground") or nil
+                    process_run(foreground_mod_id, nil, fore_mod_hue, fore_mod_run, foreground_mods, linear_pos)
+
+                    local back_mod_hue = background_mod_id and world.modHueShift({x, y}, "background") or nil
+                    process_run(background_mod_id, nil, back_mod_hue, back_mod_run, background_mods, linear_pos)
                 end
             end
-        end
 
-        local ship_chunk = {{top_left_x, bottom_right_y}, {foreground_tiles, background_tiles, objects, mods}}
-        table.insert(ship_chunks, ship_chunk)
-    end
-    return {mat_cache, ship_chunks}
+            foreground_tiles = finalize_run(fore_run, foreground_tiles, chunk_width, total_tiles)
+            background_tiles = finalize_run(back_run, background_tiles, chunk_width, total_tiles)
+            foreground_mods = finalize_run(fore_mod_run, foreground_mods, chunk_width, total_tiles)
+            background_mods = finalize_run(back_mod_run, background_mods, chunk_width, total_tiles)
+
+            -- process objects
+            local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y})
+            for i = 1, #chunk_objects do
+                local object_extras = {}
+                local object_id = chunk_objects[i]
+
+                local pos = world.entityPosition(object_id)
+                --local linear_pos = (pos[2] << bit_range) | pos[1]
+                local object_parameters = world.getObjectParameter(object_id,"")
+                local obj_name = object_parameters.objectName
+                local direction = world.callScriptedEntity(object_id, "object.direction") or 1
+
+                local temp_obj_item = root.itemConfig(obj_name)
+                local old_parameters = temp_obj_item.config
+
+                local finalized_params = remove_duplicate_keys(object_parameters, old_parameters)
+
+                local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
+                if object_upgrade_stage then
+                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                    local current_stage = world.callScriptedEntity(object_id, "get_ent_storage", "currentStage")
+                    finalized_params["startingUpgradeStage"] = current_stage or 0
+                end
+
+                if not exclude_items then
+                    local container_items = world.containerItems(object_id)
+                    if container_items and not isEmpty(container_items) then
+                        object_extras["items"] = container_items
+                    end
+                end
+
+                --TODO: process farmable data, get with config startingStage(?)
+                local farmable_stage = world.farmableStage(object_id)
+                if farmable_stage then
+                    sb.logInfo("FARMABLE STAGE DETECTED FOR %s: %s", obj_name, farmable_stage)
+                end
+
+                --TODO: process objects that use harvestable.lua (startingAge, activeTimeRange)
+
+                local packed_direction = (direction == 1) and 1 or 0
+                local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
+                local object_data = packed_data
+                if not isEmpty(finalized_params) then
+                    object_data = {packed_data, finalized_params}
+                end
+
+                if not isEmpty(object_extras) then
+                    if type(object_data) == table then
+                        table.insert(object_data, object_extras)
+                    else
+                        object_data = {packed_data, {}, object_extras}
+                    end
+                end
+
+                table.insert(objects, object_data)
+            end
+
+            --TODO: process monsters, npcs
+
+            local ship_chunk = {pos = {min_x, max_y}, tiles = {foreground = foreground_tiles, background = background_tiles}, mods = {foreground = foreground_mods, background = background_mods}}
+            if not isEmpty(objects) then
+                ship_chunk["objs"] = objects
+            end
+            
+            table.insert(ship_chunks, ship_chunk)
+            coroutine.yield()
+        end
+        return {id_cache, ship_chunks}
+    end)
+    return serialize_coroutine
 end
 
-function namje_byos.load_ship_from_table(ship_table)
+function namje_byos.table_to_ship(ship_table)
     if not world.isServer() then
         error("namje // loading ship from table is not supported on client")
     end
 
-    local mat_cache = ship_table[1]
-    if not mat_cache then
-        error("namje // no material cache found in ship table")
+    local id_cache = ship_table[1]
+    local ship_chunks = ship_table[2]
+    local bit_range = 16
+    local chunk_size = 100
+
+    -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
+    -- total bits: 32
+    local function unpack_tile_vals(packed_data)
+        local length = packed_data & 0x3FFF
+        local id = (packed_data >> 14) & 0x3FF
+        local color = (packed_data >> 24) & 0xF
+        local hue = (packed_data >> 28) & 0xF
+        return length, id, color, hue
     end
 
-    local total_object_count = 0
-    local failed_objects = {}
-    local placed_objects = 0
-    --due to how placematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
-    for _, chunk in ipairs (ship_table[2]) do
-        local top_left_x = chunk[1][1]
-        local top_left_y = chunk[1][2]
+    local function unpack_obj_vals(packed_data)
+        local x = packed_data & 0xFFF
+        local y = (packed_data >> 12) & 0xFFF
+        local id = (packed_data >> 24) & 0x3FF
+        local direction = (packed_data >> 34) & 1
+        return {x, y}, id, direction
+    end
 
-        world.placeDungeon("namje_temp_chunk", {top_left_x, top_left_y})
+    local function linear_to_pos(linear_pos)
+        local x = linear_pos & ((1 << bit_range) - 1)
+        local y = linear_pos >> bit_range
+        return {tonumber(x), tonumber(y)}
+    end
 
-        local foreground_tiles = chunk[2][1]
-        local background_tiles = chunk[2][2]
-        local objects = chunk[2][3]
-        local mods = chunk[2][4]
-
-        for _, tile in pairs (foreground_tiles) do
-            local pos = tile[1]
-            local material_id = tile[2]
-            local mat_color = tile[3]
-            local material_name = mat_cache[material_id]
-
-            if material_name then
-                local placement = world.placeMaterial(pos, "foreground", material_name, 0, true)
-                if not placement then
-                    sb.logInfo("ERROR: failure to place at pos %s", pos)
-                end
-                if mat_color > 0 then
-                    world.setMaterialColor(pos, "foreground", mat_color)
-                end
-            end
-        end
-
-        for _, tile in pairs (background_tiles) do
-            local pos = tile[1]
-            local material_id = tile[2]
-            local mat_color = tile[3]
-            local material_name = mat_cache[material_id]
-
-            if material_name then
-                world.replaceMaterials({pos}, "background", material_name, 0, false)
-                if mat_color > 0 then
-                    world.setMaterialColor(pos, "background", mat_color)
-                end
-            end
-        end
-
-        for _, mod in pairs (mods) do
-            local place = world.placeMod(mod[1], mod[2], mod[3], mod[4], true)
-        end
-
-        --clearing temp background
-        for i = 0, 100 do
-            for j = 0, 100 do
-                local grid_x = top_left_x + i
-                local grid_y = top_left_y - j
-                local material = world.material({grid_x, grid_y}, "background")
-                if material and material == "namje_indestructiblemetal" then
-                    world.damageTiles({{grid_x, grid_y}}, "background", {grid_x, grid_y}, "blockish", 99999, 0)
-                end
-            end
-        end
-
-        --placing objects
-        total_object_count = total_object_count + #objects
-        for _, object in pairs (objects) do
-            local pos = object[1]
-            local object_data = object[2]
-            local object_id = object_data[1]
-            local parameters = object_data[2]
-            local dir = object_data[3]
-            local container_items = object_data[4] or nil
-            local object_name = mat_cache[object_id]
-
-            if not object_name then
-                error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
-            end
-
-            local place = world.placeObject(object_name, pos, dir or 0, parameters)
-            if place then
-                if container_items then
-                    local object_id = world.objectAt(pos)
-                    if not object_id then
-                        return 
-                    end
-                    for slot, item in pairs (container_items) do
-                        world.containerPutItemsAt(object_id, item, slot-1)
-                    end
-                end
-                placed_objects = placed_objects + 1
+    local function place_tiles(tiles_data, layer_type, chunk_x)
+        local current_pos_x, current_pos_y
+        
+        for i, entry in ipairs(tiles_data) do
+            local start_pos, packed_data
+            
+            -- the first entry in the table is a pair {start_pos, packed_data}
+            -- subsequent entries are just packed_data
+            if type(entry) == "table" then
+                start_pos = entry[1]
+                packed_data = entry[2]
             else
-                sb.logInfo("namje // failed to place object " .. mat_cache[object[2][1]] .. " at " .. object[1][1] .. "," .. object[1][2])
-                table.insert(failed_objects, object)
+                packed_data = entry
+            end
+
+            if start_pos then
+                local pos = linear_to_pos(start_pos)
+                current_pos_x = pos[1] 
+                current_pos_y = pos[2]
+            end
+            
+            local length, id, color, hue = unpack_tile_vals(packed_data)
+            local material_name = id_cache[id]
+            
+            -- skip the loop and just advance the y position if its an empty run greater than chunk_size
+            -- empty runs greater than chunk_size will always be divisible by the chunk_size
+            if id == 0 and material_name == nil and length > chunk_size then
+                local rows = (length / chunk_size)
+                current_pos_y = current_pos_y + rows
+                --sb.logInfo("skipping a run of empty tiles with length %s. New pos: %s", length, current_pos)
+            else
+                for i = 0, length - 1 do
+                    if material_name then
+                        if layer_type == "foreground" then
+                            world.placeMaterial({current_pos_x + i, current_pos_y}, "foreground", material_name, hue, true)
+                            if color and color > 0 then world.setMaterialColor({current_pos_x + i, current_pos_y}, "foreground", color) end
+                        elseif layer_type == "background" then
+                            world.replaceMaterials({{current_pos_x + i, current_pos_y}}, "background", material_name, hue, false)
+                            if color and color > 0 then world.setMaterialColor({current_pos_x + i, current_pos_y}, "background", color) end
+                        elseif layer_type == "foreground_mods" or layer_type == "background_mods" then
+                            local mod_layer = layer_type == "foreground_mods" and "foreground" or "background"
+                            --TODO: set mod
+                            world.placeMod({current_pos_x + i, current_pos_y}, mod_layer, material_name, hue, true)
+                        end
+                    end
+                end
+                current_pos_x = current_pos_x + length
+                while current_pos_x >= chunk_x + chunk_size do
+                    current_pos_x = current_pos_x - chunk_size
+                    current_pos_y = current_pos_y + 1
+                end
             end
         end
     end
 
-    -- get the failed object placements and try to place them here recursively
-    local iterations = 0
-    local iteration_cap = 500
-    if #failed_objects > 0 then
-        while placed_objects < total_object_count do
-            for k, object in ipairs (failed_objects) do
-                local pos = object[1]
+    local deserialize_coroutine = coroutine.create(function()
+        local total_object_count = 0
+        local placed_objects = 0
+        local failed_objects = {}
 
-                if world.objectAt(pos) then
-                    placed_objects = placed_objects + 1
-                    table.remove(failed_objects, k)
-                else
-                    local object_data = object[2]
-                    local object_id = object_data[1]
-                    local parameters = object_data[2]
-                    local dir = object_data[3]
-                    local container_items = object_data[4] or nil
-                    local object_name = mat_cache[object_id]
+        for _, chunk in ipairs(ship_chunks) do
+            -- process tiles
+            -- due to how replacematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
+            local top_left_x = chunk.pos[1]
+            local top_left_y = chunk.pos[2]
+            world.placeDungeon("namje_temp_chunk", {top_left_x, top_left_y})
+
+            place_tiles(chunk.tiles.foreground, "foreground", top_left_x)
+            place_tiles(chunk.tiles.background, "background", top_left_x)
+            place_tiles(chunk.mods.foreground, "foreground_mods", top_left_x)
+            place_tiles(chunk.mods.background, "background_mods", top_left_x)
+
+            coroutine.yield()
+
+            -- remove temporary background
+            for x = top_left_x, top_left_x + chunk_size do
+                for y = top_left_y - 101, top_left_y - 1 do
+                    local material = world.material({x, y}, "background")
+                    if material and material == "namje_indestructiblemetal" then
+                        world.damageTiles({{x, y}}, "background", {x, y}, "blockish", 99999, 0)
+                    end
+                end
+            end
+
+            -- process objects
+            -- failed object placements will be recursively done at the end
+            if chunk.objs and not isEmpty(chunk.objs) then
+                total_object_count = total_object_count + #chunk.objs
+                for _, object in pairs (chunk.objs) do
+                    local unpacked_data
+                    local parameters
+                    local object_extras
+                    if type(object) == "table" then
+                        unpacked_data = object[1]
+                        parameters = object[2]
+                        object_extras = object[3]
+                    else
+                        unpacked_data = object
+                    end
+                    local pos, object_id, dir = unpack_obj_vals(unpacked_data)
+                    local container_items = object_extras and object_extras.items or nil
+                    local object_name = id_cache[object_id]
+
+                    dir = dir == 0 and -1 or 1
 
                     if not object_name then
-                        error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
+                        error("namje // no object name found for object id " .. tostring(object_id))
                     end
 
                     local place = world.placeObject(object_name, pos, dir or 0, parameters)
-
                     if place then
-                        if container_items then
-                            local object_id = world.objectAt(pos)
-                            if not object_id then
-                                return 
-                            end
+                        if container_items and next(container_items) ~= nil then
+                            local placed_object_id = world.objectAt(pos)
+                            if not placed_object_id then return end
                             for slot, item in pairs (container_items) do
-                                world.containerPutItemsAt(object_id, item, slot-1)
+                                world.containerPutItemsAt(placed_object_id, item, slot - 1)
                             end
                         end
                         placed_objects = placed_objects + 1
-                        table.remove(failed_objects, k)
+                    else
+                        sb.logInfo("namje // failed to place object " .. object_name .. " at " .. pos[1] .. "," .. pos[2])
+                        table.insert(failed_objects, object)
                     end
                 end
             end
-            iterations = iterations + 1
-            if iterations >= iteration_cap then
-                sb.logInfo("namje // object placing timed out after " .. iteration_cap)
-                for k, object in pairs (failed_objects) do
-                    sb.logInfo("namje // failed to place object %s at %s", object[2][1].objectName, object[1])
-                end
-                break
-            end
-        end
-        sb.logInfo("namje // complete object placement after " .. iterations .. " attempts")
-    else
-        sb.logInfo("namje // no failed objects")
-    end
-end
 
---- creates a new ship using the provided ship table. will clear out the ship area and then place a new ship at {1024,1024}
---- @param ship table
-function namje_byos.create_ship_from_save(ship)
-    clear_ship_area()
-    namje_byos.load_ship_from_table(ship)
+            coroutine.yield()
+        end
+
+        -- recursive placement loop for failed objects
+        local iterations = 0
+        local iteration_cap = 500
+        if #failed_objects > 0 then
+            while placed_objects < total_object_count do
+                for k, object in ipairs (failed_objects) do
+                    local pos, object_id, dir = unpack_obj_vals(type(object) == "table" and object[1] or object)
+
+                    if world.objectAt(pos) then
+                        placed_objects = placed_objects + 1
+                        table.remove(failed_objects, k)
+                    else
+                        local parameters = type(object) == table and object[2] or nil
+                        local object_extras = type(object) == table and object[3] or nil
+                        local container_items = object_extras and object_extras["items"] or nil
+                        local object_name = id_cache[object_id]
+
+                        if not object_name then
+                            error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
+                        end
+
+                        local place = world.placeObject(object_name, pos, dir or 0, parameters)
+
+                        if place then
+                            if container_items then
+                                local object_id = world.objectAt(pos)
+                                if not object_id then
+                                    return 
+                                end
+                                for slot, item in pairs (container_items) do
+                                    world.containerPutItemsAt(object_id, item, slot-1)
+                                end
+                            end
+                            placed_objects = placed_objects + 1
+                            table.remove(failed_objects, k)
+                        end
+                    end
+                end
+                iterations = iterations + 1
+                if iterations >= iteration_cap then
+                    sb.logInfo("namje // object placing timed out after " .. iteration_cap)
+                    for k, object in pairs (failed_objects) do
+                        sb.logInfo("namje // failed to place object %s at %s", object[2][1].objectName, object[1])
+                    end
+                    break
+                end
+            end
+            sb.logInfo("namje // complete object placement after " .. iterations .. " attempts")
+        else
+            sb.logInfo("namje // no failed objects")
+        end
+
+        return true
+    end)
+    return deserialize_coroutine
 end
 
 --- creates a new ship using the provided .namjeship config. will clear out the ship area and then place a new ship at {1024,1024}
@@ -731,16 +920,14 @@ function namje_byos.create_ship_from_config(ply, ship_config)
     local ship_offset = ship_config.namje_stats.ship_center_pos
     local ship_position = vec2.sub({500, 500}, {ship_offset[1], -ship_offset[2]})
 
-    clear_ship_area()
+    namje_byos.clear_ship_area()
 
     if type(ship_config.ship) == "table" then
         sb.logInfo("namje // placing table variant of ship")
-        namje_byos.load_ship_from_table(ship_config.ship)
+        --TODO: load table ship
     else
         world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
     end
-
-    --namje_byos.ship_to_table()
 
     if namje_byos.is_fu() then
         namje_byos.reset_fu_stats()
@@ -818,7 +1005,7 @@ function namje_byos.get_ship_chunks()
 end
 
 --- scan from 0,0 to 1000,1000 for tiles in chunks of 100, then delete those areas with a 100x100 empty dungeon
-function clear_ship_area()
+function namje_byos.clear_ship_area()
     local chunks = namje_byos.get_ship_chunks()
 
     if #chunks == 0 then 
@@ -905,6 +1092,10 @@ function namje_byos.init_byos()
     else
         world.spawnStagehand({500, 500}, "namje_initBYOS_stagehand")
         local ship = namje_byos.register_new_ship(1, "namje_startership", "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
+        local system = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
+        --TODO: set the stat in the cockpit as well
+        namje_byos.set_stats(1, {celestial_pos = system})
+
         player.warp("nowhere")
         --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
         local cinematic = "/cinematics/namje/shipintro.cinematic"

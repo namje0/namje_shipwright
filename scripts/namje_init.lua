@@ -27,6 +27,64 @@ function init() ini()
         end
     end)
 
+    message.setHandler("namje_receive_serialized_ship", function(_, _, result, slot, action, ...)
+        local args = {...}
+        if action == 1 then
+            player.setProperty("namje_slot_" .. slot .. "_shipcontent", result)
+            --interface.queueMessage("^orange;Ship for slot " .. slot .. " saved")
+
+            sb.logInfo("args = %s", args)
+            local new_slot = args[1][1]
+
+            if not new_slot then
+                sb.logInfo("no new slot error")
+                return
+            end
+
+            local player_ships = player.getProperty("namje_ships", {})
+            local ship_data = player_ships["slot_" .. new_slot]
+            if not ship_data then
+                sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
+                return false
+            end
+            local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
+
+            local ship_info = namje_byos.get_ship_info(new_slot)
+            local ship_stats = namje_byos.get_stats(new_slot)
+            if not ship_info or not ship_stats then
+                error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
+            end
+
+            local cinematic = "/cinematics/namje/shipswap.cinematic"
+            player.playCinematic(cinematic)
+
+            -- default to config ship if the ship content is empty
+            if isEmpty(ship_content) then
+                namje_byos.change_ships_from_config(ship_info.ship_id, false)
+            else
+                namje_byos.change_ships_from_table(ship_content)
+            end
+            
+            local prev_ship_stats = namje_byos.get_stats(slot)
+            local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
+            if prev_ship_stats then
+                namje_byos.set_stats(slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold, ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}})
+            end
+
+            namje_byos.set_current_ship(new_slot)
+            world.setProperty("ship.fuel", ship_stats.fuel_amount)
+
+            local new_dest = ship_stats.celestial_pos
+            celestial.flyShip(new_dest.system.location, new_dest.location)
+        elseif action == 2 then
+            sb.logInfo("end result %s", result)
+            root.setConfigurationPath("namje_ship_template", result)
+		    interface.queueMessage("^orange;namje_ship_template^reset; will be cleared on item unload, so copy it beforehand")
+            interface.queueMessage("For info on how to use it in a ship file, check the github page")
+            interface.queueMessage("Template saved to starbound.config as ^orange;namje_ship_template")
+        end
+	end)
+
     message.setHandler("namje_cargohold_open", function() 
         local on_ship = namje_byos.is_on_own_ship()
         if on_ship then
