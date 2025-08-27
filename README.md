@@ -48,11 +48,9 @@ Currently incompatible.
 
 ## Upcoming Features
 - "Save as template" option on SAIL
-- Make crew members and animals per-ship
+- Make crew members per-ship
 - Customizable SAIL pet
 - Slotable ship modules that allow for stuff like stratagems
-- Save ship celestial opsition
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
-- Items may be duplicated if overwriting a ship that has items in storage containers that aren't the cargo hold
