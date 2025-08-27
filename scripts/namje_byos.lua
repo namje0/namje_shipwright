@@ -88,20 +88,22 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             return
         end
 
-        --TODO: redo for new ship table
-        --[[
         local previous_ship_content = player.getProperty("namje_slot_" .. slot .. "_shipcontent", {})
         if not isEmpty(previous_ship_content) then
             local items = {}
             for _, chunk in pairs (previous_ship_content[2]) do
-                local objects = chunk[2][3]
-                for _, object in pairs (objects) do
-                    local object_data = object[2]
-                    local container_items = object_data[4] or nil
-                    if container_items then
-                        for slot, item in pairs (container_items) do
-                            --TODO: items within the same chunk duplicated?
-                            table.insert(items, item)
+                if chunk.objs and not isEmpty(chunk.objs) then
+                    for _, object in pairs (chunk.objs) do
+                        if type(object) == "table" then
+                            local object_extras = object[3]
+                            if object_extras then
+                                local container_items = object_extras.items or nil
+                                if container_items then
+                                    for slot, item in pairs (container_items) do
+                                        table.insert(items, item)
+                                    end
+                                end
+                            end
                         end
                     end
                 end
@@ -111,7 +113,6 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
                 world.sendEntityMessage(player.id(), "namje_give_cargo", items)
             end
         end
-        ]]
         --TODO: include upgrade levels in refund
         local refund = math.floor(old_config.price * 0.25) or 0
         interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
