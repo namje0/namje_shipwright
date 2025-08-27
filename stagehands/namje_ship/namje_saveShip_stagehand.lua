@@ -22,6 +22,9 @@ function update()
         if not status then error(result) end
         if result then
             stagehand.die()
+            if self.action == 1 then
+                namje_byos.despawn_ship_monsters()
+            end
             world.sendEntityMessage(self.ply, "namje_receive_serialized_ship", result, self.slot, self.action, self.args)
         end
     end

@@ -32,8 +32,6 @@ function init() ini()
         if action == 1 then
             player.setProperty("namje_slot_" .. slot .. "_shipcontent", result)
             --interface.queueMessage("^orange;Ship for slot " .. slot .. " saved")
-
-            sb.logInfo("args = %s", args)
             local new_slot = args[1][1]
 
             if not new_slot then

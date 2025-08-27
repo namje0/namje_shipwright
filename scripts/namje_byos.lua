@@ -262,6 +262,16 @@ function namje_byos.set_ship_info(slot, info)
     return ship_info
 end
 
+function namje_byos.despawn_ship_monsters()
+    local entities = world.monsterQuery({0, 0}, {1000, 1000})
+    for _, entity_id in ipairs(entities) do
+        world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
+        world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
+        world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
+        world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "monsterdespawn")
+    end
+end
+
 function namje_byos.move_all_to_ship_spawn()
     local players = world.players()
     for _, player in ipairs (players) do
@@ -273,7 +283,7 @@ function namje_byos.move_all_to_ship_spawn()
     end
     
     local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {500, 500}), {0, 1})
-    local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc", "monster"}})
+    local entities = world.entityQuery({0, 0}, {1000, 1000}, {includedTypes = {"npc"}})
     for _, entity_id in ipairs(entities) do
         world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
     end
@@ -306,7 +316,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
                 local species = args[2]
                 fill_shiplocker(species)
             end
-
             namje_byos.move_all_to_ship_spawn()
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
@@ -359,7 +368,6 @@ function namje_byos.ship_to_table(...)
     end
 
     local bit_range = 16
-    local temp_obj_cache = {}
     local chunks = namje_byos.get_ship_chunks()
     local id_cache = {}
     local mat_to_id = {}
@@ -535,7 +543,7 @@ function namje_byos.ship_to_table(...)
         for _, chunk in ipairs (chunks) do
             local min_x = chunk.bottom_left[1]
             local max_x = chunk.top_right[1]
-            local min_y = chunk.bottom_left[2] - 2 -- i dont know man, for some reason the bottom 2 rows just dont exist, check chunk code later
+            local min_y = chunk.bottom_left[2]
             local max_y = chunk.top_right[2] 
             local chunk_width = max_x - min_x + 1
             local chunk_height = max_y - min_y + 1
@@ -621,17 +629,17 @@ function namje_byos.ship_to_table(...)
             background_mods = finalize_run(back_mod_run, background_mods, chunk_width, total_tiles)
 
             -- process objects
-            local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y})
+            local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
             for i = 1, #chunk_objects do
                 local object_extras = {}
                 local object_id = chunk_objects[i]
 
                 local pos = world.entityPosition(object_id)
-                --local linear_pos = (pos[2] << bit_range) | pos[1]
                 local object_parameters = world.getObjectParameter(object_id,"")
                 local obj_name = object_parameters.objectName
                 local direction = world.callScriptedEntity(object_id, "object.direction") or 1
-
+                local packed_direction = (direction == 1) and 1 or 0
+                local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
                 local temp_obj_item = root.itemConfig(obj_name)
                 local old_parameters = temp_obj_item.config
 
@@ -659,8 +667,6 @@ function namje_byos.ship_to_table(...)
 
                 --TODO: process objects that use harvestable.lua (startingAge, activeTimeRange)
 
-                local packed_direction = (direction == 1) and 1 or 0
-                local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
                 local object_data = packed_data
                 if not isEmpty(finalized_params) then
                     object_data = {packed_data, finalized_params}
@@ -677,11 +683,38 @@ function namje_byos.ship_to_table(...)
                 table.insert(objects, object_data)
             end
 
-            --TODO: process monsters, npcs
+            --process monsters
+            local chunk_monsters = world.monsterQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
+            for _, entity_id in ipairs (chunk_monsters) do
+                world.callScriptedEntity(entity_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                local entity_storage = world.callScriptedEntity(entity_id, "get_ent_storage", "")
+                local monster_type = world.callScriptedEntity(entity_id, "monster.type")
+                local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
+                local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
+                local pet_info = {
+                    type = get_cached_id(monster_type),
+                    parameters = world.callScriptedEntity(entity_id, "monster.uniqueParameters"),
+                    pos = linear_pos
+                }
+                pet_info.parameters.storage = entity_storage
+                pet_info.parameters.seed = world.callScriptedEntity(entity_id, "monster.seed")
+
+                --remove redundant data
+                pet_info.parameters.storage["spawnPosition"] = nil
+                pet_info.parameters.storage["playSpawnAnimation"] = nil
+
+                table.insert(monsters, pet_info)
+            end
+
+            --TODO: process npcs
 
             local ship_chunk = {pos = {min_x, max_y}, tiles = {foreground = foreground_tiles, background = background_tiles}, mods = {foreground = foreground_mods, background = background_mods}}
             if not isEmpty(objects) then
                 ship_chunk["objs"] = objects
+            end
+
+            if not isEmpty(monsters) then
+                ship_chunk["monsters"] = monsters
             end
             
             table.insert(ship_chunks, ship_chunk)
@@ -697,6 +730,8 @@ function namje_byos.table_to_ship(ship_table)
         error("namje // loading ship from table is not supported on client")
     end
 
+    local load_mat_cache = {}
+    local invalid_ids = {}
     local id_cache = ship_table[1]
     local ship_chunks = ship_table[2]
     local bit_range = 16
@@ -749,7 +784,20 @@ function namje_byos.table_to_ship(ship_table)
             
             local length, id, color, hue = unpack_tile_vals(packed_data)
             local material_name = id_cache[id]
-            
+            if material_name then
+                if invalid_ids[material_name] then
+                    material_name = "dirt"
+                else
+                    if not load_mat_cache[material_name] then
+                        local config = root.materialConfig(material_name)
+                        if not config then
+                            sb.logInfo("namje warning // material_name %s is invalid! It may be from an unloaded mod. Replacing tile with dirt", material_name)
+                            invalid_ids[material_name] = true
+                        end
+                        load_mat_cache[material_name] = true
+                    end
+                end
+            end
             -- skip the loop and just advance the y position if its an empty run greater than chunk_size
             -- empty runs greater than chunk_size will always be divisible by the chunk_size
             if id == 0 and material_name == nil and length > chunk_size then
@@ -830,24 +878,36 @@ function namje_byos.table_to_ship(ship_table)
 
                     dir = dir == 0 and -1 or 1
 
-                    if not object_name then
-                        error("namje // no object name found for object id " .. tostring(object_id))
-                    end
-
-                    local place = world.placeObject(object_name, pos, dir or 0, parameters)
-                    if place then
-                        if container_items and next(container_items) ~= nil then
-                            local placed_object_id = world.objectAt(pos)
-                            if not placed_object_id then return end
-                            for slot, item in pairs (container_items) do
-                                world.containerPutItemsAt(placed_object_id, item, slot - 1)
+                    --TODO: add missing object ids (and tiles) to a list to display later and just dont place them (or place dirt for tiles)
+                    if object_name then
+                        local place = world.placeObject(object_name, pos, dir or 0, parameters)
+                        if place then
+                            if container_items and next(container_items) ~= nil then
+                                local placed_object_id = world.objectAt(pos)
+                                if placed_object_id then
+                                    for slot, item in pairs (container_items) do
+                                        world.containerPutItemsAt(placed_object_id, item, slot - 1)
+                                    end
+                                end
                             end
+                            placed_objects = placed_objects + 1
+                        else
+                            sb.logInfo("namje // failed to place object " .. object_name .. " at " .. pos[1] .. "," .. pos[2])
+                            table.insert(failed_objects, object)
                         end
-                        placed_objects = placed_objects + 1
                     else
-                        sb.logInfo("namje // failed to place object " .. object_name .. " at " .. pos[1] .. "," .. pos[2])
-                        table.insert(failed_objects, object)
+                        sb.logInfo("namje // no object name found for object id %s", object_id)
                     end
+                end
+            end
+
+            -- process monsters
+            if chunk.monsters and not isEmpty(chunk.monsters) then
+                for _, monster in pairs (chunk.monsters) do
+                    local pos = linear_to_pos(monster.pos)
+                    sb.logInfo("spawning monster of type %s at pos %s %s", id_cache[monster.type], pos[1], pos[2])
+                    local spawned_monster = world.spawnMonster(id_cache[monster.type], pos, monster.parameters)
+                    sb.logInfo("spawn attempt %s", spawned_monster)
                 end
             end
 
@@ -871,24 +931,26 @@ function namje_byos.table_to_ship(ship_table)
                         local container_items = object_extras and object_extras["items"] or nil
                         local object_name = id_cache[object_id]
 
-                        if not object_name then
-                            error("namje // no object name found for object id " .. material_id .. " in object " .. object_id)
-                        end
+                        if object_name then
+                            dir = dir == 0 and -1 or 1
 
-                        local place = world.placeObject(object_name, pos, dir or 0, parameters)
+                            local place = world.placeObject(object_name, pos, dir or 0, parameters)
 
-                        if place then
-                            if container_items then
-                                local object_id = world.objectAt(pos)
-                                if not object_id then
-                                    return 
+                            if place then
+                                if container_items then
+                                    local object_id = world.objectAt(pos)
+                                    if not object_id then
+                                        return 
+                                    end
+                                    for slot, item in pairs (container_items) do
+                                        world.containerPutItemsAt(object_id, item, slot-1)
+                                    end
                                 end
-                                for slot, item in pairs (container_items) do
-                                    world.containerPutItemsAt(object_id, item, slot-1)
-                                end
+                                placed_objects = placed_objects + 1
+                                table.remove(failed_objects, k)
                             end
-                            placed_objects = placed_objects + 1
-                            table.remove(failed_objects, k)
+                        else
+                            sb.logInfo("namje // no object name found for object id %s", object_id)
                         end
                     end
                 end
@@ -904,6 +966,10 @@ function namje_byos.table_to_ship(ship_table)
             sb.logInfo("namje // no failed objects")
         end
 
+        if not isEmpty(invalid_ids) then
+            --TODO: open UI listing invalid ids
+            sb.logInfo("invalid ids: %s", invalid_ids)
+        end
         return true
     end)
     return deserialize_coroutine
@@ -962,7 +1028,7 @@ function namje_byos.get_ship_chunks()
             local chunk_bl_y = start_y + j * 100
 
             local chunk_tr_x = chunk_bl_x + 99
-            local chunk_tr_y = chunk_bl_y + 99
+            local chunk_tr_y = chunk_bl_y + 100
 
             local min_vec = {chunk_bl_x, chunk_bl_y}
             local max_vec = {chunk_tr_x + 1, chunk_tr_y + 1}
