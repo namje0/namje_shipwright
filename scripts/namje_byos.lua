@@ -290,7 +290,7 @@ function namje_byos.move_all_to_ship_spawn()
     end
 end
 
-function namje_byos.change_ships_from_config(ship_type, init, ...)
+function namje_byos.change_ships_from_config(ship_type, init, ply)
     local ship_config = namje_byos.get_ship_config(ship_type)
     if not ship_config then
         error("namje // ship config not found for " .. ship_type)
@@ -300,9 +300,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     end
 
     if world.isServer() then
-        local args = ...
-        local ply = init and args[1] or args
-
         sb.logInfo("namje // changing ship to " .. ship_type .. " on server for player " .. ply)
         
         world.setProperty("namje_cargo_size", ship_config.namje_stats.cargo_size)
@@ -311,12 +308,6 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
     
         local ship_create, err = pcall(namje_byos.create_ship_from_config, ply, ship_config)
         if ship_create then
-            --create the shiplocker treasurepool on init
-            --FU also fills the shiplocker (or a random container if there is none) so just skip that part if FU is enabled
-            if init and not namje_byos.is_fu() then
-                local species = args[2]
-                fill_shiplocker(species)
-            end
             namje_byos.move_all_to_ship_spawn()
         else 
             sb.logInfo("namje === ship swap failed: " .. err)
@@ -331,7 +322,10 @@ function namje_byos.change_ships_from_config(ship_type, init, ...)
         end
 
         world.spawnStagehand({500, 500}, "namje_shipFromConfig_stagehand")
-        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_type, init, player.species())
+        if init then
+            fill_shiplocker(player.species())
+        end
+        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_type, init)
     end
 end
 
@@ -860,6 +854,7 @@ function namje_byos.table_to_ship(ship_table)
 
             -- process objects
             -- failed object placements will be recursively done at the end
+            --TODO: some objects not placing but being considered 'true' in placeObject?
             if chunk.objs and not isEmpty(chunk.objs) then
                 total_object_count = total_object_count + #chunk.objs
                 for _, object in pairs (chunk.objs) do
@@ -1198,7 +1193,7 @@ end
     method of grabbing racial treasure pool based on how FU does it
     since we're using a custom cargo hold instead of the ship locker for the starter ship, we're just gonna fill random storage containers onboard the ship
 ]]
-function fill_shiplocker(species)
+function fill_shiplocker(species, ply)
     if not species then
         error("namje // no species provided to fill ship locker")
     end
@@ -1222,29 +1217,21 @@ function fill_shiplocker(species)
 		starter_treasure = util.mergeTable(starter_treasure, treasure)
 	end
 
-    local starter_ship_containers = {
-        "wrecklocker",
-        "bunkerdesk",
-        "outpostcargocrate",
-        "outpostcargocrateshort",
-        "industrialcrate"
+    local cargo_hold = {}
+    local cargo_count = 1
 
-    }
-    local containers = {}
-    local objects = world.objectQuery({0, 0}, {1000, 1000})
-    for _, v in ipairs (objects) do
-        for _, container in ipairs (starter_ship_containers) do
-            if string.find(world.entityName(v), container) then
-                table.insert(containers, v)
-            end
-        end
+    for i = 1, #starter_treasure do
+        local item_to_add = {
+            name = starter_treasure[i].name,
+            parameters = starter_treasure[i].parameters,
+            count = starter_treasure[i].count
+        }
+        
+        cargo_hold["slot_" .. cargo_count] = item_to_add
+        cargo_count = cargo_count + 1
     end
 
-    if #containers > 0 then
-        for _, item in ipairs(starter_treasure) do
-            world.containerAddItems(containers[math.random(1,#starter_ship_containers)], item)
-        end
-    else
-        error("namje // no ship locker found to fill with treasure")
-    end
+    local ship_slot = player.getProperty("namje_current_ship", 1)
+    local ship_stats = namje_byos.get_stats(ship_slot)
+    namje_byos.set_stats(ship_slot, {["cargo_hold"] = cargo_hold})
 end

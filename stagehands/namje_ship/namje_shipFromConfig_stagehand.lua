@@ -6,8 +6,7 @@ function init()
     message.setHandler("namje_swap_ship", swap_ship)
 end
 
-function swap_ship(_, _, ply, ship_type, init, ...)
-    local species = init and ... or nil
-    namje_byos.change_ships_from_config(ship_type, init, init and {ply, species} or ply)
+function swap_ship(_, _, ply, ship_type, init)
+    namje_byos.change_ships_from_config(ship_type, init, ply)
     stagehand.die()
 end
