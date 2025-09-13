@@ -1,5 +1,5 @@
 ![bongbong](https://i.imgur.com/FN9fjwi.gif)
-# namjeShipwright
+# 🚀 namjeShipwright
 > This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound)
 
 > [!WARNING]
@@ -54,3 +54,5 @@ Currently incompatible.
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
+- Plant growth stage is currently not saved.
+- Harvestables (e.g mothtrap) are reset on ship swap.
