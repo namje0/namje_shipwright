@@ -51,8 +51,10 @@ Currently incompatible.
 - Make crew members per-ship
 - Customizable SAIL pet
 - Slotable ship modules that allow for stuff like stratagems
+- Save ship wiring
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
 - Plant growth stage is currently not saved.
 - Harvestables (e.g mothtrap) are reset on ship swap.
+- Some objects currently don't place

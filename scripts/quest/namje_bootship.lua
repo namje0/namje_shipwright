@@ -21,6 +21,7 @@ function init()
 
   --this method of running the script is based off how FU does it, i'm not sure if there's a better way to do this atm
     player.startQuest("namje_shipPassive")
+    player.startQuest("namje_shipCache")
     if namje_byos.is_fu() then
       player.startQuest("fu_shipupgrades")
     end

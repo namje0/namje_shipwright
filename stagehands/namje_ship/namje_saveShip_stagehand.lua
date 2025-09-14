@@ -5,9 +5,7 @@ require "/scripts/messageutil.lua"
 
 function init()
     message.setHandler("namje_save_ship", function(_, _, ply, slot, action, ...)
-        local region = {0, 0, 1000, 1000}
-        --TODO: loadregion increases load time a fair bit. problem for bigger map sizes?
-        world.loadRegion(region)
+        world.setProperty("namje_ship_loading", true)
         self.coroutine = namje_byos.ship_to_table()
         self.ply = ply
         self.slot = slot
@@ -21,6 +19,7 @@ function update()
         local status, result = coroutine.resume(self.coroutine)
         if not status then error(result) end
         if result then
+            world.setProperty("namje_ship_loading", false)
             stagehand.die()
             if self.action == 1 then
                 namje_byos.despawn_ship_monsters()

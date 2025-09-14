@@ -66,14 +66,19 @@ function init() ini()
             local prev_ship_stats = namje_byos.get_stats(slot)
             local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
             if prev_ship_stats then
-                namje_byos.set_stats(slot, {["fuel_amount"] = prev_ship_stats.fuel_amount, ["cargo_hold"] = prev_cargo_hold, ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}})
+                namje_byos.set_stats(slot, {
+                    ["cached_regions"] = world.getProperty("namje_region_cache", {}),
+                    ["fuel_amount"] = prev_ship_stats.fuel_amount, 
+                    ["cargo_hold"] = prev_cargo_hold, 
+                    ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
+                })
             end
 
             namje_byos.set_current_ship(new_slot)
-            world.setProperty("ship.fuel", ship_stats.fuel_amount)
-
             local new_dest = ship_stats.celestial_pos
             celestial.flyShip(new_dest.system.location, new_dest.location)
+            world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
+            world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
             sb.logInfo("end result %s", result)
             root.setConfigurationPath("namje_ship_template", result)

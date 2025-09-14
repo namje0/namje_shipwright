@@ -9,8 +9,7 @@ function init()
             stagehand.die()
             return
         end
-
-        namje_byos.clear_ship_area()
+        world.setProperty("namje_ship_loading", true)
         self.coroutine = namje_byos.table_to_ship(ship)
         self.ply = ply
     end)
@@ -21,6 +20,7 @@ function update()
         local status, result = coroutine.resume(self.coroutine)
         if not status then error(result) end
         if result then
+            world.setProperty("namje_ship_loading", false)
             namje_byos.move_all_to_ship_spawn()
             stagehand.die()
         end

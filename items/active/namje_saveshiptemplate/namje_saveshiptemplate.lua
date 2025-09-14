@@ -10,7 +10,7 @@ function activate()
 		if world.entityType(activeItem.ownerEntityId()) ~= "player" then
 			return
 		end
-
+		
 		if player.worldId() ~= player.ownShipWorldId() then
 			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_invalidowner")
 			return
@@ -21,7 +21,7 @@ function activate()
 		end
 
 		animator.playSound("activate")
-		world.spawnStagehand({500, 500}, "namje_saveShip_stagehand")
+		world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
 		local current_slot = player.getProperty("namje_current_ship", 1)
 		world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), current_slot, 2)
 	end

@@ -56,6 +56,10 @@ function update(dt) original_upd(dt)
     if not isEmpty(to_change) then
         namje_byos.set_stats(slot, to_change)
     end
+    
+    if world.getProperty("namje_ship_loading", false) then
+        --player.upgradeShip({capabilities = {}})
+    end
 end
 
 --thanks to Silver Sokolova for assistance
