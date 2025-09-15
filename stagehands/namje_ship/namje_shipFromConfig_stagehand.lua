@@ -3,14 +3,12 @@ require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-    --message.setHandler("namje_swap_ship", swap_ship)
     message.setHandler("namje_swap_ship", function(_, _, ply, ship, init)
         if not namje_byos.is_on_ship() then
             sb.logInfo("namje // stagehand called on non-shipworld, killing stagehand")
             stagehand.die()
             return
         end
-        world.setProperty("namje_ship_loading", true)
         self.coroutine = namje_byos.create_ship_from_config(ply, ship)
         self.ply = ply
     end)
@@ -21,7 +19,6 @@ function update()
         local status, result = coroutine.resume(self.coroutine)
         if not status then error(result) end
         if result then
-            world.setProperty("namje_ship_loading", false)
             namje_byos.move_all_to_ship_spawn()
             stagehand.die()
         end

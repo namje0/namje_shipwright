@@ -1,0 +1,8 @@
+{
+  "muteSfx": false,
+  "muteMusic": false,
+  "suppressInput": false,
+  "backgroundColor": [ 0, 0, 0, 0 ],
+  "panels": [ ],
+  "audio": [ ]
+}

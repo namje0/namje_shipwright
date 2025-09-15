@@ -19,6 +19,16 @@ function init() ini()
         player.giveItem(cargo_box)
     end)
 
+    message.setHandler("namje_ship_loading", function()
+        local cinematic = "/cinematics/namje/shiploading.cinematic"
+        player.playCinematic(cinematic)
+    end)
+
+    message.setHandler("namje_ship_loading_end", function()
+        local cinematic = "/cinematics/namje/shiploadingend.cinematic"
+        player.playCinematic(cinematic)
+    end)
+
     message.setHandler("namje_swap_ships", function(_, _, slot)
         local ship_swap, err = pcall(namje_byos.swap_ships, slot, swap_promise)
         if not ship_swap then

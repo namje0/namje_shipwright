@@ -1,0 +1,109 @@
+{
+  "muteSfx": false,
+  "muteMusic": false,
+  "skippable" : false,
+  "backgroundColor": [ 0, 0, 0, 100 ],
+  "panels": [
+    {
+      "text": "SAVING SHIP",
+      "fontSize": 12,
+      "textPosition": {
+        "position": [ 480, 275 ],
+        "horizontalAnchor": "mid",
+        "verticalAnchor": "mid"
+      },
+      "loopTime": 1.5,
+      "keyframes": [
+        {
+          "timecode": 0,
+          "alpha": 1
+        },
+        {
+          "timecode": 0.75,
+          "alpha": 0.5
+        },
+        {
+          "timecode": 1.5,
+          "alpha": 1
+        },
+        {
+          "timecode": 1500
+        }
+      ]
+    },
+    {
+      "text": "This may take a while for bigger ships...",
+      "fontSize": 8,
+      "textPosition": {
+        "position": [ 480, 265 ],
+        "horizontalAnchor": "mid",
+        "verticalAnchor": "mid"
+      },
+      "keyframes": [
+        {
+          "timecode": 4,
+          "alpha": 0
+        },
+        {
+          "timecode": 5,
+          "alpha": 1
+        },
+        {
+          "timecode": 1500
+        }
+      ]
+    },
+    {
+      "drawables" : [
+        {
+          "image" : "/cinematics/mods/bunny.png:<frame>"
+        }
+      ],
+      "animationFrames" : 8,
+      "startTime" : 0.0,
+      "keyframes" : [
+        {
+          "timecode" : 15,
+          "alpha" : 0,
+          "zoom" : 2,
+          "frame" : 0,
+          "position" : [473, 200]
+        },
+        {
+          "timecode" : 15.5,
+          "alpha" : 1,
+          "zoom" : 3,
+          "frame" : 0
+        },
+        {
+          "timecode" : 10000,
+          "alpha" : 1,
+          "frame" : 110000
+        }
+      ]
+    },
+    {
+      "text": "Either your ship is too big, or an error occurred. Check your starbound.log",
+      "fontSize": 12,
+      "textPosition": {
+        "position": [ 480, 150 ],
+        "horizontalAnchor": "mid",
+        "verticalAnchor": "mid"
+      },
+      "keyframes": [
+        {
+          "timecode": 20,
+          "alpha": 0
+        },
+        {
+          "timecode": 21,
+          "alpha": 1
+        },
+        {
+          "timecode": 1500
+        }
+      ]
+    }
+  ],
+  "audio": [ ]
+}

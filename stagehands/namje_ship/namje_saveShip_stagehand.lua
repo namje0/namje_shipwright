@@ -5,7 +5,7 @@ require "/scripts/messageutil.lua"
 
 function init()
     message.setHandler("namje_save_ship", function(_, _, ply, slot, action, ...)
-        world.setProperty("namje_ship_loading", true)
+        world.sendEntityMessage(ply, "namje_ship_loading")
         self.coroutine = namje_byos.ship_to_table()
         self.ply = ply
         self.slot = slot
@@ -19,7 +19,7 @@ function update()
         local status, result = coroutine.resume(self.coroutine)
         if not status then error(result) end
         if result then
-            world.setProperty("namje_ship_loading", false)
+            world.sendEntityMessage(self.ply, "namje_ship_loading_end")
             stagehand.die()
             if self.action == 1 then
                 namje_byos.despawn_ship_monsters()
