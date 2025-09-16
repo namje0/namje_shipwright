@@ -7,13 +7,15 @@ local icon = "/namje_ships/ship_icons/generic_1.png"
 local name_prefixes = {
   "AOM", "UES", "XGS", "CRN", "VRS", "AAS", "FTL", "DMC", "KNS", "OBS", "SRV", "PRT", "USS", "UNSC", "UESC", "HRT",
   "TRN", "DRN", "FRG", "CRB", "SPN", "VGL", "HRM", "MSC", "DSS", "Star", "Void", "Aero", "Nexa", "Chrono", "Phaze", "Crys", "Event", "Battlestar",
-  "Aether", "Lum", "Omni", "Zeta", "Nova", "Pulsar", "Nebula", "Comet", "Epoch", "Genesis", "Vortex", "Zenith", "Echo", "The", "Millennium"
+  "Aether", "Lum", "Omni", "Zeta", "Nova", "Pulsar", "Nebula", "Comet", "Epoch", "Genesis", "Vortex", "Zenith", "Echo", "The", "Millennium", "Song Of", "Eye Of",
+  "Ninomae"
 }
 local name_affixes = {
   "Aegis", "Orion", "Pegasus", "Seraph", "Valkyrie", "Goliath", "Leviathan", "Chimera", "Phoenix", "Griffin", "Mjolnir", "Excalibur", "Bifrost", "Argus", "Hesperus", "Hyperion", "Icarus", "Janus", "Kid", "Veridian", "Falcon", "Bebop", "Infinity",
   "Kellion", "Solara", "Astra", "Celeste", "Cosmos", "Galaxia", "Orbis", "Stella", "Terra Nova", "Vesper", "Aurora", "Eclipse", "Meteor", "Quasar", "Singularity", "Stardust", "Zenith", "Voyager", "Pioneer", "Argo", "Serenity", "Horizon", "Galactica",
   "Vigilance", "Resilience", "Ascendant", "Dominion", "Prowess", "Resolve", "Vector", "Apex", "Concord", "Destiny", "Endeavor", "Frontier", "Harmony", "Insight", "Journey", "Liberty", "Odyssey", "Sanctuary", "Unity", "Vanguard", "Express",
-  "Striker", "Harbinger", "Sentinel", "Drifter", "Nomad", "Ranger", "Seeker", "Wanderer", "Guardian", "Pathfinder", "Explorer", "Interceptor", "Reaver", "Spectre", "Phantom", "Hunter", "Echo", "Relic", "Whisper", "Vagabond", "Marathon"
+  "Striker", "Harbinger", "Sentinel", "Drifter", "Nomad", "Ranger", "Seeker", "Wanderer", "Guardian", "Pathfinder", "Explorer", "Interceptor", "Reaver", "Spectre", "Phantom", "Hunter", "Echo", "Relic", "Whisper", "Vagabond", "Marathon", "Dawn", "Benevolence",
+  "Eternity", "Soul", "Sword", "Abyss", "Ina'Nis"
 }
 
 
