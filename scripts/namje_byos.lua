@@ -80,7 +80,8 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             local cinematic = "/cinematics/namje/shipswap.cinematic"
             --player.playCinematic(cinematic)
         end
-        namje_byos.change_ships_from_config(ship_config.id, intro)
+        local region_cache = world.getProperty("namje_region_cache", {})
+        namje_byos.change_ships_from_config(ship_config.id, intro, region_cache)
     end
 
     --overwrite
@@ -295,7 +296,7 @@ function namje_byos.move_all_to_ship_spawn()
     end
 end
 
-function namje_byos.change_ships_from_config(ship_id, init, ply)
+function namje_byos.change_ships_from_config(ship_id, init, region)
     local ship_config = namje_byos.get_ship_config(ship_id)
     if not ship_config then
         error("namje // ship config not found for " .. ship_id)
@@ -303,14 +304,14 @@ function namje_byos.change_ships_from_config(ship_id, init, ply)
     if ship_config.id ~= ship_id then
         error("namje // ship config does not match ship type " .. ship_id)
     end
-
+    --TODO: server is never used atm, but instead of ply argument do variable arg
     if world.isServer() then
         if not namje_byos.is_on_ship() then
             error("namje // tried to change ship on server while not on shipworld")
         end
 
-        world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
-        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", ply, ship_config, init)
+        --world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
+        --world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", ply, ship_config, init)
     else
         --for the client, spawn the stagehand which will call this function on the server
         sb.logInfo("namje // changing ship using a save on client")
@@ -322,24 +323,24 @@ function namje_byos.change_ships_from_config(ship_id, init, ply)
             fill_shiplocker(player.species())
         end
         world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
-        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_config, init)
+        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_config, init, region)
     end
 end
 
 --- changes ship from a table, comprised of the ship_info and the serialized ship
 --- @param ship table
-function namje_byos.change_ships_from_table(ship)
+function namje_byos.change_ships_from_table(ship, region)
     if isEmpty(ship) then
         error("namje // tried to change ship from save, but ship table is empty")
     end
-    --TODO: pretty sure this doesn't work on server? where is player.id fetched..
+    --TODO: server is never used atm, but instead of ply argument do variable arg
     if world.isServer() then
         if not namje_byos.is_on_ship() then
             error("namje // tried to change ship on server while not on shipworld")
         end
 
         world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
-        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship)
+        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship, region)
     else
         --for the client, spawn the stagehand which will call this function on the server
         sb.logInfo("namje // changing ship using a save on client")
@@ -349,7 +350,7 @@ function namje_byos.change_ships_from_table(ship)
         end
 
         world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
-        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship)
+        world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship, region)
     end
 end
 
@@ -637,7 +638,9 @@ function namje_byos.ship_to_table(...)
             background_mods = finalize_run(back_mod_run, background_mods, chunk_width, total_tiles)
 
             -- process objects
-            local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
+            -- TODO: for some horrible reason, boundMode = position results in specifically 'wall objects' being excluded in the ship swap, even though its
+            -- saying it placed. we'll just have to include the duplicate objects in the serialized ship for now.
+            local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y})
             for i = 1, #chunk_objects do
                 local object_extras = {}
                 local object_id = chunk_objects[i]
@@ -733,7 +736,7 @@ function namje_byos.ship_to_table(...)
     return serialize_coroutine
 end
 
-function namje_byos.table_to_ship(ship_table)
+function namje_byos.table_to_ship(ship_table, ship_region)
     if not world.isServer() then
         error("namje // loading ship from table is not supported on client")
     end
@@ -837,14 +840,13 @@ function namje_byos.table_to_ship(ship_table)
 
     local deserialize_coroutine = coroutine.create(function()
         --get the cached bounds, then clear the area
-        local region_cache = world.getProperty("namje_region_cache", {})
         local regions = {}
         local region_bounds
-        if isEmpty(region_cache) then
-            sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        if isEmpty(ship_region) then
+            sb.logInfo("namje // ship_region is empty, though it shouldn't be. using defaults")
             region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
         else
-            for region, _ in pairs(region_cache) do
+            for region, _ in pairs(ship_region) do
                 local chunk = namje_util.region_decode(region)
                 table.insert(regions, chunk)
             end
@@ -1002,7 +1004,7 @@ end
 --- creates a new ship using the provided .namjeship config. will clear out the ship area and then place a new ship at {1024,1024}
 --- @param ply string
 --- @param ship_config table
-function namje_byos.create_ship_from_config(ply, ship_config)
+function namje_byos.create_ship_from_config(ply, ship_config, ship_region)
     if not world.isServer() then
         error("namje // create_ship_from_config cannot be called on client")
     end
@@ -1013,14 +1015,13 @@ function namje_byos.create_ship_from_config(ply, ship_config)
 
     local coroutine = coroutine.create(function()
         --get the cached bounds, then clear the area
-        local region_cache = world.getProperty("namje_region_cache", {})
         local regions = {}
         local region_bounds
-        if isEmpty(region_cache) then
-            sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        if ship_region == nil or isEmpty(ship_region) then
+            sb.logInfo("namje // ship_region is empty, though it shouldn't be. using defaults")
             region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
         else
-            for region, _ in pairs(region_cache) do
+            for region, _ in pairs(ship_region) do
                 local chunk = namje_util.region_decode(region)
                 table.insert(regions, chunk)
             end

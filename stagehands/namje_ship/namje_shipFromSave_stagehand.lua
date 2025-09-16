@@ -3,13 +3,13 @@ require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
 
 function init()
-    message.setHandler("namje_swap_ship", function(_, _, ply, ship)
+    message.setHandler("namje_swap_ship", function(_, _, ply, ship, region)
         if not namje_byos.is_on_ship() then
             sb.logInfo("namje // stagehand called on non-shipworld, killing stagehand")
             stagehand.die()
             return
         end
-        self.coroutine = namje_byos.table_to_ship(ship)
+        self.coroutine = namje_byos.table_to_ship(ship, region)
         self.ply = ply
     end)
 end

@@ -37,7 +37,7 @@ function update(dt)
     local region_cache = world.getProperty("namje_region_cache", {})
 
     if DEBUG then
-        util.debugText("Scanning chunk %s for caching", start_chunk, player_pos, "green")
+        --util.debugText("Scanning chunk %s for caching", start_chunk, player_pos, "green")
         local chunks = {}
         for region, _ in pairs(region_cache) do
             local chunk = namje_util.region_decode(region)
@@ -46,7 +46,9 @@ function update(dt)
             util.debugRect(chunk_area, "white")
         end
         local bounding_box = namje_util.get_chunk_rect(chunks)
-        util.debugRect(bounding_box, "black")
+        if bounding_box then
+            util.debugRect(bounding_box, "black")
+        end
     end
 
     local chunks_to_scan = namje_util.get_adjacent_chunks(start_chunk)
@@ -58,10 +60,11 @@ function update(dt)
         local region_cache = world.getProperty("namje_region_cache", {})
         local cache_code = string.format("%s.%s", chunk[1], chunk[2])
         
+        --[[
         if DEBUG then
             local color = (collision_detected or namje_util.find_background_tiles(chunk[1], chunk[2])) and "red" or "cyan"
             util.debugRect(debug_area, color)
-            end
+        end]]
 
         if collision_detected then
             if not region_cache then
@@ -88,8 +91,9 @@ function update(dt)
             end
         end
     end
+    --[[
     if DEBUG then
         local bounding_box = namje_util.get_chunk_rect(chunks_to_scan)
         util.debugRect(bounding_box, "green")
-    end
+    end]]
 end

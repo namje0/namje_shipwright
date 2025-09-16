@@ -59,25 +59,27 @@ function init() ini()
 
             local ship_info = namje_byos.get_ship_info(new_slot)
             local ship_stats = namje_byos.get_stats(new_slot)
+            local prev_ship_stats = namje_byos.get_stats(slot)
             if not ship_info or not ship_stats then
                 error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
             end
 
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+            --player.playCinematic(cinematic)
+
+            local current_region_cache = world.getProperty("namje_region_cache", {})
 
             -- default to config ship if the ship content is empty
             if isEmpty(ship_content) then
-                namje_byos.change_ships_from_config(ship_info.ship_id, false)
+                namje_byos.change_ships_from_config(ship_info.ship_id, false, current_region_cache)
             else
-                namje_byos.change_ships_from_table(ship_content)
+                namje_byos.change_ships_from_table(ship_content, current_region_cache)
             end
             
-            local prev_ship_stats = namje_byos.get_stats(slot)
             local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
             if prev_ship_stats then
                 namje_byos.set_stats(slot, {
-                    ["cached_regions"] = world.getProperty("namje_region_cache", {}),
+                    ["cached_regions"] = current_region_cache,
                     ["fuel_amount"] = prev_ship_stats.fuel_amount, 
                     ["cargo_hold"] = prev_cargo_hold, 
                     ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
