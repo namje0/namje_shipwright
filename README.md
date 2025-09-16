@@ -46,6 +46,9 @@ TBA
 ### FrackinUniverse Compatiblity
 Currently incompatible.
 
+## Performance
+- You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
+
 ## Upcoming Features
 - "Save as template" option on SAIL
 - Make crew members per-ship
@@ -58,4 +61,3 @@ Currently incompatible.
 - Lounging crew members may not get teleported on a ship swap.
 - Plant growth stage is currently not saved.
 - Harvestables (e.g mothtrap) are reset on ship swap.
-- Some objects currently don't place
