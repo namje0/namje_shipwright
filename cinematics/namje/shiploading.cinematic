@@ -83,7 +83,7 @@
       ]
     },
     {
-      "text": "Either your ship is too big, or an error occurred. Check your starbound.log",
+      "text": "Either your ship is extremely big and it's taking long, or an error occurred. Check your starbound.log",
       "fontSize": 12,
       "textPosition": {
         "position": [ 480, 150 ],

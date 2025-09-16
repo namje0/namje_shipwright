@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_temp_chunk",
+    "name" : "namje_void_128",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_temp_chunk" ],
+    "anchor" : [ "namje_void_128" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_temp_chunk",
+      "name" : "namje_void_128",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_temp_chunk.json" ]
+      "def" : [ "tmx", "namje_void_128.json" ]
     }
   ]
 }

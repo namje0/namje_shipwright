@@ -2,7 +2,7 @@
 
 namje_util = {}
 
-local CHUNK_SIZE = 128
+local CHUNK_SIZE = 32
 
 --- finds background tiles in a CHUNK_SIZExCHUNK_SIZE area starting from pos_x, pos_y. returns true if any background tiles are found, false otherwise
 --- @param pos_x number

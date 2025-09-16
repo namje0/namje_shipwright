@@ -3,7 +3,7 @@ require "/scripts/namje_util.lua"
 require "/scripts/rect.lua"
 require "/scripts/util.lua"
 
-local CHUNK_SIZE = 128
+local CHUNK_SIZE = 32
 local DEBUG = true
 
 local on_ship = false
@@ -38,11 +38,15 @@ function update(dt)
 
     if DEBUG then
         util.debugText("Scanning chunk %s for caching", start_chunk, player_pos, "green")
+        local chunks = {}
         for region, _ in pairs(region_cache) do
             local chunk = namje_util.region_decode(region)
+            table.insert(chunks, chunk)
             local chunk_area = rect.fromVec2({chunk[1], chunk[2]}, {chunk[1] + (CHUNK_SIZE), chunk[2] + CHUNK_SIZE})
             util.debugRect(chunk_area, "white")
         end
+        local bounding_box = namje_util.get_chunk_rect(chunks)
+        util.debugRect(bounding_box, "black")
     end
 
     local chunks_to_scan = namje_util.get_adjacent_chunks(start_chunk)

@@ -10,7 +10,7 @@ namje_byos = {}
 namje_byos.current_ship = nil
 
 --chunk size, for ship serialization purposes
-local CHUNK_SIZE =  128
+local CHUNK_SIZE = 32
 local VERSION_ID = "namjeShipwright"
 --the upper limit of ships a player can have
 --currently set to 1-3, as ship changing does not have wiring support yet. This will be changed on release to 5-8
@@ -78,7 +78,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         local intro = ship_config.id == "namje_startership" and true or false
         if not intro then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+            --player.playCinematic(cinematic)
         end
         namje_byos.change_ships_from_config(ship_config.id, intro)
     end
@@ -861,7 +861,7 @@ function namje_byos.table_to_ship(ship_table)
             -- due to how replacematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
             local top_left_x = chunk.pos[1]
             local top_left_y = chunk.pos[2]
-            world.placeDungeon("namje_temp_chunk", {top_left_x, top_left_y})
+            world.placeDungeon("namje_temp_32", {top_left_x, top_left_y})
 
             place_tiles(chunk.tiles.foreground, "foreground", top_left_x)
             place_tiles(chunk.tiles.background, "background", top_left_x)
@@ -1049,7 +1049,7 @@ function namje_byos.clear_ship_area(rect)
     if not world.isServer() then
         error("namje // clear_ship_area cannot be called on client")
     end
-
+    sb.logInfo("clearing ship area: %s", rect)
     local chunks = namje_util.get_filled_chunks(rect)
 
     if #chunks == 0 then 
@@ -1060,7 +1060,7 @@ function namje_byos.clear_ship_area(rect)
         local top_left_x = chunk.bottom_left[1]
         local bottom_right_y = chunk.top_right[2]
 
-        world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
+        world.placeDungeon("namje_void_32", {top_left_x, bottom_right_y})
     end
 end
 

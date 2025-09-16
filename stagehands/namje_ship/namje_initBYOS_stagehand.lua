@@ -2,7 +2,7 @@ require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
 
-local CHUNK_SIZE = 128
+local CHUNK_SIZE = 32
 
 local function get_vanilla_chunks()
     local chunks = {}
@@ -59,7 +59,7 @@ function init()
         local top_left_x = chunk.bottom_left[1]
         local bottom_right_y = chunk.top_right[2]
 
-        world.placeDungeon("namje_void_xsmall", {top_left_x, bottom_right_y})
+        world.placeDungeon("namje_void_32", {top_left_x, bottom_right_y})
         sb.logInfo("place at %s, %s", top_left_x, bottom_right_y)
     end
     stagehand.die()

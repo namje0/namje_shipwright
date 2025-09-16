@@ -51,7 +51,8 @@ Currently incompatible.
 - Make crew members per-ship
 - Customizable SAIL pet
 - Slotable ship modules that allow for stuff like stratagems
-- Save ship wiring
+- Add variable ugprade levels (Currently five levels are required)
+- Add failsafe for existing characters without the framework enabled
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
