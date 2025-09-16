@@ -1143,7 +1143,7 @@ function namje_byos.init_byos()
         player.warp("nowhere")
         --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
         local cinematic = "/cinematics/namje/shipintro.cinematic"
-        player.playCinematic(cinematic, true)
+        --player.playCinematic(cinematic, true)
     end
 end
 
