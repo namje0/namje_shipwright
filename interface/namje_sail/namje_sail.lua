@@ -385,13 +385,20 @@ function select_ship()
             stats["crew_size"] or "^os_text_color;" .. ship_config.base_stats.crew_size, 
             stats["cargo_size"] or "^os_text_color;" .. ship_config.namje_stats.cargo_size
         )
+        sb.logInfo("stats %s", ship_stats)
+        local sys_name 
+        if ship_stats.celestial_pos.system then
+            sys_name = celestial.planetName(ship_stats.celestial_pos.system)
+        else
+            sys_name = "unknown"
+        end
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s\n%s", 
             namje_util.dict_size(ship_stats.cargo_hold),
             ship_stats.fuel_amount,
             ship_stats.crew_amount,
             0,
-            string.sub(shorten_name(celestial.planetName(ship_stats.celestial_pos.system)), 1, 12)
+            string.sub(shorten_name(sys_name), 1, 12)
         )
 
         update_directory({"ship", string.lower(string.gsub(ship_info.name, " ", "")) .. ".ship"})
