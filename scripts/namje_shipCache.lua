@@ -56,7 +56,7 @@ function update(dt)
         local chunk = chunks_to_scan[i]
         local chunk_area = rect.fromVec2({chunk[1], chunk[2]}, {chunk[1] + (CHUNK_SIZE), chunk[2] + CHUNK_SIZE})
         local debug_area = rect.fromVec2({chunk[1] + 0.1, chunk[2] + 0.1}, {chunk[1] + (CHUNK_SIZE - 0.1), chunk[2] + (CHUNK_SIZE - 0.1)})
-        local collision_detected = world.rectTileCollision(chunk_area, {"Block", "Dynamic", "Slippery"})
+        local collision_detected = world.rectTileCollision(chunk_area, {"Block", "Dynamic", "Slippery", "Platform"})
         local region_cache = world.getProperty("namje_region_cache", {})
         local cache_code = string.format("%s.%s", chunk[1], chunk[2])
         
