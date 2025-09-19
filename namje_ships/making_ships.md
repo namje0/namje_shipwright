@@ -1,9 +1,8 @@
 # Making your own ship template
 
 ## Ship building guide
-Keep in mind that ship templates are intended to be a canvas for the player to build off of. Leave some empty space for the player to put stuff in!
-- Ships cannot exceed 1000 tiles in width or height.
-    - The shipworld is resized in this framework, and the bounds are {0, 0} to {2048, 2048}, with the ship being placed at the center at {1024, 1024} based off of their `ship_center_pos`.
+The primary intention of ship templates is for them to be a "canvas" for the player to build off of. Leaving empty space for the player is recommended
+- Ships should not be excessively large (exceeding 1000 blocks in either direction) or loading problems may occur.
 - All ships must include a pilot chair, a SAIL interface, and a fuel hatch.
 - Vanilla ship teleporters are not supported. Please use the ones supplied in this framework.
 - Ships come with a cargo hold feature. If you would like your ship to make use of it, please include any variation of the **Cargo Hold Access** in your ship.
