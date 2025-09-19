@@ -4,8 +4,7 @@
 
 > [!WARNING]
 > namjeShipwright is still in development and shouldn't be used in an actual playthrough. **Please report any bugs**
-
-> [!WARNING]
+> This framework has not been tested in multiplayer.
 > Don't use it on a pre-existing character.
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
@@ -46,7 +45,11 @@ TBA
 ### FrackinUniverse Compatiblity
 Currently incompatible.
 
-## Performance
+## Technical Stuff
+- This framework caches the position of loaded chunks/sectors around the player that have collisions/background tiles in them to improve saving and loading times. This should cover all regular gameplay cases, though certain cases may result in chunks not being registered:
+    - Placing down a large dungeon or build with an external mod (e.g Base In A Box) and swapping ships without exploring the whole thing
+    - Placing things down and leaving the 96x96 scan area faster than the region cache update interval (2s)
+    - Making your zoom level so small that the game does not load the sectors adjacent to you
 - You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
 
 ## Upcoming Features
