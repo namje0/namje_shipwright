@@ -725,7 +725,7 @@ function namje_byos.ship_to_table(...)
 
             --TODO: process npcs
 
-            local ship_chunk = {pos = {min_x, max_y}, tiles = {foreground = foreground_tiles, background = background_tiles}, mods = {foreground = foreground_mods, background = background_mods}}
+            local ship_chunk = {pos = pack_pos(min_x, max_y), tiles = {foreground = foreground_tiles, background = background_tiles}, mods = {foreground = foreground_mods, background = background_mods}}
             if not isEmpty(objects) then
                 ship_chunk["objs"] = objects
             end
@@ -873,7 +873,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
         for _, chunk in ipairs(ship_chunks) do
             -- process tiles
             -- due to how replacematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
-            local unpacked_pos = chunk.pos
+            local unpacked_pos = unpack_pos(chunk.pos)
             local top_left_x = unpacked_pos[1]
             local top_left_y = unpacked_pos[2]
             world.placeDungeon("namje_temp_32", {top_left_x, top_left_y})
