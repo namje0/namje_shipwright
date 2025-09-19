@@ -180,9 +180,17 @@ function namje_item_manager:sort()
     end
 
     table.sort(sorted_items, function(a, b)
-        local a_rarity = (a.parameters.rarity or root.itemConfig(a).config.rarity):lower() or "common"
-        local b_rarity = (b.parameters.rarity or root.itemConfig(b).config.rarity):lower() or "common"
-        return rarity_order[a_rarity] > rarity_order[b_rarity]
+        local config_a = root.itemConfig(a)
+        local config_b = root.itemConfig(b)
+        local a_rarity = (a.parameters.rarity or config_a.config.rarity):lower() or "common"
+        local b_rarity = (b.parameters.rarity or config_b.config.rarity):lower() or "common"
+        if rarity_order[a_rarity] ~= rarity_order[b_rarity] then
+            return rarity_order[a_rarity] > rarity_order[b_rarity]
+        else
+            local a_name = (a.parameters.itemName or config_a.config.itemName)
+            local b_name = (b.parameters.itemName or config_b.config.itemName)
+            return a_name < b_name
+        end
     end)
 
     for i = 1, self.cargo_size do
