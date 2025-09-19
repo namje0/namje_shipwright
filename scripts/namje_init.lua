@@ -72,8 +72,10 @@ function init() ini()
             -- default to config ship if the ship content is empty
             if isEmpty(ship_content) then
                 namje_byos.change_ships_from_config(ship_info.ship_id, false, current_region_cache)
+                --region cache will be initialized based on ship_size
             else
                 namje_byos.change_ships_from_table(ship_content, current_region_cache)
+                world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             end
             
             local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
@@ -89,10 +91,10 @@ function init() ini()
             namje_byos.set_current_ship(new_slot)
             local new_dest = ship_stats.celestial_pos
             celestial.flyShip(new_dest.system.location, new_dest.location)
-            world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
+            --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
-            sb.logInfo("end result %s", result)
+            sb.logInfo("table result %s", result)
             root.setConfigurationPath("namje_ship_template", result)
 		    interface.queueMessage("^orange;namje_ship_template^reset; will be cleared on item unload, so copy it beforehand")
             interface.queueMessage("For info on how to use it in a ship file, check the github page")

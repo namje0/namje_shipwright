@@ -1,4 +1,4 @@
-require("/scripts/namje_byos.lua")
+require "/scripts/namje_byos.lua"
 require "/scripts/vec2.lua"
 
 local fu_atmosphere = false

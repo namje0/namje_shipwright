@@ -15,7 +15,7 @@ local name_affixes = {
   "Kellion", "Solara", "Astra", "Celeste", "Cosmos", "Galaxia", "Orbis", "Stella", "Terra Nova", "Vesper", "Aurora", "Eclipse", "Meteor", "Quasar", "Singularity", "Stardust", "Zenith", "Voyager", "Pioneer", "Argo", "Serenity", "Horizon", "Galactica",
   "Vigilance", "Resilience", "Ascendant", "Dominion", "Prowess", "Resolve", "Vector", "Apex", "Concord", "Destiny", "Endeavor", "Frontier", "Harmony", "Insight", "Journey", "Liberty", "Odyssey", "Sanctuary", "Unity", "Vanguard", "Express",
   "Striker", "Harbinger", "Sentinel", "Drifter", "Nomad", "Ranger", "Seeker", "Wanderer", "Guardian", "Pathfinder", "Explorer", "Interceptor", "Reaver", "Spectre", "Phantom", "Hunter", "Echo", "Relic", "Whisper", "Vagabond", "Marathon", "Dawn", "Benevolence",
-  "Eternity", "Soul", "Sword", "Abyss", "Ina'Nis"
+  "Eternity", "Soul", "Sword", "Abyss", "Ina'Nis", "Luminesk"
 }
 
 

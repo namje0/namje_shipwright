@@ -65,26 +65,26 @@ function update(dt)
             local color = (collision_detected or namje_util.find_background_tiles(chunk[1], chunk[2])) and "red" or "cyan"
             util.debugRect(debug_area, color)
         end]]
-
+        
         if collision_detected then
             if not region_cache then
                 return
             end
             if not region_cache[cache_code] then
-                sb.logInfo("collision detected in uncached chunk, adding")
+                --sb.logInfo("collision detected in uncached chunk, adding")
                 region_cache[cache_code] = true
                 world.setProperty("namje_region_cache", region_cache)
             end
         else
             if namje_util.find_background_tiles(chunk[1], chunk[2]) then
                 if not region_cache[cache_code] then
-                    sb.logInfo("wall detected in uncached chunk, adding")
+                    --sb.logInfo("wall detected in uncached chunk, adding")
                     region_cache[cache_code] = true
                     world.setProperty("namje_region_cache", region_cache)
                 end
             else
                 if region_cache[cache_code] then
-                    sb.logInfo("collision not detected in cached chunk, removing")
+                    --sb.logInfo("collision not detected in cached chunk, removing")
                     region_cache[cache_code] = nil
                     world.setProperty("namje_region_cache", region_cache)
                 end

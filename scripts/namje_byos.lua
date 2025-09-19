@@ -14,7 +14,7 @@ local CHUNK_SIZE = 32
 local VERSION_ID = "namjeShipwright"
 --the upper limit of ships a player can have
 --currently set to 1-3, as ship changing does not have wiring support yet. This will be changed on release to 5-8
-local PLAYER_SHIP_CAP = 3
+local PLAYER_SHIP_CAP = 6
 
 --- register a new ship for the player, overwriting/adding to a slot
 --- @param slot number
@@ -419,6 +419,12 @@ function namje_byos.ship_to_table(...)
         return table_1
     end
 
+    local function pack_pos(x, y)
+        local packed_val1 = x
+        local packed_val2 = y
+        return packed_val1 | (packed_val2 << 11)
+    end
+
     -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
     -- total bits: 32
     local function pack_tile_vals(length, id, color, hue)
@@ -747,6 +753,12 @@ function namje_byos.table_to_ship(ship_table, ship_region)
     local ship_chunks = ship_table[2]
     local bit_range = 16
 
+    local function unpack_pos(packed_data)
+        local x = packed_data % 2048 
+        local y = math.floor(packed_data / 2048) 
+        return {x, y}
+    end
+
     -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
     -- total bits: 32
     local function unpack_tile_vals(packed_data)
@@ -861,8 +873,9 @@ function namje_byos.table_to_ship(ship_table, ship_region)
         for _, chunk in ipairs(ship_chunks) do
             -- process tiles
             -- due to how replacematerial works, we need to put an initial background wall using a dungeon. then we'll use replaceMaterial on that wall afterwards
-            local top_left_x = chunk.pos[1]
-            local top_left_y = chunk.pos[2]
+            local unpacked_pos = chunk.pos
+            local top_left_x = unpacked_pos[1]
+            local top_left_y = unpacked_pos[2]
             world.placeDungeon("namje_temp_32", {top_left_x, top_left_y})
 
             place_tiles(chunk.tiles.foreground, "foreground", top_left_x)
@@ -1039,6 +1052,26 @@ function namje_byos.create_ship_from_config(ply, ship_config, ship_region)
             namje_byos.reset_fu_stats()
         end
 
+        --initialize the new region cache based on the ship_size in .namjeship
+        local region_cache = {}
+        local ship_size = ship_config.namje_stats.ship_size
+        local width_chunks = math.ceil(ship_size[1] / CHUNK_SIZE)
+        local height_chunks = math.ceil(ship_size[2] / CHUNK_SIZE)
+
+        for i = 0, (height_chunks) do
+            for k = 0, (width_chunks) do
+                local chunk = namje_util.get_chunk({ship_position[1] + (CHUNK_SIZE * k), ship_position[2] - (CHUNK_SIZE * i)})
+                local chunk_area = rect.fromVec2({chunk[1], chunk[2]}, {chunk[1] + (CHUNK_SIZE), chunk[2] + CHUNK_SIZE})
+                local collision_detected = world.rectTileCollision(chunk_area, {"Block", "Dynamic", "Slippery", "Platform"})
+                local cache_code = string.format("%s.%s", chunk[1], chunk[2])
+                if collision_detected or namje_util.find_background_tiles(chunk[1], chunk[2]) then
+                    region_cache[cache_code] = true
+                end
+            end
+        end
+
+        world.setProperty("namje_region_cache", region_cache)
+
         world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
         return true
     end)
@@ -1124,7 +1157,7 @@ end
 --- initializes the BYOS system for players, usually before the bootship quest but a failsafe is implemented for existing characters
 function namje_byos.init_byos()
     player.setProperty("namje_byos_setup", true)
-    namje_byos.add_ship_slots(3)
+    namje_byos.add_ship_slots(2)
     namje_byos.set_current_ship(1)
 
     local existing_char = player.hasCompletedQuest("bootship")

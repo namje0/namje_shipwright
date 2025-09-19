@@ -9,8 +9,8 @@ local CHUNK_SIZE = 32
 --- @param pos_y number
 --- @return boolean
 function namje_util.find_background_tiles(pos_x,pos_y)
-    for x = pos_x, (pos_x + (CHUNK_SIZE - 1)), 8 do
-        for y = pos_y, (pos_y + (CHUNK_SIZE - 1)), 8 do
+    for x = pos_x, (pos_x + (CHUNK_SIZE - 1)), 1 do
+        for y = pos_y, (pos_y + (CHUNK_SIZE - 1)), 1 do
             local material = world.material({x, y}, "background")
             if material and material ~= false then
                 return true

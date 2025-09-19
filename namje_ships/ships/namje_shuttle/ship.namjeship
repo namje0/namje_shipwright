@@ -20,7 +20,8 @@
     },
     "namje_stats" : {
         "cargo_size" : 200,
-        "ship_center_pos" : [50, 50]
+        "ship_center_pos" : [50, 50],
+        "ship_size" : [100, 100]
     },
     "stat_upgrades": {
         "fu_fuel_modifier": 2,
