@@ -78,7 +78,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         local intro = ship_config.id == "namje_startership" and true or false
         if not intro then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            --player.playCinematic(cinematic)
+            player.playCinematic(cinematic)
         end
         local region_cache = world.getProperty("namje_region_cache", {})
         namje_byos.change_ships_from_config(ship_config.id, intro, region_cache)
