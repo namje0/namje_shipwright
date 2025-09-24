@@ -730,6 +730,13 @@ function namje_byos.ship_to_table(...)
                     end
                 end
 
+                --TODO: save wire switch state
+                if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
+                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                    local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
+                    object_extras["switch_state"] = current_state
+                end
+
                 local object_data = packed_data
                 if not isEmpty(finalized_params) then
                     object_data = {packed_data, finalized_params}
@@ -985,6 +992,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                     end
                     local pos, object_id, dir = unpack_obj_vals(unpacked_data)
                     local container_items = object_extras and object_extras.items or nil
+                    local switch_state = object_extras and object_extras.switch_state or nil
                     local object_name = id_cache[object_id]
 
                     dir = dir == 0 and -1 or 1
@@ -993,6 +1001,10 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                     if object_name then
                         local place = world.placeObject(object_name, pos, dir or 0, parameters)
                         if place then
+                            if switch_state then
+                                local placed_object_id = world.objectAt(pos)
+                                world.callScriptedEntity(placed_object_id, "output", switch_state)
+                            end
                             if container_items and next(container_items) ~= nil then
                                 local placed_object_id = world.objectAt(pos)
                                 if placed_object_id then
@@ -1039,15 +1051,19 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                     else
                         local parameters = type(object) == table and object[2] or nil
                         local object_extras = type(object) == table and object[3] or nil
-                        local container_items = object_extras and object_extras["items"] or nil
+                        local container_items = object_extras and object_extras.items or nil
+                        local switch_state = object_extras and object_extras.switch_state or nil
                         local object_name = id_cache[object_id]
 
                         if object_name then
                             dir = dir == 0 and -1 or 1
 
                             local place = world.placeObject(object_name, pos, dir or 0, parameters)
-
                             if place then
+                                if switch_state then
+                                    local placed_object_id = world.objectAt(pos)
+                                    world.callScriptedEntity(placed_object_id, "output", switch_state)
+                                end
                                 if container_items then
                                     local object_id = world.objectAt(pos)
                                     if not object_id then
