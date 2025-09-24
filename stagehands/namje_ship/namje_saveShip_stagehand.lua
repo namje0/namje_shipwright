@@ -17,7 +17,11 @@ end
 function update()
     if self.coroutine and self.ply then
         local status, result = coroutine.resume(self.coroutine)
-        if not status then error(result) end
+        if not status then 
+            world.sendEntityMessage(self.ply, "namje_ship_loading_error")
+            stagehand.die()
+            error(result) 
+        end
         if result then
             world.sendEntityMessage(self.ply, "namje_ship_loading_end")
             stagehand.die()

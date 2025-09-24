@@ -19,6 +19,10 @@ function update()
         local status, result = coroutine.resume(self.coroutine)
         if not status then error(result) end
         if result then
+            --connect wiring
+            if type(result) == "table" then
+                world.sendEntityMessage(self.ply, "namje_connect_wiring", result)
+            end
             namje_byos.move_all_to_ship_spawn()
             stagehand.die()
         end

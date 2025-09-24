@@ -1,5 +1,3 @@
-
-
 namje_util = {}
 
 local CHUNK_SIZE = 32

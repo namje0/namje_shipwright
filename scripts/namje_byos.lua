@@ -269,6 +269,7 @@ end
 
 --TODO: use region_cache instead
 function namje_byos.despawn_ship_monsters()
+    --TODO: get client master entities
     local entities = world.monsterQuery({0, 0}, {2048, 2048})
     for _, entity_id in ipairs(entities) do
         world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
@@ -365,6 +366,7 @@ function namje_byos.ship_to_table(...)
     local id_cache = {}
     local mat_to_id = {}
     local ship_chunks = {}
+    local ship_wiring = {}
     local next_mat_id = 1
 
     local function get_cached_id(material_name)
@@ -425,6 +427,17 @@ function namje_byos.ship_to_table(...)
         return packed_val1 | (packed_val2 << 11)
     end
 
+    local function pack_wire(output_pos, output_node, input_pos, input_node)
+        local output_x = output_pos[1] or 0
+        local output_y = output_pos[2] or 0
+        local output_node = output_node or 0
+        local input_x = input_pos[1] or 0
+        local input_y = input_pos[2] or 0
+        local input_node = input_node or 0
+
+        return (output_x) | (output_y << 11) | (output_node << 22) | (input_x << 26) | (input_y << 37) | (input_node << 48)
+    end
+
     -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
     -- total bits: 32
     local function pack_tile_vals(length, id, color, hue)
@@ -438,8 +451,8 @@ function namje_byos.ship_to_table(...)
     -- bit allocation: 12 bits, 12 bits, 10 bits, 1 bits
     -- total bits: 35
     function pack_obj_vals(pos, id, direction)
-        local x = (pos and pos[1]) or 0
-        local y = (pos and pos[2]) or 0
+        local x = pos[1] or 0
+        local y = pos[2] or 0
         local packed_id = id or 0
         local packed_direction = direction or 0
         return x | (y << 12) | (packed_id << 24) | (packed_direction << 34)
@@ -684,6 +697,39 @@ function namje_byos.ship_to_table(...)
 
                 --TODO: process objects that use harvestable.lua (startingAge, activeTimeRange)
 
+                --process obj wiring
+                local output_nodes = world.callScriptedEntity(object_id, "object.outputNodeCount")
+                local input_nodes = world.callScriptedEntity(object_id, "object.inputNodeCount")
+                if output_nodes and output_nodes > 0 then
+                    for i = 1, output_nodes do
+                        local output_node = i - 1
+                        if world.callScriptedEntity(object_id, "object.isOutputNodeConnected", output_node) then
+                            local connected_ids = world.callScriptedEntity(object_id, "object.getOutputNodeIds", output_node)
+                            if not isEmpty(connected_ids) then
+                                for connected_id, input_node in pairs(connected_ids) do
+                                    local packed_wire = pack_wire(pos, output_node, world.entityPosition(connected_id), input_node)
+                                    table.insert(ship_wiring, packed_wire)
+                                end
+                            end
+                        end
+                    end
+                end
+
+                if input_nodes and input_nodes > 0 then
+                    for i = 1, input_nodes do
+                        local input_node = i - 1
+                        if world.callScriptedEntity(object_id, "object.isInputNodeConnected", input_node) then
+                            local connected_ids = world.callScriptedEntity(object_id, "object.getInputNodeIds", input_node)
+                            if not isEmpty(connected_ids) then
+                                for connected_id, output_node in pairs(connected_ids) do
+                                    local packed_wire = pack_wire(world.entityPosition(connected_id), output_node, pos, input_node)
+                                    table.insert(ship_wiring, packed_wire)
+                                end
+                            end
+                        end
+                    end
+                end
+
                 local object_data = packed_data
                 if not isEmpty(finalized_params) then
                     object_data = {packed_data, finalized_params}
@@ -737,7 +783,21 @@ function namje_byos.ship_to_table(...)
             table.insert(ship_chunks, ship_chunk)
             coroutine.yield()
         end
-        return {id_cache, ship_chunks}
+
+        --remove duplicates from wiring table
+        if not isEmpty(ship_wiring) then
+            table.sort(ship_wiring)
+            local w = 1
+            while w < #ship_wiring do
+                if ship_wiring[w] == ship_wiring[w + 1] then
+                    table.remove(ship_wiring, w + 1)
+                else
+                    w = w + 1
+                end
+            end
+        end
+
+        return {id_cache, ship_chunks, not isEmpty(ship_wiring) and ship_wiring or nil}
     end)
     return serialize_coroutine
 end
@@ -747,6 +807,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
         error("namje // loading ship from table is not supported on client")
     end
 
+    --todo: probably move mat_cache and invalid_ids into coroutine
     local load_mat_cache = {}
     local invalid_ids = {}
     local id_cache = ship_table[1]
@@ -757,6 +818,17 @@ function namje_byos.table_to_ship(ship_table, ship_region)
         local x = packed_data % 2048 
         local y = math.floor(packed_data / 2048) 
         return {x, y}
+    end
+
+    local function unpack_wire(packed_data)
+        local output_x = (packed_data) & 0x7FF
+        local output_y = (packed_data >> 11) & 0x7FF
+        local output_node = (packed_data >> 22) & 0xF
+        local input_x = (packed_data >> 26) & 0x7FF
+        local input_y = (packed_data >> 37) & 0x7FF
+        local input_node = (packed_data >> 48) & 0xF
+        
+        return {output_x, output_y}, output_node, {input_x, input_y}, input_node
     end
 
     -- bit allocation: 14 bits, 10 bits, 4 bits, 4 bits
@@ -1009,7 +1081,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             --TODO: open UI listing invalid ids
             sb.logInfo("invalid ids: %s", invalid_ids)
         end
-        return true
+        return ship_table[3] or true
     end)
     return deserialize_coroutine
 end
