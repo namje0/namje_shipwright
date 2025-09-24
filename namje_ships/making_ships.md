@@ -6,7 +6,6 @@ The primary intention of ship templates is for them to be a "canvas" for the pla
 - All ships must include a pilot chair, a SAIL interface, and a fuel hatch.
 - Vanilla ship teleporters are not supported. Please use the ones supplied in this framework.
 - Ships come with a cargo hold feature. If you would like your ship to make use of it, please include any variation of the **Cargo Hold Access** in your ship.
-- Ships that are not using the `.dungeon` format will currently not support wiring. This is a **starbound limitation**.
 
 ## Ship format
 
