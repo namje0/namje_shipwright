@@ -885,6 +885,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             
             local length, id, color, hue = unpack_tile_vals(packed_data)
             local material_name = id_cache[id]
+            --[[
             if material_name then
                 if invalid_ids[material_name] then
                     material_name = "dirt"
@@ -898,7 +899,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                         load_mat_cache[material_name] = true
                     end
                 end
-            end
+            end]]
             -- skip the loop and just advance the y position if its an empty run greater than CHUNK_SIZE
             -- empty runs greater than CHUNK_SIZE will always be divisible by the CHUNK_SIZE
             if id == 0 and material_name == nil and length > CHUNK_SIZE then

@@ -1,14 +1,14 @@
 {
-    "id" : "namje_islandtemplate",
+    "id" : "namje_flatgrass",
 
-    "name" : "Island Template",
+    "name" : "Flatgrass",
     "description" : "Does not legally qualify as a ship.",
     "manufacturer" : "",
     "recommended_crew_size" : "1-12",
     "auto_create_license" : true,
     "price" : 30000,
     "add_to_penguin_bay" : true,
-    "license_icon" : "/namje_ships/ships/namje_islandtemplate/license_icon.png",
+    "license_icon" : "/namje_ships/ships/namje_flatgrass/license_icon.png",
 
     "base_stats" : {
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],
@@ -19,7 +19,7 @@
     },
     "namje_stats" : {
         "cargo_size" : 200,
-        "ship_center_pos" : [101, 62],
+        "ship_center_pos" : [50, 18],
         "ship_size" : [200, 120]
     },
     "stat_upgrades": {
@@ -61,5 +61,5 @@
         ]
     },
     
-    "ship" : "namje_islandtemplate"
+    "ship" : "namje_flatgrass"
 }
