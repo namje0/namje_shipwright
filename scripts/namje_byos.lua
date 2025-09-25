@@ -730,7 +730,6 @@ function namje_byos.ship_to_table(...)
                     end
                 end
 
-                --TODO: save wire switch state
                 if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
                     world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
                     local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
@@ -885,21 +884,6 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             
             local length, id, color, hue = unpack_tile_vals(packed_data)
             local material_name = id_cache[id]
-            --[[
-            if material_name then
-                if invalid_ids[material_name] then
-                    material_name = "dirt"
-                else
-                    if not load_mat_cache[material_name] then
-                        local config = root.materialConfig(material_name)
-                        if not config then
-                            sb.logInfo("namje warning // material_name %s is invalid! It may be from an unloaded mod. Replacing tile with dirt", material_name)
-                            invalid_ids[material_name] = true
-                        end
-                        load_mat_cache[material_name] = true
-                    end
-                end
-            end]]
             -- skip the loop and just advance the y position if its an empty run greater than CHUNK_SIZE
             -- empty runs greater than CHUNK_SIZE will always be divisible by the CHUNK_SIZE
             if id == 0 and material_name == nil and length > CHUNK_SIZE then
@@ -1094,11 +1078,20 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             sb.logInfo("namje // no failed objects")
         end
 
+        if ship_table[3] then
+            sb.logInfo("serverside wires detected, placing: %s", ship_table[3])
+            for _, packed_data in ipairs(ship_table[3]) do
+                local output_pos, output_node, input_pos, input_node = unpack_wire(packed_data)
+                sb.logInfo("wire: %s %s %s %s", output_pos, output_node, input_pos, input_node)
+                world.wire(output_pos, output_node, input_pos, input_node)
+            end
+        end
+
         if not isEmpty(invalid_ids) then
             --TODO: open UI listing invalid ids
             sb.logInfo("invalid ids: %s", invalid_ids)
         end
-        return ship_table[3] or true
+        return true
     end)
     return deserialize_coroutine
 end

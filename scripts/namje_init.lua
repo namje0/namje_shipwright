@@ -4,7 +4,6 @@ require "/scripts/namje_util.lua"
 local cargo_config
 local ini = init or function() end
 local updat = update or function() end
-local wiring_coroutine
 local swap_promise
 
 function init() ini()
@@ -41,33 +40,6 @@ function init() ini()
             sb.logInfo("namje_sail // ship swap failed: %s", err)
             interface.queueMessage("^red;There was an error while swapping ships")
         end
-    end)
-
-    message.setHandler("namje_connect_wiring", function(_, _, wiring)
-        local function unpack_wire(packed_data)
-            local output_x = (packed_data) & 0x7FF
-            local output_y = (packed_data >> 11) & 0x7FF
-            local output_node = (packed_data >> 22) & 0xF
-            local input_x = (packed_data >> 26) & 0x7FF
-            local input_y = (packed_data >> 37) & 0x7FF
-            local input_node = (packed_data >> 48) & 0xF
-            
-            return {output_x, output_y}, output_node, {input_x, input_y}, input_node
-        end
-        sb.logInfo("wiring to connect: %s", wiring)
-
-        if type(wiring) ~= "table" then 
-            return 
-        end
-
-        wiring_coroutine = coroutine.create(function()
-            for _, packed_data in ipairs(wiring) do
-                local output_pos, output_node, input_pos, input_node = unpack_wire(packed_data)
-                sb.logInfo("wire: %s %s %s %s", output_pos, output_node, input_pos, input_node)
-                world.wire(output_pos, output_node, input_pos, input_node)
-            end
-            return true
-        end)
     end)
 
     message.setHandler("namje_receive_serialized_ship", function(_, _, result, slot, action, ...)
@@ -148,14 +120,6 @@ function init() ini()
 end
 
 function update(dt) updat(dt)
-    if wiring_coroutine then
-        local status, result = coroutine.resume(wiring_coroutine)
-        if not status then error(result) end
-        if result then
-            wiring_coroutine = nil
-        end
-    end
-
     swap_promise:update()
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         if namje_byos.is_on_ship() then
