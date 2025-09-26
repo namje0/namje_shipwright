@@ -63,3 +63,4 @@ Currently incompatible.
 - Lounging crew members may not get teleported on a ship swap.
 - Plant growth stage is currently not saved.
 - Harvestables (e.g mothtrap) are reset on ship swap.
+- Colony deed NPCs will be reset.

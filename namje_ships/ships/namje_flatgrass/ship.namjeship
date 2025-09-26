@@ -49,7 +49,6 @@
             { "stat": 6, "description": "Increases maximum crew capacity to 6." },
             { "stat": 8, "description": "Increases maximum crew capacity to 8." },
             { "stat": 10, "description": "Increases maximum crew capacity to 10." },
-            { "stat": 11, "description": "Increases maximum crew capacity to 11." },
             { "stat": 12, "description": "Increases maximum crew capacity to 12." }
         ],
         "cargo_size": [

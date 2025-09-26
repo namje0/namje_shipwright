@@ -198,7 +198,10 @@ local function reset_slot(slot_num)
   }
 
   for k, v in pairs(ship_upgrades) do
+    local upgrade = selected_ship.ship_config.stat_upgrades[k]
+    local upgrade_cap = #upgrade
     widget.setImage("bar_" .. k, "/interface/namje_shipservice/stat_" .. v .. ".png")
+    widget.setImage("cap_" .. k, "/interface/namje_shipservice/cap_" .. UPGRADE_CAP - upgrade_cap .. ".png")
   end
 
   update_info_stats(ship_config, ship_upgrades)
@@ -235,8 +238,9 @@ function createTooltip(screen_pos)
 
       local upgrades = config.stat_upgrades
       local upgrade = upgrades[upgrade_name]
-      local level = math.min(math.max((ship_changes[upgrade_name] or selected_ship.upgrades[upgrade_name]) + 1, 1), UPGRADE_CAP + 1)
-      local desc = level > UPGRADE_CAP and "Stat fully upgraded." or upgrade[level].description
+      local upgrade_cap = #upgrade
+      local level = math.min(math.max((ship_changes[upgrade_name] or selected_ship.upgrades[upgrade_name]) + 1, 1), upgrade_cap + 1)
+      local desc = upgrade_cap == 0 and "No upgrades for this stat." or level > upgrade_cap and "Stat fully upgraded." or upgrade[level].description
       widget.setText("lbl_upg_info", desc)
 
       return
@@ -335,7 +339,10 @@ function select_upgrade(button_name)
     return
   end
 
-  if selected_ship.upgrades[upgrade_name] >= UPGRADE_CAP then
+  local upgrade = selected_ship.ship_config.stat_upgrades[upgrade_name]
+  local upgrade_cap = #upgrade
+
+  if selected_ship.upgrades[upgrade_name] >= upgrade_cap then
     pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
     return
   end
@@ -350,7 +357,7 @@ function select_upgrade(button_name)
     ship_changes[upgrade_name] = level
     widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. level .. ".png")
   else
-    local level = (ship_changes[upgrade_name] + 1) > UPGRADE_CAP and -1 or ship_changes[upgrade_name] + 1
+    local level = (ship_changes[upgrade_name] + 1) > upgrade_cap and -1 or ship_changes[upgrade_name] + 1
     if level == -1 then
       ship_changes[upgrade_name] = nil
       widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. selected_ship.upgrades[upgrade_name] .. ".png")
