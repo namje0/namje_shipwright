@@ -55,8 +55,7 @@ Currently incompatible.
 - "Save as template" option on SAIL
 - Make crew members per-ship
 - Customizable SAIL pet
-- Slotable ship modules that allow for stuff like stratagems
-- Add variable ugprade levels (Currently five levels are required)
+- Slottable ship modules that allow for stuff like stratagems
 - Add failsafe for existing characters without the framework enabled
 
 ## Bugs

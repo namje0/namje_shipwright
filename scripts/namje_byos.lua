@@ -367,6 +367,7 @@ function namje_byos.ship_to_table(...)
     local mat_to_id = {}
     local ship_chunks = {}
     local ship_wiring = {}
+    local ship_liquids = {}
     local next_mat_id = 1
 
     local function get_cached_id(material_name)
@@ -446,6 +447,14 @@ function namje_byos.ship_to_table(...)
         local packed_color = color or 0
         local packed_hue = math.floor((hue or 0) + 0.5)
         return packed_length | (packed_id << 14) | (packed_color << 24) | (packed_hue << 28)
+    end
+
+    local function pack_liquid_vals(pos, id, level)
+        local x = pos[1] or 0
+        local y = pos[2] or 0
+        local packed_id = id or 0
+        local packed_level = math.floor((level or 0) * 1000000 + 0.5)
+        return x | (y << 11) | (packed_id << 22) | (packed_level << 30)
     end
     
     -- bit allocation: 12 bits, 12 bits, 10 bits, 1 bits
@@ -624,6 +633,7 @@ function namje_byos.ship_to_table(...)
             --process tiles
             for y = min_y, max_y do
                 for x = min_x, max_x do
+                    local liquid = world.liquidAt({x, y})
                     local foreground_material = world.material({x, y}, "foreground")
                     local background_material = world.material({x, y}, "background")
                     local fore_mod = world.mod({x, y}, "foreground")
@@ -632,6 +642,11 @@ function namje_byos.ship_to_table(...)
                     local background_mat_id = get_cached_id(background_material)
                     local foreground_mod_id = get_cached_id(fore_mod)
                     local background_mod_id = get_cached_id(back_mod)
+
+                    if liquid then
+                        local packed_liquid = pack_liquid_vals({x, y}, liquid[1], liquid[2])
+                        table.insert(ship_liquids, packed_liquid)
+                    end
 
                     local linear_pos = (y << bit_range) | x
                     
@@ -803,7 +818,7 @@ function namje_byos.ship_to_table(...)
             end
         end
 
-        return {id_cache, ship_chunks, not isEmpty(ship_wiring) and ship_wiring or nil}
+        return {id_cache, ship_chunks, ship_wiring, ship_liquids}
     end)
     return serialize_coroutine
 end
@@ -853,6 +868,14 @@ function namje_byos.table_to_ship(ship_table, ship_region)
         local id = (packed_data >> 24) & 0x3FF
         local direction = (packed_data >> 34) & 1
         return {x, y}, id, direction
+    end
+
+    local function unpack_liquid_vals(packed_data)
+        local x = packed_data & 0x7FF
+        local y = (packed_data >> 11) & 0x7FF
+        local id = (packed_data >> 22) & 0xFF
+        local level = (packed_data >> 30) / 1000000
+        return {x, y}, id, level
     end
 
     local function linear_to_pos(linear_pos)
@@ -1078,12 +1101,20 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             sb.logInfo("namje // no failed objects")
         end
 
-        if ship_table[3] then
-            sb.logInfo("serverside wires detected, placing: %s", ship_table[3])
+        --wiring
+        if ship_table[3] and not isEmpty(ship_table[3]) then
             for _, packed_data in ipairs(ship_table[3]) do
                 local output_pos, output_node, input_pos, input_node = unpack_wire(packed_data)
                 sb.logInfo("wire: %s %s %s %s", output_pos, output_node, input_pos, input_node)
                 world.wire(output_pos, output_node, input_pos, input_node)
+            end
+        end
+
+        --liquid
+        if ship_table[4] and not isEmpty(ship_table[4]) then
+            for _, liquid in pairs (ship_table[4]) do
+                local pos, id, level = unpack_liquid_vals(liquid)
+                world.spawnLiquid(pos, id, level)
             end
         end
 
