@@ -1,14 +1,14 @@
 {
-    "id" : "namje_largetestship",
+    "id" : "namje_island",
 
-    "name" : "The Labyrinth",
-    "description" : "This house... has leaves in it...",
+    "name" : "Floating Island",
+    "description" : "Does not legally qualify as a ship.",
     "manufacturer" : "",
     "recommended_crew_size" : "1-12",
     "auto_create_license" : true,
     "price" : 30000,
     "add_to_penguin_bay" : true,
-    "license_icon" : "/namje_ships/ships/namje_largetestship/license_icon.png",
+    "license_icon" : "/namje_ships/ships/namje_island/license_icon.png",
 
     "base_stats" : {
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],
@@ -19,8 +19,8 @@
     },
     "namje_stats" : {
         "cargo_size" : 200,
-        "ship_center_pos" : [176, 60],
-        "ship_size" : [350, 120]
+        "ship_center_pos" : [50, 18],
+        "ship_size" : [200, 120]
     },
     "stat_upgrades": {
         "fu_fuel_modifier": 2,
@@ -49,7 +49,6 @@
             { "stat": 6, "description": "Increases maximum crew capacity to 6." },
             { "stat": 8, "description": "Increases maximum crew capacity to 8." },
             { "stat": 10, "description": "Increases maximum crew capacity to 10." },
-            { "stat": 11, "description": "Increases maximum crew capacity to 11." },
             { "stat": 12, "description": "Increases maximum crew capacity to 12." }
         ],
         "cargo_size": [
@@ -61,5 +60,5 @@
         ]
     },
     
-    "ship" : "namje_largetestship"
+    "ship" : "namje_island"
 }

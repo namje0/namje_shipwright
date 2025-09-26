@@ -5,7 +5,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztl0FugzAQRX2Kqhdpe4muwrZnyAmoFHWTPSfoUQsSVqyJbWYAY6DvSV9Vik2m8wYndQ4AAAAAAAAAIM1H4YCdts97JrHrmj0wD3zUoXPu1+ezf+0z9O6WSey6Zo9\/rzJ\/zTEZ+h16kC68j3ufr0SG6xeRNrLuHqR1cf\/\/EdnvqZT0MfXeZ8Ha86U+bu75PHp1eR+WGl4S2RO+pjV7n\/ORSuy6Zs\/ceqSTms9UblZKuSn1\/ar0HK3pZ6tatflOpHZdW3qqXa\/Gx97caOpairWG2j3Rpht\/hudtM8avka\/leu3ZXYKwnj3PrKaezj3+\/5AutP2WaURKeZBYZiQ1N1p3Vq85F0tqzvU9TO3vwkvq1zxfU97GOX9y8RakhIfafddidRNbY\/Fy7fPj4h5yPppxr\/x9bH94H1n3EYn1Y43ZvYpIH9rPg5yD8D7h\/c5Eal7XOle0z6HFw5GfBwsaN6U\/C3zOdi4tZWqGNTOvcaBdDw\/mnEFNYl1sLcwj5iI3\/8z6tljOJ9gOXAAAAAAAAAAAAAAAAByHP8t\/QMU=",
+         "data":"eJztl0FygzAMRXUKphehp+iqbHuGnoDOMN1kkxUnyFGLp\/FEUSQjA64D\/W\/mTwI2QehLxiECAAAAAAAAAAAAsBkKC+TTT3pNSBv3XAOWAT\/qMBJdot6m46iQuyEhbdxzTbxXmafZJyHf3AfpRfTjNOnDUBh\/F+qVeSemnnT\/\/yMy33Mq6cfcvY9Cbs7X+jHQ43r0Qmk\/cmJoDD0TMaYtc5\/yw5I27rlmaTzSk5o9laqVUt6U2l+VrqMt\/fmrWL1+DPRY8\/z8QPn7q9rPlUvteGV\/aH48W398Kdq6X3JjKPWMsuZ7dv7M1JAv3+P1k6+33VVxjjyW871rdwl4PFYtlPCG+yH7Q\/rRsHPy\/vx4pNv\/D+mFN99SnVApHyQ5NWLVjdc7Pq75EXvhm37zy+fK318TcyrvXLX3wmvi9\/RXVJif8iN40dK9dyV9qJ13L7neaHM0L+b8CJ8tU8++W3F8KufbhLQ1bY9o+UjlyvJQ7pnm9lfe90HKg5b0GjoSVs63Wle8fZjjw577IQePN3LN2Movvkfu6Hjr0lrmathT856eCd\/PiuR8cGPJGtQZ8\/hc6x0k30dAR\/MiVf\/WGGeg+\/\/4YDnetcl658RzYFu8XgAAAAAAAAAAAAAAAAAAAID6\/AD1PluE",
          "encoding":"base64",
          "height":50,
          "id":1,
@@ -19,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt1tENgjAUheFO4SbqEryxBxPoiyMwgZM5ixBp0ty05d4iFuH\/khOjlqTeA4hzAAAAAAAAadeVA7vbkEsmse81x6DMOLtXJk75WRj6AAAAR1by7Lq3591mY7knUntfS2JVe7+aPrbWjWZf32DZQ+2ZaNNPr6cg7RS\/Rr6X62X8ej+LX9Gcr7W60eyn\/+Q5Rs4yN+\/U\/MPUZNm7j\/a6bma+s3ZRsldNB1unOYfCa9oaec\/x951wzTnIGj38q7luYr\/b0ks35OHiPeT6aKdj5eex48PsRep3LzlfOxHZh\/b\/YK6DvXWRUjK70ns8Pdjk5rf2f4HP0TtICfuIXUOl11LquQI61ntQm1gXW4vvmDv\/ZR\/Mfl2xHsbn3d4xewAAAAAAAAAAAEDjDXrv1eQ=",
+         "data":"eJzt2NENwiAQgGGmcBOdwjfX0aRxBCdwMmdRoiSX8ygcFVvt\/yUXI6UKd7RFQwAAAAAAAMgbOgf8jo\/YjYR1vOYctIm5u41EqGyTQT0AAMCapb2r3mfJ9tw5\/7Lf3S8oYu6G8J5D2T6osNr08bnn5TX3eGU9StdHy+\/BHmM9GTG1DhbPGHrNs\/UesxEhP\/PyepXHD69IffR73V9H6p9y8S3WOqhZG1PW3NR7vqzJ5RnXGDqXY\/nO5V\/GnDxjl\/nw1O5T9fjE2K0aLF3NGpLXdE3E\/j32RK11+FWl2ljztmoR23vuUdN3bwvxL3TO0\/w861LvmUr7K6+11CJHzrXlWVpTw9ZcrqkOlrH7mMzN1DrBT9bDuoZar6VffxbPzbsXOGT6yb7WM6jm\/zDYSutf14N7Vl9Wfs\/h+XubXAMAAAAAAAAAAABld7oTwwA=",
          "encoding":"base64",
          "height":50,
          "id":2,
@@ -250,18 +250,6 @@
                  "y":128
                 }, 
                 {
-                 "gid":549,
-                 "height":24,
-                 "id":888,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":208,
-                 "y":152
-                }, 
-                {
                  "gid":710,
                  "height":40,
                  "id":893,
@@ -284,6 +272,66 @@
                  "width":8,
                  "x":616,
                  "y":152
+                }, 
+                {
+                 "gid":3060,
+                 "height":16,
+                 "id":895,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":24,
+                 "x":344,
+                 "y":208
+                }, 
+                {
+                 "gid":1747,
+                 "height":16,
+                 "id":898,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":344,
+                 "y":192
+                }, 
+                {
+                 "gid":3609,
+                 "height":40,
+                 "id":901,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":40,
+                 "x":352,
+                 "y":208
+                }, 
+                {
+                 "gid":3206,
+                 "height":20,
+                 "id":902,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16,
+                 "x":480,
+                 "y":240
+                }, 
+                {
+                 "gid":715,
+                 "height":16,
+                 "id":904,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":8,
+                 "x":536,
+                 "y":240
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -361,7 +409,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":895,
+ "nextobjectid":907,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -442,6 +490,10 @@
         {
          "firstgid":3923,
          "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-colonytag\/cooking.json"
+        }, 
+        {
+         "firstgid":3959,
+         "source":"..\/..\/..\/..\/..\/assets\/packed\/tilesets\/packed\/objects-by-type\/loungeable.json"
         }],
  "tilewidth":8,
  "type":"map",
