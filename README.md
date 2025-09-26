@@ -50,6 +50,7 @@ Currently incompatible.
     - Placing things down and leaving the 96x96 scan area faster than the region cache update interval (2s)
     - Making your zoom level so small that the game does not load the sectors adjacent to you
 - You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
+- Plants will not grow in inactive ships, but their growth stage is saved.
 
 ## Upcoming Features
 - "Save as template" option on SAIL
@@ -60,6 +61,5 @@ Currently incompatible.
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
-- Plant growth stage is currently not saved.
 - Harvestables (e.g mothtrap) are reset on ship swap.
 - Colony deed NPCs will be reset.

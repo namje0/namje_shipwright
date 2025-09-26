@@ -706,8 +706,8 @@ function namje_byos.ship_to_table(...)
 
                 --TODO: process farmable data, get with config startingStage(?)
                 local farmable_stage = world.farmableStage(object_id)
-                if farmable_stage then
-                    sb.logInfo("FARMABLE STAGE DETECTED FOR %s: %s", obj_name, farmable_stage)
+                if farmable_stage and farmable_stage > 0 then
+                    finalized_params["startingStage"] = farmable_stage
                 end
 
                 --TODO: process objects that use harvestable.lua (startingAge, activeTimeRange)
