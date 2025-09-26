@@ -385,7 +385,7 @@ function select_ship()
             stats["crew_size"] or "^os_text_color;" .. ship_config.base_stats.crew_size, 
             stats["cargo_size"] or "^os_text_color;" .. ship_config.namje_stats.cargo_size
         )
-        sb.logInfo("stats %s", ship_stats)
+
         local sys_name 
         if ship_stats.celestial_pos.system then
             sys_name = celestial.planetName(ship_stats.celestial_pos.system)

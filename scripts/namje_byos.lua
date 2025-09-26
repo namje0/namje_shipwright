@@ -704,15 +704,18 @@ function namje_byos.ship_to_table(...)
                     end
                 end
 
-                --TODO: process farmable data, get with config startingStage(?)
                 local farmable_stage = world.farmableStage(object_id)
                 if farmable_stage and farmable_stage > 0 then
                     finalized_params["startingStage"] = farmable_stage
                 end
 
-                --TODO: process objects that use harvestable.lua (startingAge, activeTimeRange)
+                if old_parameters.stage then
+                    local age = world.callScriptedEntity(object_id, "activeAge")
+                    if age then
+                        finalized_params["startingAge"] = age
+                    end
+                end
 
-                --process obj wiring
                 local output_nodes = world.callScriptedEntity(object_id, "object.outputNodeCount")
                 local input_nodes = world.callScriptedEntity(object_id, "object.inputNodeCount")
                 if output_nodes and output_nodes > 0 then
