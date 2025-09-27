@@ -62,6 +62,5 @@ Currently incompatible.
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
 - Colony deed NPCs will be reset.
-- Monsters/Animals/Pets in-between chunks are duplicated on ship swap.
-- Baby animals may not be spawned when swapping back to a ship.
-- Harvestables (e.g mothtrap) are reset on ship swap.
+- Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
+- Dropped items won't be stored on ship swap.
