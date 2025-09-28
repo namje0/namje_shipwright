@@ -60,14 +60,16 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             crew_amount = old_stats and old_stats.crew_amount or 0,
             cargo_hold = old_stats and old_stats.cargo_hold or {},
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
-            celestial_pos = old_stats and old_stats.celestial_pos or {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
+            celestial_pos = old_stats and old_stats.celestial_pos or {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()},
+            modules = old_stats and old_stats.modules or {},
         },
         upgrades = {
             fuel_efficiency = 0,
             max_fuel = 0,
             ship_speed = 0,
             crew_size = 0,
-            cargo_size = 0
+            cargo_size = 0,
+            modules = 0,
         }
     }
 
@@ -269,13 +271,14 @@ end
 
 --TODO: use region_cache instead
 function namje_byos.despawn_ship_monsters()
-    --TODO: get client master entities
     local entities = world.monsterQuery({0, 0}, {2048, 2048})
     for _, entity_id in ipairs(entities) do
-        world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
-        world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
-        world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
-        world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "monsterdespawn")
+        if entity_id > 0 then
+            world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
+            world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
+            world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
+            world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "monsterdespawn")
+        end
     end
 end
 
@@ -679,146 +682,147 @@ function namje_byos.ship_to_table(...)
                 local object_extras = {}
                 local object_id = chunk_objects[i]
 
-                local pos = world.entityPosition(object_id)
-                local object_parameters = world.getObjectParameter(object_id,"")
-                local obj_name = object_parameters.objectName
-                local direction = world.callScriptedEntity(object_id, "object.direction") or 1
-                local packed_direction = (direction == 1) and 1 or 0
-                local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
-                local temp_obj_item = root.itemConfig(obj_name)
-                local old_parameters = temp_obj_item.config
+                if object_id > 0 then
+                    local pos = world.entityPosition(object_id)
+                    local object_parameters = world.getObjectParameter(object_id,"")
+                    local obj_name = object_parameters.objectName
+                    local direction = world.callScriptedEntity(object_id, "object.direction") or 1
+                    local packed_direction = (direction == 1) and 1 or 0
+                    local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
+                    local temp_obj_item = root.itemConfig(obj_name)
+                    local old_parameters = temp_obj_item.config
 
-                local finalized_params = remove_duplicate_keys(object_parameters, old_parameters)
+                    local finalized_params = remove_duplicate_keys(object_parameters, old_parameters)
 
-                local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
-                if object_upgrade_stage then
-                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                    local current_stage = world.callScriptedEntity(object_id, "get_ent_storage", "currentStage")
-                    finalized_params["startingUpgradeStage"] = current_stage or 0
-                end
-
-                if not exclude_items then
-                    local container_items = world.containerItems(object_id)
-                    if container_items and not isEmpty(container_items) then
-                        object_extras["items"] = container_items
+                    local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
+                    if object_upgrade_stage then
+                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        local current_stage = world.callScriptedEntity(object_id, "get_ent_storage", "currentStage")
+                        finalized_params["startingUpgradeStage"] = current_stage or 0
                     end
-                end
 
-                local farmable_stage = world.farmableStage(object_id)
-                if farmable_stage and farmable_stage > 0 then
-                    finalized_params["startingStage"] = farmable_stage
-                end
-
-                if old_parameters.stages then
-                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                    local durations = world.callScriptedEntity(object_id, "get_ent_storage", "durations")
-                    local age = world.callScriptedEntity(object_id, "activeAge")
-                    if age then
-                        finalized_params["startingAge"] = age
+                    if not exclude_items then
+                        local container_items = world.containerItems(object_id)
+                        if container_items and not isEmpty(container_items) then
+                            object_extras["items"] = container_items
+                        end
                     end
-                    if durations and not finalized_params["harvestable_durations"] then
-                        finalized_params["harvestable_durations"] = durations
-                    end
-                end
 
-                local output_nodes = world.callScriptedEntity(object_id, "object.outputNodeCount")
-                local input_nodes = world.callScriptedEntity(object_id, "object.inputNodeCount")
-                if output_nodes and output_nodes > 0 then
-                    for i = 1, output_nodes do
-                        local output_node = i - 1
-                        if world.callScriptedEntity(object_id, "object.isOutputNodeConnected", output_node) then
-                            local connected_ids = world.callScriptedEntity(object_id, "object.getOutputNodeIds", output_node)
-                            if not isEmpty(connected_ids) then
-                                for connected_id, input_node in pairs(connected_ids) do
-                                    local packed_wire = pack_wire(pos, output_node, world.entityPosition(connected_id), input_node)
-                                    table.insert(ship_wiring, packed_wire)
+                    local farmable_stage = world.farmableStage(object_id)
+                    if farmable_stage and farmable_stage > 0 then
+                        finalized_params["startingStage"] = farmable_stage
+                    end
+
+                    if old_parameters.stages then
+                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        local durations = world.callScriptedEntity(object_id, "get_ent_storage", "durations")
+                        local age = world.callScriptedEntity(object_id, "activeAge")
+                        if age then
+                            finalized_params["startingAge"] = age
+                        end
+                        if durations and not finalized_params["harvestable_durations"] then
+                            finalized_params["harvestable_durations"] = durations
+                        end
+                    end
+
+                    local output_nodes = world.callScriptedEntity(object_id, "object.outputNodeCount")
+                    local input_nodes = world.callScriptedEntity(object_id, "object.inputNodeCount")
+                    if output_nodes and output_nodes > 0 then
+                        for i = 1, output_nodes do
+                            local output_node = i - 1
+                            if world.callScriptedEntity(object_id, "object.isOutputNodeConnected", output_node) then
+                                local connected_ids = world.callScriptedEntity(object_id, "object.getOutputNodeIds", output_node)
+                                if not isEmpty(connected_ids) then
+                                    for connected_id, input_node in pairs(connected_ids) do
+                                        local packed_wire = pack_wire(pos, output_node, world.entityPosition(connected_id), input_node)
+                                        table.insert(ship_wiring, packed_wire)
+                                    end
                                 end
                             end
                         end
                     end
-                end
 
-                if input_nodes and input_nodes > 0 then
-                    for i = 1, input_nodes do
-                        local input_node = i - 1
-                        if world.callScriptedEntity(object_id, "object.isInputNodeConnected", input_node) then
-                            local connected_ids = world.callScriptedEntity(object_id, "object.getInputNodeIds", input_node)
-                            if not isEmpty(connected_ids) then
-                                for connected_id, output_node in pairs(connected_ids) do
-                                    local packed_wire = pack_wire(world.entityPosition(connected_id), output_node, pos, input_node)
-                                    table.insert(ship_wiring, packed_wire)
+                    if input_nodes and input_nodes > 0 then
+                        for i = 1, input_nodes do
+                            local input_node = i - 1
+                            if world.callScriptedEntity(object_id, "object.isInputNodeConnected", input_node) then
+                                local connected_ids = world.callScriptedEntity(object_id, "object.getInputNodeIds", input_node)
+                                if not isEmpty(connected_ids) then
+                                    for connected_id, output_node in pairs(connected_ids) do
+                                        local packed_wire = pack_wire(world.entityPosition(connected_id), output_node, pos, input_node)
+                                        table.insert(ship_wiring, packed_wire)
+                                    end
                                 end
                             end
                         end
                     end
-                end
 
-                if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
-                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                    local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
-                    object_extras["switch_state"] = current_state
-                end
-
-                local object_data = packed_data
-                if not isEmpty(finalized_params) then
-                    object_data = {packed_data, finalized_params}
-                end
-
-                if not isEmpty(object_extras) then
-                    if type(object_data) == table then
-                        table.insert(object_data, object_extras)
-                    else
-                        object_data = {packed_data, {}, object_extras}
+                    if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
+                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
+                        object_extras["switch_state"] = current_state
                     end
-                end
 
-                table.insert(objects, object_data)
+                    local object_data = packed_data
+                    if not isEmpty(finalized_params) then
+                        object_data = {packed_data, finalized_params}
+                    end
+
+                    if not isEmpty(object_extras) then
+                        if type(object_data) == table then
+                            table.insert(object_data, object_extras)
+                        else
+                            object_data = {packed_data, {}, object_extras}
+                        end
+                    end
+
+                    table.insert(objects, object_data)
+                end
             end
 
             --process monsters
             local chunk_monsters = world.monsterQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
             for _, entity_id in ipairs (chunk_monsters) do
-                local duplicate_monster = false
-                local seed = world.callScriptedEntity(entity_id, "monster.seed")
-                local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
-                local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
-                sb.logInfo("considering monster %s", entity_id)
-                --[[
-                    seems like mcontroller.pos is inbetween so its getting detected in multiple chunks, dont add if its a duplicate
-                    not the most efficient way to check for duplicates cause I think there could be fringe scenarios where you have multiple cloned
-                    animals in the exact same spot... but odds are low enough
-                ]]
-                for _, v in pairs(ship_chunks) do
-                    if v.monsters then
-                        for _, monster in pairs(v.monsters) do
-                            local existing_seed = monster.parameters.seed
-                            local existing_pos = monster.pos
-                            if seed == existing_seed and existing_pos == linear_pos then
-                                sb.logInfo("duplicate monster %s", entity_id)
-                                duplicate_monster = true
+                if entity_id > 0 then
+                    local duplicate_monster = false
+                    local seed = world.callScriptedEntity(entity_id, "monster.seed")
+                    local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
+                    local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
+                    --[[
+                        seems like mcontroller.pos is inbetween so its getting detected in multiple chunks, dont add if its a duplicate
+                        not the most efficient way to check for duplicates cause I think there could be fringe scenarios where you have multiple cloned
+                        animals in the exact same spot... but odds are low enough
+                    ]]
+                    for _, v in pairs(ship_chunks) do
+                        if v.monsters then
+                            for _, monster in pairs(v.monsters) do
+                                local existing_seed = monster.parameters.seed
+                                local existing_pos = monster.pos
+                                if seed == existing_seed and existing_pos == linear_pos then
+                                    duplicate_monster = true
+                                end
                             end
                         end
                     end
-                end
 
-                if not duplicate_monster then
-                    world.callScriptedEntity(entity_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                    local entity_storage = world.callScriptedEntity(entity_id, "get_ent_storage", "")
-                    local monster_type = world.callScriptedEntity(entity_id, "monster.type")
-                    local pet_info = {
-                        type = get_cached_id(monster_type),
-                        parameters = world.callScriptedEntity(entity_id, "monster.uniqueParameters"),
-                        pos = linear_pos
-                    }
-                    pet_info.parameters.storage = entity_storage
-                    pet_info.parameters.seed = seed
+                    if not duplicate_monster then
+                        world.callScriptedEntity(entity_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        local entity_storage = world.callScriptedEntity(entity_id, "get_ent_storage", "")
+                        local monster_type = world.callScriptedEntity(entity_id, "monster.type")
+                        local pet_info = {
+                            type = get_cached_id(monster_type),
+                            parameters = world.callScriptedEntity(entity_id, "monster.uniqueParameters"),
+                            pos = linear_pos
+                        }
+                        pet_info.parameters.storage = entity_storage
+                        pet_info.parameters.seed = seed
 
-                    --remove redundant data
-                    pet_info.parameters.storage["spawnPosition"] = nil
-                    pet_info.parameters.storage["playSpawnAnimation"] = nil
+                        --remove redundant data
+                        pet_info.parameters.storage["spawnPosition"] = nil
+                        pet_info.parameters.storage["playSpawnAnimation"] = nil
 
-                    sb.logInfo("serialized pet for id %s: %s", entity_id, pet_info)
-                    table.insert(monsters, pet_info)
+                        table.insert(monsters, pet_info)
+                    end
                 end
             end
 
@@ -944,7 +948,6 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             if id == 0 and material_name == nil and length > CHUNK_SIZE then
                 local rows = (length / CHUNK_SIZE)
                 current_pos_y = current_pos_y + rows
-                --sb.logInfo("skipping a run of empty tiles with length %s. New pos: %s", length, current_pos)
             else
                 for i = 0, length - 1 do
                     if material_name then
@@ -1073,9 +1076,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             if chunk.monsters and not isEmpty(chunk.monsters) then
                 for _, monster in pairs (chunk.monsters) do
                     local pos = linear_to_pos(monster.pos)
-                    sb.logInfo("spawning monster of type %s at pos %s %s", id_cache[monster.type], pos[1], pos[2])
                     local spawned_monster = world.spawnMonster(id_cache[monster.type], pos, monster.parameters)
-                    sb.logInfo("spawn attempt %s", spawned_monster)
                 end
             end
 
