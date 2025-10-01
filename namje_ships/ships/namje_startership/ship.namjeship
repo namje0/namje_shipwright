@@ -25,6 +25,7 @@
     },
     "stat_upgrades": {
         "fu_fuel_modifier": 2,
+        "modules": 5,
         "max_fuel": [
             { "stat": 5000, "description": "Repairs fuel tanks back to default fuel capacity." },
             { "stat": 6000, "description": "Increases maximum fuel capacity to 6000." },

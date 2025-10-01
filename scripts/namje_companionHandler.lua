@@ -86,8 +86,10 @@ function updateShipUpgrades() original_ship_upgrades()
     }
 
     for k, v in pairs(ship_upgrades) do
-        if v > 0 then
-            stats[k] = ship_config.stat_upgrades[k][v].stat
+        if k ~= "modules" then
+            if v > 0 then
+                stats[k] = ship_config.stat_upgrades[k][v].stat
+            end
         end
     end
 

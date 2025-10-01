@@ -5,7 +5,6 @@ function activate()
 			player.giveItem(item)
 		end
 
-		--todo: chance for random crap like a dead rat or something
 		item.consume(1)
 	end
 end

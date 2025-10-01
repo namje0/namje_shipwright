@@ -7,6 +7,8 @@ local CHANGE_PRICES = {
 }
 local UPGRADE_CAP = 5
 local UPGRADE_SCALING = {6, 5.5}
+local MODULE_SLOT_LIST = "module_slots"
+local MODULE_DISABLED_LIST = "disabled_mod_slots"
 local INFO_AREA = {
   "lbl_ship_name",
   "tb_ship_name",
@@ -24,7 +26,8 @@ local UPG_BUTTONS = {
   "btn_upg_fuel_efficiency",
   "btn_upg_ship_speed",
   "btn_upg_cargo_size",
-  "btn_upg_crew_size"
+  "btn_upg_crew_size",
+  "btn_upg_modules"
 }
 
 local money_total = 0
@@ -42,6 +45,7 @@ local icon_path = "/namje_ships/ship_icons/generic_%s.png"
 local icon_index = 1
 local icon = "/namje_ships/ship_icons/generic_1.png"
 local max_icons = 6
+local module_slots = {}
 
 spin_count = {}
 spin_count.up = function()
@@ -142,12 +146,13 @@ local function update_info_stats(ship_config, ship_upgrades)
     max_fuel = nil,
     ship_speed = nil,
     crew_size = nil,
-    cargo_size = nil
+    cargo_size = nil,
+    modules = nil
   }
 
   for k, v in pairs(ship_upgrades) do
     if v > 0 then
-      stats[k] = "^orange;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or ship_config.stat_upgrades[k][v].stat)
+      stats[k] = "^orange;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or k == "modules" and v or ship_config.stat_upgrades[k][v].stat)
     end
   end
 
@@ -156,6 +161,8 @@ local function update_info_stats(ship_config, ship_upgrades)
       if v > 0 then
         if k == "fuel_efficiency" then
           stats[k] = "^yellow;" .. math.floor(ship_config.stat_upgrades[k][v].stat*100)
+        elseif k == "modules" then
+          stats[k] = "^yellow;" .. v
         else
           stats[k] = "^yellow;" .. ship_config.stat_upgrades[k][v].stat
         end
@@ -165,14 +172,15 @@ local function update_info_stats(ship_config, ship_upgrades)
 
   local stats_1 = string.format(
     "^white;%s%%\n%s\n%s", 
-    stats["fuel_efficiency"] or "^white;" .. math.floor(ship_config.base_stats.fuel_efficiency*100),
-    stats["max_fuel"] or "^white;" .. ship_config.base_stats.max_fuel,
-    stats["ship_speed"] or "^white;" .. ship_config.base_stats.ship_speed
+    stats.fuel_efficiency or "^white;" .. math.floor(ship_config.base_stats.fuel_efficiency*100),
+    stats.max_fuel or "^white;" .. ship_config.base_stats.max_fuel,
+    stats.ship_speed or "^white;" .. ship_config.base_stats.ship_speed
   )
   local stats_2 = string.format(
-    "^white;%s\n%s", 
-    stats["crew_size"] or "^white;" .. ship_config.base_stats.crew_size, 
-    stats["cargo_size"] or "^white;" .. ship_config.namje_stats.cargo_size
+    "^white;%s\n%s\n%s", 
+    stats.crew_size or "^white;" .. ship_config.base_stats.crew_size, 
+    stats.cargo_size or "^white;" .. ship_config.namje_stats.cargo_size, 
+    stats.modules or "^white;0"
   )
   widget.setText("lbl_stats_1_num", stats_1)
   widget.setText("lbl_stats_2_num", stats_2)
@@ -199,9 +207,13 @@ local function reset_slot(slot_num)
 
   for k, v in pairs(ship_upgrades) do
     local upgrade = selected_ship.ship_config.stat_upgrades[k]
-    local upgrade_cap = #upgrade
-    widget.setImage("bar_" .. k, "/interface/namje_shipservice/stat_" .. v .. ".png")
-    widget.setImage("cap_" .. k, "/interface/namje_shipservice/cap_" .. UPGRADE_CAP - upgrade_cap .. ".png")
+    local upgrade_cap = type(upgrade)=="number" and upgrade or #upgrade
+    if k == "modules" then
+      add_module_slots(v)
+    else
+      widget.setImage("bar_" .. k, "/interface/namje_shipservice/stat_" .. v .. ".png")
+      widget.setImage("cap_" .. k, "/interface/namje_shipservice/cap_" .. UPGRADE_CAP - upgrade_cap .. ".png")
+    end
   end
 
   update_info_stats(ship_config, ship_upgrades)
@@ -216,10 +228,67 @@ local function reset_slot(slot_num)
 end
 
 function init()
-    populate_ship_list()
-    toggle_info(false)
-    widget.setButtonEnabled("btn_checkout", false)
-    toggle_shipstats(false)
+  populate_ship_list()
+  toggle_info(false)
+  widget.setButtonEnabled("btn_checkout", false)
+  toggle_shipstats(false)
+
+  widget.registerMemberCallback(MODULE_SLOT_LIST, "slot", function(_, index)
+    if not index then
+      return
+    end
+    local slot = module_slots[index]
+    if slot then
+        module_slot(index)
+    end
+  end)
+  widget.registerMemberCallback(MODULE_SLOT_LIST, "slot.right", function() end)
+end
+
+function module_slot(index)
+  local ship_stats = namje_byos.get_stats(selected_ship.slot)
+  local ship_modules = ship_stats.modules
+  local existing_module = ship_modules["slot_" .. index]
+  local item = player.swapSlotItem()
+  if item then
+    local config = root.itemConfig(item.name).config
+    if config.category and config.category == "namje_shipModule" then
+      if not selected_ship.slot then
+        return
+      end
+
+      for k, v in pairs(ship_modules) do
+        if v and v == item.name then
+          interface.queueMessage("Duplicate modules cannot be slotted in.")
+          pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
+          return
+        end
+      end
+
+      ship_modules["slot_" .. index] = item.name
+      namje_byos.set_stats(selected_ship.slot, {modules = ship_modules})
+
+      if existing_module then
+        local item = {name = existing_module, count = 1}
+        player.setSwapSlotItem(item)
+      else
+        player.setSwapSlotItem(nil)
+      end
+
+      widget.setItemSlotItem(module_slots[index] .. ".slot", item)
+    else
+      pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
+      return
+    end
+  else
+    if existing_module then
+      local item = {name = existing_module, count = 1}
+      player.setSwapSlotItem(item)
+      ship_modules["slot_" .. index] = nil
+      namje_byos.set_stats(selected_ship.slot, {modules = ship_modules})
+      widget.setItemSlotItem(module_slots[index] .. ".slot", nil)
+    end
+  end
 end
 
 function update(dt)
@@ -227,16 +296,24 @@ function update(dt)
   update_gui()
 end
 
+
 function createTooltip(screen_pos)
   for i = 1, #UPG_BUTTONS do
     if widget.inMember(UPG_BUTTONS[i], screen_pos) then
-      local upgrade_name, _ = string.match(UPG_BUTTONS[i], "btn_upg_(.+)")
       local config = selected_ship.ship_config
       if not config then
         return
       end
-
       local upgrades = config.stat_upgrades
+      local upgrade_name, _ = string.match(UPG_BUTTONS[i], "btn_upg_(.+)")
+
+      if upgrade_name == "modules" then
+        local level = math.min(math.max((ship_changes[upgrade_name] or selected_ship.upgrades[upgrade_name]) + 1, 1), upgrades.modules + 1)
+        local desc = level > upgrades.modules and "Stat fully upgraded." or string.format("Increases the number of module slots to %s", level)
+        widget.setText("lbl_upg_info", desc)
+        return
+      end
+
       local upgrade = upgrades[upgrade_name]
       local upgrade_cap = #upgrade
       local level = math.min(math.max((ship_changes[upgrade_name] or selected_ship.upgrades[upgrade_name]) + 1, 1), upgrade_cap + 1)
@@ -333,6 +410,35 @@ function tb_revert()
   end
 end
 
+function add_module_slots(level)
+  if not selected_ship.upgrades and not selected_ship.upgrades.modules then
+    return
+  end
+  local ship_stats = namje_byos.get_stats(selected_ship.slot)
+  local ship_modules = ship_stats.modules
+
+  widget.clearListItems(MODULE_SLOT_LIST)
+  widget.clearListItems(MODULE_DISABLED_LIST)
+  for i = 1, level do
+    module_slots[i] = MODULE_SLOT_LIST.."."..widget.addListItem(MODULE_SLOT_LIST)
+    local disabled_slot = MODULE_DISABLED_LIST.."."..widget.addListItem(MODULE_DISABLED_LIST)
+
+    widget.setData(module_slots[i] .. ".slot", i)
+    if i > selected_ship.upgrades.modules then
+      widget.setVisible(disabled_slot .. ".slot", true)
+      widget.setVisible(module_slots[i] .. ".slot", false)
+    end
+  end
+
+  for k, v in pairs(ship_modules) do
+    local slot_number = tonumber(k:match("slot_(%d+)"))
+    if v then
+      local item = {name = v, count = 1}
+      widget.setItemSlotItem(module_slots[slot_number] .. ".slot", item)
+    end
+  end
+end
+
 function select_upgrade(button_name)
   local upgrade_name, _ = string.match(button_name, "btn_upg_(.+)")
   if isEmpty(selected_ship.upgrades) then
@@ -340,7 +446,7 @@ function select_upgrade(button_name)
   end
 
   local upgrade = selected_ship.ship_config.stat_upgrades[upgrade_name]
-  local upgrade_cap = #upgrade
+  local upgrade_cap = type(upgrade)=="number" and math.min(5, upgrade) or #upgrade
 
   if selected_ship.upgrades[upgrade_name] >= upgrade_cap then
     pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
@@ -356,14 +462,23 @@ function select_upgrade(button_name)
     local level = selected_ship.upgrades[upgrade_name] + 1
     ship_changes[upgrade_name] = level
     widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. level .. ".png")
+    if upgrade_name == "modules" then
+      add_module_slots(level)
+    end
   else
     local level = (ship_changes[upgrade_name] + 1) > upgrade_cap and -1 or ship_changes[upgrade_name] + 1
     if level == -1 then
       ship_changes[upgrade_name] = nil
       widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. selected_ship.upgrades[upgrade_name] .. ".png")
+      if upgrade_name == "modules" then
+        add_module_slots(selected_ship.upgrades[upgrade_name])
+      end
     else
       ship_changes[upgrade_name] = level
       widget.setImage("bar_" .. upgrade_name, "/interface/namje_shipservice/stat_" .. level .. ".png")
+      if upgrade_name == "modules" then
+        add_module_slots(level)
+      end
     end
   end
 

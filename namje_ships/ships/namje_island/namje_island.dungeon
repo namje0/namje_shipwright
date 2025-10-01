@@ -1,9 +1,9 @@
 {
   "metadata" : {
-    "name" : "namje_flatgrass",
+    "name" : "namje_island",
     "species" : "human",
     "rules" : [],
-    "anchor" : [ "namje_flatgrass" ],
+    "anchor" : [ "namje_island" ],
     "maxRadius" : 1000000,
     "maxParts" : 1,
     "protected" : false
@@ -11,12 +11,12 @@
 
   "parts" : [
     {
-      "name" : "namje_flatgrass",
+      "name" : "namje_island",
       "clearAnchoredObjects" : false,
       "rules" : [
         [ "maxSpawnCount", [1] ]
       ],
-      "def" : [ "tmx", "namje_flatgrass.json" ]
+      "def" : [ "tmx", "namje_island.json" ]
     }
   ]
 }

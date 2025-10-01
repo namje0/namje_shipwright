@@ -23,6 +23,7 @@
     },
     "stat_upgrades": {
         "fu_fuel_modifier": 2,
+        "modules": 5,
         "max_fuel": [
             { "stat": 7500, "description": "Increases maximum fuel capacity to 7500." },
             { "stat": 8000, "description": "Increases maximum fuel capacity to 8000." },
