@@ -35,12 +35,18 @@ Multiple ships can be owned by a player in this framework, and players can freel
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
 - Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.
+- Up to five module slots can be added to every ship. See the Ship Modules section for more information.
 - Ship icon and name can also be changed at a ship service technician.
 ### Cargo Hold
 Ships come with a cargo hold, which is a storage container linked to the ship.
 - When you overwrite a ship, its cargo is automatically moved to the new one.
 ### Ship Modules
-TBA
+Ship Modules can provide a wide range of benefits to your ships.
+- Ships do not come with any modules or module slots by default.
+- For modules with scripts, only the active ship's modules are used.
+- Module script delta is 60. This may be changed later.
+- Module scripts are only initialized for the ship owner clientside when they are on their ship.
+    - Use stagehands to create global module effects
 ### FrackinUniverse Compatiblity
 Currently incompatible.
 
@@ -56,7 +62,6 @@ Currently incompatible.
 - "Save as template" option on SAIL
 - Make crew members per-ship
 - Customizable SAIL pet
-- Slottable ship modules that allow for stuff like stratagems
 - Add failsafe for existing characters without the framework enabled
 
 ## Bugs
