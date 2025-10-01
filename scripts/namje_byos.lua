@@ -61,7 +61,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             cargo_hold = old_stats and old_stats.cargo_hold or {},
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
             celestial_pos = old_stats and old_stats.celestial_pos or {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()},
-            modules = old_stats and old_stats.modules or {},
+            modules = {}, -- return modules as items instead
         },
         upgrades = {
             fuel_efficiency = 0,
@@ -95,8 +95,17 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         end
 
         local previous_ship_content = player.getProperty("namje_slot_" .. slot .. "_shipcontent", {})
+        local items = {}
+
+        if old_stats then
+            local modules = old_stats.modules
+            for _, v in pairs(modules) do
+                local item = {name = v, count = 1}
+                table.insert(items, item)
+            end
+        end
+
         if not isEmpty(previous_ship_content) then
-            local items = {}
             for _, chunk in pairs (previous_ship_content[2]) do
                 if chunk.objs and not isEmpty(chunk.objs) then
                     for _, object in pairs (chunk.objs) do
@@ -114,10 +123,10 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
                     end
                 end
             end
-            if not isEmpty(items) then
-                interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
-                world.sendEntityMessage(player.id(), "namje_give_cargo", items)
-            end
+        end
+        if not isEmpty(items) then
+            interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
+            world.sendEntityMessage(player.id(), "namje_give_cargo", items)
         end
         --TODO: include upgrade levels in refund
         local refund = math.floor(old_config.price * 0.25) or 0
