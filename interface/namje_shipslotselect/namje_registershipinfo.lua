@@ -49,14 +49,14 @@ function cancel()
 end
 
 function randomize()
-  local function getRandomIndex(array)
+  local function get_rand_index(array)
     local random_value = sb.nrand(array / 6)
     local index = math.floor(random_value + (array / 2))
     return math.max(1, math.min(array, index))
   end
 
-  local name_prefix = name_prefixes[getRandomIndex(#name_prefixes)]
-  local name_affix = name_affixes[getRandomIndex(#name_affixes)]
+  local name_prefix = name_prefixes[get_rand_index(#name_prefixes)]
+  local name_affix = name_affixes[get_rand_index(#name_affixes)]
   
   widget.setText("name", string.format("%s %s", name_prefix, name_affix))
 end

@@ -11,7 +11,8 @@
       "/scripts/namje_overrideSail.lua"
     ],
     "onLoad" : [
-      "/scripts/namje_makeShipLicenses.lua"
+      "/scripts/namje_makeShipLicenses.lua",
+      "/scripts/namje_makeShipModules.lua"
     ]
   },
   "priority" : 50,

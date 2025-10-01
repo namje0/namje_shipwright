@@ -1,0 +1,9 @@
+{
+  "name" : "Music - OnTheBeachAtNight",
+  "description" : "Plays On The Beach At Night by Curtis Schweitzer on your ship.",
+  "price" : 20000,
+  "rarity" : "essential",
+  "icon" : "/namje_shipmodules/namje_onthebeachmusicmodule/namje_onthebeachmusicmodule.png",
+  "music" : true,
+  "script" : "/namje_shipmodules/namje_onthebeachmusicmodule/namje_onthebeachmusicmodule.lua"
+}

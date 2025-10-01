@@ -10,5 +10,9 @@
   "namje_ship_invalidowner_bill" : {
     "unique" : false,
     "text" : "You must be on your ship in order to use this bill."
+  },
+  "namje_pickup_module" : {
+    "type" : "tutorial",
+    "text" : "You obtained a ship module. These modules can provide a wide range of benefits for your ship. You can install them at a ^orange;Ship Service Technician.^reset; You may have to upgrade your ship first."
   }
 }

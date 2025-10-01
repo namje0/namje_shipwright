@@ -1,0 +1,9 @@
+{
+  "name" : "Music - Haiku",
+  "description" : "Plays ^orange;Starbound Original Soundtrack - Haiku^reset; on your ship.",
+  "price" : 5000,
+  "rarity" : "Uncommon",
+  "icon" : "/namje_shipmodules/namje_haikumusicmodule/namje_haikumusicmodule.png",
+  "music" : true,
+  "script" : "/namje_shipmodules/namje_haikumusicmodule/namje_haikumusicmodule.lua"
+}

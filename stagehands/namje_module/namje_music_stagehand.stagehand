@@ -1,0 +1,10 @@
+
+{
+    "type" : "namje_music_stagehand",
+    "scripts" : [
+        "/stagehands/namje_module/namje_music_stagehand.lua"
+    ],
+    "scriptDelta" : 600,
+    "uniqueId" : "namje_music_stagehand",
+    "musicTable" : ["/music/tranquility-base.ogg"]
+}

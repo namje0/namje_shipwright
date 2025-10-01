@@ -252,7 +252,7 @@ function module_slot(index)
   local item = player.swapSlotItem()
   if item then
     local config = root.itemConfig(item.name).config
-    if config.category and config.category == "namje_shipModule" then
+    if config.isNamjeModule then
       if not selected_ship.slot then
         return
       end

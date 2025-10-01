@@ -1,0 +1,9 @@
+{
+  "name" : "Music - Tranquility base",
+  "description" : "Plays ^orange;Starbound Original Soundtrack - Tranquility base^reset; on your ship.",
+  "price" : 5000,
+  "rarity" : "Uncommon",
+  "icon" : "/namje_shipmodules/namje_tranqmusicmodule/namje_tranqmusicmodule.png",
+  "music" : true,
+  "script" : "/namje_shipmodules/namje_tranqmusicmodule/namje_tranqmusicmodule.lua"
+}
