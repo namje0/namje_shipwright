@@ -373,10 +373,26 @@ function namje_byos.move_all_to_ship_spawn()
     end
     
     --TODO: use region_cache
-    local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {1024, 1024}), {0, 1})
-    local entities = world.entityQuery({0, 0}, {2048, 2048}, {includedTypes = {"npc"}})
+    local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {1024, 1024}), {0, 2})
+    local region_cache = world.getProperty("namje_region_cache", {})
+    local regions = {}
+    local region_bounds
+    if isEmpty(region_cache) then
+        sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
+    else
+        for region, _ in pairs(region_cache) do
+            local chunk = namje_util.region_decode(region)
+            table.insert(regions, chunk)
+        end
+        region_bounds = namje_util.get_chunk_rect(regions)
+    end
+    local entities = world.npcQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]})
     for _, entity_id in ipairs(entities) do
-        world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
+        local type = world.callScriptedEntity(entity_id, "npc.npcType")
+        if string.match(type, "crewmember") then
+            world.callScriptedEntity(entity_id, "mcontroller.setPosition", ship_spawn)
+        end
     end
 end
 
@@ -815,8 +831,24 @@ function namje_byos.ship_to_table(...)
                             required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
                         end
                         local occupier = world.callScriptedEntity(object_id, "get_ent_storage", "occupier")
+                        local house = world.callScriptedEntity(object_id, "get_ent_storage", "house")
+                        local grumbles = world.callScriptedEntity(object_id, "get_ent_storage", "grumbles")
+
+                        --delay the firstscan to detect the tenant(?)
+                        if finalized_params.deed then
+                            finalized_params.deed.firstScan = {5.0, 6.0}
+                        else
+                            finalized_params.deed = {firstScan = {5.0, 6.0}}
+                        end
+
                         if occupier then
                             finalized_params["colonydeed_occupier"] = occupier
+                        end
+                        if house then
+                            finalized_params["colonydeed_house"] = house
+                        end
+                        if grumbles then
+                            finalized_params["colonydeed_grumbles"] = grumbles
                         end
                     end
 
@@ -922,6 +954,46 @@ function namje_byos.ship_to_table(...)
             end
 
             --TODO: process npcs
+            local chunk_npcs = world.npcQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
+            for _, entity_id in ipairs (chunk_npcs) do
+                if entity_id > 0 then
+                    local duplicate_npc = false
+                    local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
+                    local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
+                    local seed = world.callScriptedEntity(entity_id, "npc.seed")
+                    local type = world.callScriptedEntity(entity_id, "npc.npcType")
+                    if not string.match(type, "crewmember") then
+                        for _, v in pairs(ship_chunks) do
+                            if v.npcs then
+                                for _, npc in pairs(v.npcs) do
+                                    local existing_seed = npc.seed
+                                    local existing_pos = npc.pos
+                                    if seed == existing_seed and existing_pos == linear_pos then
+                                        duplicate_npc = true
+                                    end
+                                end
+                            end
+                        end
+
+                        if not duplicate_npc then
+                            local species = world.callScriptedEntity(entity_id, "npc.species")
+                            local level = world.callScriptedEntity(entity_id, "npc.level")
+                            local unique_id = world.entityUniqueId(entity_id)
+                            local npc_info = {
+                                pos = linear_pos,
+                                species = species,
+                                level = level,
+                                seed = seed,
+                                type = type
+                            }
+                            if unique_id then
+                                npc_info.uuid = unique_id
+                            end
+                            table.insert(npcs, npc_info)
+                        end
+                    end
+                end
+            end
 
             local ship_chunk = {pos = pack_pos(min_x, max_y), tiles = {foreground = foreground_tiles, background = background_tiles}, mods = {foreground = foreground_mods, background = background_mods}}
             if not isEmpty(objects) then
@@ -930,6 +1002,10 @@ function namje_byos.ship_to_table(...)
 
             if not isEmpty(monsters) then
                 ship_chunk["monsters"] = monsters
+            end
+
+            if not isEmpty(npcs) then
+                ship_chunk["npcs"] = npcs
             end
             
             table.insert(ship_chunks, ship_chunk)
@@ -1147,9 +1223,11 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                                     world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
                                     world.callScriptedEntity(placed_object_id, "setStage")
                                 end
-                                if parameters and parameters["colonydeed_occupier"] then
+                                if parameters and parameters["colonydeed_occupier"] and parameters["colonydeed_house"] and parameters["colonydeed_grumbles"] then
                                     world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
                                     world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
+                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "house", parameters["colonydeed_house"])
+                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "grumbles", parameters["colonydeed_grumbles"])
                                 end
                                 if switch_state then
                                     world.callScriptedEntity(placed_object_id, "output", switch_state)
@@ -1176,6 +1254,17 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                 for _, monster in pairs (chunk.monsters) do
                     local pos = linear_to_pos(monster.pos)
                     local spawned_monster = world.spawnMonster(id_cache[monster.type], pos, monster.parameters)
+                end
+            end
+
+            -- process npcs
+            if chunk.npcs and not isEmpty(chunk.npcs) then
+                for _, npc in pairs (chunk.npcs) do
+                    local pos = linear_to_pos(npc.pos)
+                    local spawned_npc = world.spawnNpc(pos, npc.species, npc.type, npc.level, npc.seed)
+                    if spawned_npc then
+                        world.setUniqueId(spawned_npc, npc.uuid)
+                    end
                 end
             end
 
@@ -1217,9 +1306,11 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                                         world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
                                         world.callScriptedEntity(placed_object_id, "setStage")
                                     end
-                                    if parameters and parameters["colonydeed_occupier"] then
+                                    if parameters and parameters["colonydeed_occupier"] and parameters["colonydeed_house"] and parameters["colonydeed_grumbles"] then
                                         world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
                                         world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
+                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "house", parameters["colonydeed_house"])
+                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "grumbles", parameters["colonydeed_grumbles"])
                                     end
                                 end
                                 if container_items then

@@ -37,9 +37,6 @@ Individual ship stats can be upgraded at a ship service technician. This framewo
 - Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.
 - Up to five module slots can be added to every ship. See the Ship Modules section for more information.
 - Ship icon and name can also be changed at a ship service technician.
-### Cargo Hold
-Ships come with a cargo hold, which is a storage container linked to the ship.
-- When you overwrite a ship, its cargo is automatically moved to the new one.
 ### Ship Modules
 Ship Modules can provide a wide range of benefits to your ships.
 - Ships do not come with any modules or module slots by default.
@@ -47,6 +44,9 @@ Ship Modules can provide a wide range of benefits to your ships.
 - Module script delta is 60. This may be changed later.
 - Module scripts are only initialized for the ship owner clientside when they are on their ship.
     - Use stagehands to create global module effects
+### Cargo Hold
+Ships come with a cargo hold, which is a storage container linked to the ship.
+- When you overwrite a ship, its cargo is automatically moved to the new one.
 ### FrackinUniverse Compatiblity
 Currently incompatible.
 
@@ -66,6 +66,6 @@ Currently incompatible.
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
-- Colony deed NPCs will be reset.
+- Colony deed NPCs on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
