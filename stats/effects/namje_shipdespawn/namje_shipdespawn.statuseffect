@@ -1,0 +1,9 @@
+{
+  "name" : "namje_shipdespawn",
+  "effectConfig" : {},
+  "defaultDuration" : 0.1,
+
+  "scripts" : [
+    "namje_shipdespawn.lua"
+  ]
+}

@@ -312,15 +312,52 @@ function namje_byos.set_ship_info(slot, info)
     return ship_info
 end
 
---TODO: use region_cache instead
 function namje_byos.despawn_ship_monsters()
-    local entities = world.monsterQuery({0, 0}, {2048, 2048})
+    local region_cache = world.getProperty("namje_region_cache", {})
+    local regions = {}
+    local region_bounds
+    if isEmpty(region_cache) then
+        sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
+    else
+        for region, _ in pairs(region_cache) do
+            local chunk = namje_util.region_decode(region)
+            table.insert(regions, chunk)
+        end
+        region_bounds = namje_util.get_chunk_rect(regions)
+    end
+    local entities = world.monsterQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]})
     for _, entity_id in ipairs(entities) do
         if entity_id > 0 then
             world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
             world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
             world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
-            world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "monsterdespawn")
+            world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "namje_shipdespawn")
+        end
+    end
+end
+
+function namje_byos.despawn_ship_npcs()
+    local region_cache = world.getProperty("namje_region_cache", {})
+    local regions = {}
+    local region_bounds
+    if isEmpty(region_cache) then
+        sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
+    else
+        for region, _ in pairs(region_cache) do
+            local chunk = namje_util.region_decode(region)
+            table.insert(regions, chunk)
+        end
+        region_bounds = namje_util.get_chunk_rect(regions)
+    end
+    local entities = world.npcQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]})
+    for _, entity_id in ipairs(entities) do
+        if entity_id > 0 then
+            world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
+            world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
+            world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
+            world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "namje_shipdespawn")
         end
     end
 end
@@ -734,12 +771,15 @@ function namje_byos.ship_to_table(...)
                     local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
                     local temp_obj_item = root.itemConfig(obj_name)
                     local old_parameters = temp_obj_item.config
+                    local required
 
                     local finalized_params = remove_duplicate_keys(object_parameters, old_parameters)
 
                     local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
                     if object_upgrade_stage then
-                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        if not required then
+                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        end
                         local current_stage = world.callScriptedEntity(object_id, "get_ent_storage", "currentStage")
                         finalized_params["startingUpgradeStage"] = current_stage or 0
                     end
@@ -757,7 +797,9 @@ function namje_byos.ship_to_table(...)
                     end
 
                     if old_parameters.stages then
-                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        if not required then
+                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        end
                         local durations = world.callScriptedEntity(object_id, "get_ent_storage", "durations")
                         local age = world.callScriptedEntity(object_id, "activeAge")
                         if age then
@@ -765,6 +807,16 @@ function namje_byos.ship_to_table(...)
                         end
                         if durations and not finalized_params["harvestable_durations"] then
                             finalized_params["harvestable_durations"] = durations
+                        end
+                    end
+
+                    if old_parameters.deed then
+                        if not required then
+                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                        end
+                        local occupier = world.callScriptedEntity(object_id, "get_ent_storage", "occupier")
+                        if occupier then
+                            finalized_params["colonydeed_occupier"] = occupier
                         end
                     end
 
@@ -1095,6 +1147,10 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                                     world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
                                     world.callScriptedEntity(placed_object_id, "setStage")
                                 end
+                                if parameters and parameters["colonydeed_occupier"] then
+                                    world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
+                                end
                                 if switch_state then
                                     world.callScriptedEntity(placed_object_id, "output", switch_state)
                                 end
@@ -1147,6 +1203,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                         if object_name then
                             dir = dir == 0 and -1 or 1
 
+                            --TODO: create a function so you dont need to do this twice
                             local place = world.placeObject(object_name, pos, dir or 0, parameters)
                             if place then
                                 local placed_object_id = world.objectAt(pos)
@@ -1159,6 +1216,10 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                                         world.callScriptedEntity(placed_object_id, "set_ent_storage", "created", world.time() - parameters["startingAge"])
                                         world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
                                         world.callScriptedEntity(placed_object_id, "setStage")
+                                    end
+                                    if parameters and parameters["colonydeed_occupier"] then
+                                        world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
                                     end
                                 end
                                 if container_items then
