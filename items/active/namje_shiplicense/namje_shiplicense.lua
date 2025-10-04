@@ -4,7 +4,7 @@ require "/scripts/namje_byos.lua"
 function init()
 	message.setHandler("namje_confirmSlot", localHandler(function(slot_num, name, icon) 
 		local ship_type = config.getParameter("shipType")
-		local ship_list = player.getProperty("namje_ships", {})
+		local ship_list = namje_byos.get_ship_data()
 		local ship_config = namje_byos.get_ship_config(ship_type)
 		local slot = ship_list[slot_num]
 		if not ship_config then

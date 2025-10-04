@@ -282,7 +282,7 @@ function ship_tab()
     --widget.setVisible(shipslot_info .. ".swap_ship", false)
     namje_ai_typer.push_request(shipslot_info .. ".description",  theme_format(localization.ship_info), 2, "talk", nil)
 
-    local player_ships = player.getProperty("namje_ships", {})
+    local player_ships = namje_byos.get_ship_data()
     local current_slot = player.getProperty("namje_current_ship", 1)
 
     for slot, ship in pairs(player_ships) do
@@ -315,7 +315,7 @@ function select_ship()
         return
     end
 
-    local player_ships = player.getProperty("namje_ships", {})
+    local player_ships = namje_byos.get_ship_data()
     local ship_data = player_ships["slot_" .. ship_slot]
 
     swap_confirm = false
@@ -446,7 +446,7 @@ function swap_ship()
         return
     end
 
-    local player_ships = player.getProperty("namje_ships", {})
+    local player_ships = namje_byos.get_ship_data()
     local ship_data = player_ships["slot_" .. ship_slot]
 
     if not ship_data or not ship_data.ship_info then

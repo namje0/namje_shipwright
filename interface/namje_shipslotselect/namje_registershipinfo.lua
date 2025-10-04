@@ -35,9 +35,9 @@ function init()
 end
 
 function ok()
-  local ship_list = player.getProperty("namje_ships", {})
+  local player_ships = namje_byos.get_ship_data()
   local slot_num = config.getParameter("slot")
-  local slot = ship_list[slot_num]
+  local slot = player_ships[slot_num]
 
   local name = widget.getText("name")
   world.sendEntityMessage(pane.sourceEntity(), "namje_confirmSlot", slot_num, name, icon)

@@ -11,10 +11,44 @@ namje_byos.current_ship = nil
 
 --chunk size, for ship serialization purposes
 local CHUNK_SIZE = 32
-local VERSION_ID = "namjeShipwright"
+local VERSION_ID = "namje_shipwright"
 --the upper limit of ships a player can have
 --currently set to 1-3, as ship changing does not have wiring support yet. This will be changed on release to 5-8
 local PLAYER_SHIP_CAP = 6
+
+function namje_byos.get_ship_data()
+    if world.isClient() then
+        local v_json = player.getProperty("namje_ships")
+        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
+    else
+        --TODO: get on server
+        return nil
+    end
+end
+
+function namje_byos.set_ship_data(data)
+    if world.isClient() then
+        local v_json = root.makeCurrentVersionedJson(VERSION_ID, data)
+        player.setProperty("namje_ships", v_json)
+    end
+end
+
+function namje_byos.get_ship_content(slot)
+    if world.isClient() then
+        local v_json = player.getProperty("namje_slot_" .. slot .. "_shipcontent")
+        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
+    else
+        --TODO: get on server
+        return nil
+    end
+end
+
+function namje_byos.set_ship_content(slot, data)
+    if world.isClient() then
+        local v_json = root.makeCurrentVersionedJson(VERSION_ID, data)
+        player.setProperty("namje_slot_" .. slot .. "_shipcontent", v_json)
+    end
+end
 
 --- register a new ship for the player, overwriting/adding to a slot
 --- @param slot number
@@ -28,7 +62,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
     end
 
     local ship_config = namje_byos.get_ship_config(ship_type)
-    local ships = player.getProperty("namje_ships")
+    local ships = namje_byos.get_ship_data()
     if not ships or not ship_config then
         error("namje_byos.register_new_ship // missing namje_ships property or namje_ship_config for " .. ship_type)
     end
@@ -75,7 +109,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
 
     ships["slot_" .. slot] = ship_data
 
-    player.setProperty("namje_ships", ships)
+    namje_byos.set_ship_data(ships)
     if player.getProperty("namje_current_ship", 1) == slot then
         local intro = ship_config.id == "namje_startership" and true or false
         if not intro then
@@ -94,7 +128,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             return
         end
 
-        local previous_ship_content = player.getProperty("namje_slot_" .. slot .. "_shipcontent", {})
+        local previous_ship_content = namje_byos.get_ship_content(slot)
         local items = {}
 
         if old_stats then
@@ -134,7 +168,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         player.addCurrency("money", refund)
     end
 
-    player.setProperty("namje_slot_" .. slot .. "_shipcontent", {})
+    namje_byos.set_ship_content(slot, {})
     return ships["slot_" .. slot]
 end
 
@@ -154,7 +188,7 @@ end
 --- @return table
 function namje_byos.add_ship_slots(num)
     local current_slots = player.getProperty("namje_ship_slots", 0)
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
 
     local num_slots = math.min(current_slots + num, PLAYER_SHIP_CAP)
     player.setProperty("namje_ship_slots", num_slots)
@@ -162,10 +196,10 @@ function namje_byos.add_ship_slots(num)
         local slot = "slot_" .. i
         if not ships[slot] then
             ships[slot] = {}
+            namje_byos.set_ship_content(slot, {})
         end
     end
-    player.setProperty("namje_ships", ships)
-    player.setProperty("namje_slot_" .. num .. "_shipcontent", {})
+    namje_byos.set_ship_data(ships)
     return ships
 end
 
@@ -183,7 +217,7 @@ end
 --- @param slot number
 --- @return table
 function namje_byos.get_stats(slot)
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     if not ships or not ships["slot_" .. slot] then
         return nil
     end
@@ -205,10 +239,10 @@ function namje_byos.set_stats(slot, stats)
             ship_stats[stat] = value
         end
     end
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     local ship = ships["slot_" .. slot]
     ship.stats = ship_stats
-    player.setProperty("namje_ships", ships)
+    namje_byos.set_ship_data(ships)
     return ship_stats
 end
 
@@ -216,7 +250,7 @@ end
 --- @param slot number
 --- @return table
 function namje_byos.get_upgrades(slot)
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     if not ships or not ships["slot_" .. slot] then
         return nil
     end
@@ -238,10 +272,10 @@ function namje_byos.set_upgrades(slot, upgrades)
             ship_upgrades[upgrade] = value
         end
     end
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     local ship = ships["slot_" .. slot]
     ship.upgrades = ship_upgrades
-    player.setProperty("namje_ships", ships)
+    namje_byos.set_ship_data(ships)
     return ship_upgrades
 end
 
@@ -249,7 +283,7 @@ end
 --- @param slot number
 --- @return table
 function namje_byos.get_ship_info(slot)
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     if not ships or not ships["slot_" .. slot] then
         return nil
     end
@@ -271,10 +305,10 @@ function namje_byos.set_ship_info(slot, info)
             ship_info[key] = value
         end
     end
-    local ships = player.getProperty("namje_ships", {})
+    local ships = namje_byos.get_ship_data()
     local ship = ships["slot_" .. slot]
     ship.ship_info = ship_info
-    player.setProperty("namje_ships", ships)
+    namje_byos.set_ship_data(ships)
     return ship_info
 end
 

@@ -8,7 +8,7 @@ function init()
 end
 
 function populate_ship_list()
-  local ship_list = player.getProperty("namje_ships", {})
+  local ship_list = namje_byos.get_ship_data()
   local scroll_area = "slot_list.slot_item_list"
   widget.clearListItems(scroll_area)
 
@@ -43,7 +43,7 @@ end
 
 function select_slot()
   local selected_slot = widget.getListSelected("slot_list.slot_item_list")
-  local ship_list = player.getProperty("namje_ships", {})
+  local ship_list = namje_byos.get_ship_data()
   if not selected_slot then
     return 
   end
@@ -62,7 +62,7 @@ end
 
 function confirm_slot()
   local selected_slot = widget.getListSelected("slot_list.slot_item_list")
-  local ship_list = player.getProperty("namje_ships", {})
+  local ship_list = namje_byos.get_ship_data()
   if not selected_slot then
     return 
   end

@@ -327,13 +327,13 @@ function createTooltip(screen_pos)
 end
 
 function populate_ship_list()
-  local ship_list = player.getProperty("namje_ships", {})
+  local player_ships = namje_byos.get_ship_data()
   local scroll_area = "slot_list.slot_item_list"
   widget.clearListItems(scroll_area)
 
   --table order gets messed up, sort it
   local sorted_slots = {}
-  for slot_name, _ in pairs(ship_list) do
+  for slot_name, _ in pairs(player_ships) do
       local slot_number = tonumber(slot_name:match("slot_(%d+)"))
       if slot_number then
           table.insert(sorted_slots, slot_name)
@@ -347,7 +347,7 @@ function populate_ship_list()
   end)
 
   for i, slot in ipairs(sorted_slots) do
-    local ship = ship_list[slot]
+    local ship = player_ships[slot]
     if ship then
       local ship_info = ship.ship_info
       local ship_config = ship_info and namje_byos.get_ship_config(ship_info.ship_id) or nil
@@ -379,8 +379,6 @@ function select_slot()
   local ship_slot = data[1]
   local slot_num = tonumber(ship_slot:match("slot_(%d+)"))
 
-  local player_ships = player.getProperty("namje_ships", {})
-  --local ship_data = player_ships[ship_slot]
   if not reset_slot(slot_num) then
     toggle_info(false)
     widget.setButtonEnabled("btn_checkout", false)

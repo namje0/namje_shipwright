@@ -45,7 +45,7 @@ function init() ini()
     message.setHandler("namje_receive_serialized_ship", function(_, _, result, slot, action, ...)
         local args = {...}
         if action == 1 then
-            player.setProperty("namje_slot_" .. slot .. "_shipcontent", result)
+            namje_byos.set_ship_content(slot, result)
             --interface.queueMessage("^orange;Ship for slot " .. slot .. " saved")
             local new_slot = args[1][1]
 
@@ -54,14 +54,13 @@ function init() ini()
                 return
             end
 
-            local player_ships = player.getProperty("namje_ships", {})
+            local player_ships = namje_byos.get_ship_data()
             local ship_data = player_ships["slot_" .. new_slot]
             if not ship_data then
                 sb.logInfo("namje_byos.swap_ships // no ship data found for slot_%s. player ships: %s", new_slot, player_ships)
                 return false
             end
-            local ship_content = player.getProperty("namje_slot_" .. new_slot .. "_shipcontent", {})
-
+            local ship_content = namje_byos.get_ship_content(new_slot)
             local ship_info = namje_byos.get_ship_info(new_slot)
             local ship_stats = namje_byos.get_stats(new_slot)
             local prev_ship_stats = namje_byos.get_stats(slot)
@@ -70,7 +69,7 @@ function init() ini()
             end
 
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+            --player.playCinematic(cinematic)
 
             local current_region_cache = world.getProperty("namje_region_cache", {})
 
