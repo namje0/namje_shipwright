@@ -28,6 +28,10 @@ function update()
             if self.action == 1 then
                 namje_byos.despawn_ship_monsters()
                 namje_byos.despawn_ship_npcs()
+                --deactivate all crew members on swap for FU.
+                if namje_byos.is_fu() then
+                    world.sendEntityMessage(self.ply, "namje_fu_deactivate_crew")
+                end
             end
             world.sendEntityMessage(self.ply, "namje_receive_serialized_ship", result, self.slot, self.action, self.args)
         end

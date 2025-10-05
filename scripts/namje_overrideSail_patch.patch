@@ -1,7 +1,6 @@
 [
     [
         { "op" : "test", "path" : "/interactAction", "value" : "OpenAiInterface" },
-
         { "op" : "replace", "path" : "/interactAction", "value" : "ScriptPane" },
         { "op" : "add", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" }
     ],

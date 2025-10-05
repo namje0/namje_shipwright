@@ -23,6 +23,20 @@ function init() ini()
         recruitSpawner:dismiss(uuid)
         recordEvent(entity.id(), "dismissCrewMember", recruitSpawner:eventFields(), recruit:eventFields())
     end)
+    message.setHandler("namje_fu_deactivate_crew", function() 
+        if not namje_byos.is_fu() then
+            return
+        end
+        if not namje_byos.is_on_own_ship() then
+            return
+        end
+        fuFirstCrewCheckTimer = 5
+        for fuCrewMemberNumber, fuCrewMemberData in pairs (fuCrewMembers) do
+            table.insert(fuStoredCrew, fuCrewMemberData)
+            status.setStatusProperty("fuStoredCrew", fuStoredCrew)
+            recruitSpawner:dismiss(fuCrewMemberData.podUuid)
+        end
+    end)
 
     if namje_byos.is_on_own_ship() then
         on_own_ship = true
@@ -83,7 +97,7 @@ function updateShipUpgrades() original_ship_upgrades()
         fuel_efficiency = ship_base_stats.fuel_efficiency,
         max_fuel = ship_base_stats.max_fuel,
         ship_speed = ship_base_stats.ship_speed,
-        crew_size = ship_base_stats.crew_size
+        crew_size = namje_byos.is_fu() and 0 or ship_base_stats.crew_size
     }
 
     for k, v in pairs(ship_upgrades) do
@@ -109,7 +123,7 @@ function updateShipUpgrades() original_ship_upgrades()
         maxFuel = namje_byos.is_fu() and (stats.max_fuel * fuel_mod) or stats.max_fuel,
         fuelEfficiency = stats.fuel_efficiency,
         shipSpeed = stats.ship_speed,
-        crewSize = stats.crew_size
+        crewSize = namje_byos.is_fu() and 0 or stats.crew_size
     }
     if namje_byos.is_fu() then
         status.setStatusProperty("fu_shipUpgradeStatProperty",upgrades)

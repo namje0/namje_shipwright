@@ -354,10 +354,13 @@ function namje_byos.despawn_ship_npcs()
     local entities = world.npcQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]})
     for _, entity_id in ipairs(entities) do
         if entity_id > 0 then
-            world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
-            world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
-            world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
-            world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "namje_shipdespawn")
+            local type = world.callScriptedEntity(entity_id, "npc.npcType")
+            if not string.match(type, "crewmember") then
+                world.callScriptedEntity(entity_id, "monster.setDeathSound", nil)
+                world.callScriptedEntity(entity_id, "monster.setDropPool", nil)
+                world.callScriptedEntity(entity_id, "monster.setDeathParticleBurst", nil)
+                world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "namje_shipdespawn")
+            end
         end
     end
 end
@@ -1152,6 +1155,23 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                 table.insert(regions, chunk)
             end
             region_bounds = namje_util.get_chunk_rect(regions)
+        end
+        --[[
+            FU Compatability:
+            fu_shipstatmodifier only resets stats on die(), which doesn't seem to trigger when the area is overriden with a dungeon.
+            require a new unload() function onto the object and call it beforehand
+        ]]
+        if namje_byos.is_fu() then
+            local objects = world.objectQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]})
+            for _, object in pairs(objects) do
+                local obj_name = world.getObjectParameter(object, "objectName")
+                local temp_obj_item = root.itemConfig(obj_name)
+                local old_parameters = temp_obj_item.config
+                if old_parameters.byosOnly then
+                    world.callScriptedEntity(object, "require", "/scripts/namje_fuStatHook.lua")
+                    world.callScriptedEntity(object, "namje_unload")
+                end
+            end
         end
         namje_byos.clear_ship_area(region_bounds)
 

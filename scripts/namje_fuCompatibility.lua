@@ -1,6 +1,3 @@
-
---TODO: redo fu compatibility
-
 sb.logInfo("namje // checking for fu compatibility")
 if assets.json("/versioning.config").FrackinUniverse == nil then
   sb.logInfo("namje // not fu, skipping compatibility patches")
@@ -44,17 +41,3 @@ for i=1, #techstations do
   local techstation = techstations[i]
   assets.patch(techstation, techstation_path)
 end
-
-
---Ship Teleporter Compatibility
---[[
-local teleporter_path = "/namje_fuCompatibility_teleporter_patch.patch"
-assets.add(teleporter_path, '{"scripts": ["/objects/namje_ship/shipteleporters/namje_shipteleporter.lua", "/objects/ship/fu_byosteleporter/fu_byosteleporter.lua", "/objects/ship/fu_byosobjectdeath.lua"]}')
-
-local teleporters = {
-  "/objects/namje_ship/shipteleporters/namje_shipteleporter_1/namje_shipteleporter_1.object"
-}
-for i=1, #teleporters do
-  local teleporter = teleporters[i]
-  assets.patch(teleporter, teleporter_path)
-end]]
