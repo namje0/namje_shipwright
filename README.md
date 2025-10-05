@@ -50,11 +50,13 @@ Ships come with a cargo hold, which is a storage container linked to the ship.
 ### FrackinUniverse Compatiblity
 Compatible with some caveats. Should be stable, but not fully tested.
 - FU BYOS is instantly enabled, and there is no option to choose your starter ship.
-- FU's exclusive S.A.I.L can be accessed via a new button on the S.A.I.L interface.
+- FU's exclusive S.A.I.L. can be accessed via a new button on the S.A.I.L. interface.
 - "Crew Capacity" upgrade is no longer available as crew capacity is handled through crew beds.
+    - Crew may get buggy while swapping ships and ignore crew bed restrictions.
+    - Following crew may get duplicated on ship swap.
+    - Inactive crew are not handled in the default S.A.I.L. interface and are instead handled in FU's interface.
 - "FTL Panel" object is patched to function similarly to a Small FTL Drive. (TBA)
 - Ship maximum fuel is multipled by `fu_fuel_modifier` set in the `.namjeship` file.
-- Crew may get buggy while swapping ships.
 
 ## Technical Stuff
 - This framework caches the position of loaded chunks/sectors around the player that have collisions/background tiles in them to improve saving and loading times. This should cover all regular gameplay cases, though certain cases may result in chunks not being registered:
