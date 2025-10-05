@@ -3,8 +3,6 @@ require "/quests/scripts/questutil.lua"
 require "/quests/scripts/portraits.lua"
 require("/scripts/namje_byos.lua")
 
---TODO: FU compatability
-
 function init()
   storage.complete = storage.complete or false
   self.compassUpdate = config.getParameter("compassUpdate", 0.5)

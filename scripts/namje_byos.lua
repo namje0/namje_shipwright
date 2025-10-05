@@ -1157,7 +1157,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
             region_bounds = namje_util.get_chunk_rect(regions)
         end
         --[[
-            FU Compatability:
+            FU compatibility:
             fu_shipstatmodifier only resets stats on die(), which doesn't seem to trigger when the area is overriden with a dungeon.
             require a new unload() function onto the object and call it beforehand
         ]]

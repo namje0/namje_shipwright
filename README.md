@@ -21,6 +21,7 @@ Refer to [this guide](https://github.com/namje0/namje_shipwright/blob/main/namje
 This framework removes racial ships and replaces them with ships made out of blocks, letting you edit and shape them as needed.
 - Your starter ship is replaced with a non-racial generic ship.
 - BYOS cannot be turned off, it is an integral part of this framework.
+- Custom species are automatically patched for BYOS.
 ### Ship templates
 This framework allows you to create and use ship templates.
 - Automatic ship license generation for `.namjeship` files.
@@ -32,6 +33,11 @@ Multiple ships can be owned by a player in this framework, and players can freel
 - Ships retain their celestial position and will appear in that position when swapped to.
     - This will play the warp/fly animation everytime due to limitations. Only slightly immersion breaking.
 - This framework allows you to increase ship slots up to a set maximum limit. You can use this to create rewards for quests, craftables, and more.
+### New S.A.I.L Interface
+A new larger S.A.I.L interface that allows for custom themes via `.namjetheme` files.
+- Searches the player's save for current and previous missions instead of doing guesswork.
+- Allows for swapping between owned ships and seeing ship information.
+- Settings page can be added to by modders. (TBA)
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
 - Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.
@@ -63,6 +69,12 @@ Compatible with some caveats. Should be stable, but not fully tested. Use with c
     - Making your zoom level so small that the game does not load the sectors adjacent to you
 - You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
 - Plants will not grow in inactive ships, but their growth stage is saved.
+
+## Incompatabilities
+The following list does not include Frackin Universe, as FU compatibility is built into the framework.
+- Other BYOS mods
+- S.A.I.L mods
+- Any mod that calls `player.upgradeShip` may cause issues and/or brick your save
 
 ## Upcoming Features
 - "Save as template" option on SAIL
