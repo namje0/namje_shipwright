@@ -15,5 +15,6 @@
       "/scripts/namje_makeShipModules.lua"
     ]
   },
-  "priority" : 9999
+  "priority" : 9999,
+  "includes" : ["FrackinUniverse"]
 }

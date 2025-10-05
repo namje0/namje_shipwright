@@ -19,12 +19,12 @@ function init()
 
   self.interactTimer = 0
 
-  --this method of running the script is based off how FU does it, i'm not sure if there's a better way to do this atm
-    player.startQuest("namje_shipPassive")
-    player.startQuest("namje_shipCache")
-    if namje_byos.is_fu() then
-      player.startQuest("fu_shipupgrades")
-    end
+  player.startQuest("namje_shipPassive")
+  player.startQuest("namje_shipCache")
+  if namje_byos.is_fu() then
+    world.setProperty("fu_byos", true)
+    player.startQuest("fu_shipupgrades")
+  end
 end
 
 function questInteract(entityId)
@@ -33,12 +33,12 @@ function questInteract(entityId)
   if world.entityUniqueId(entityId) == self.techstationUid then
     --player.upgradeShip(config.getParameter("shipUpgrade"))
     --namje_byos.change_ships_from_config("namje_templateship")
+    
+    world.sendEntityMessage(self.techstationUid, "activateShip")
     if namje_byos.is_fu() then
-      player.interact("ScriptPane", "/interface/ai/fu_byosai.config")
-    else
-      world.sendEntityMessage(self.techstationUid, "activateShip")
-      quest.complete()
+      player.giveItem("statustablet")
     end
+    quest.complete()
     self.interactTimer = 1.0
     return true
   end
@@ -49,15 +49,6 @@ end
 
 function update(dt)
   self.state:update(dt)
-
-  if self.questComplete then
-	  world.sendEntityMessage(self.techstationUid, "activateShip")
-    if namje_byos.is_fu() then
-      player.giveItem("statustablet")
-    end
-    quest.complete()
-  end
-
   self.interactTimer = math.max(self.interactTimer - dt, 0)
 end
 
@@ -88,14 +79,6 @@ function wakeSail()
   local findTechStation = util.uniqueEntityTracker(self.techstationUid, self.compassUpdate)
   while true do
     questutil.pointCompassAt(findTechStation())
-
-    --[[local shipUpgrades = player.shipUpgrades()
-    if shipUpgrades.shipLevel > 0 then
-      quest.complete()
-    end]]
-    if namje_byos.is_fu() and world.getProperty("fu_byos") then
-      self.questComplete = true
-    end 
     coroutine.yield()
   end
 end

@@ -194,6 +194,13 @@ function swap_tabs(tab)
         if swap_to_tab("main.home") then
             home_tab()
         end
+    elseif tab == "show_fu_sail" then
+        if not namje_byos.is_fu() then
+            return
+        end
+        local fu_sail = "/zb/newSail/newSail.config"
+        player.interact("ScriptPane", fu_sail, pane.sourceEntity())
+        sb.logInfo("show FU sail")
     end
 end
 
@@ -337,6 +344,7 @@ function select_ship()
     local ship_info = namje_byos.get_ship_info(ship_slot)
     local ship_stats = namje_byos.get_stats(ship_slot)
     local ship_upgrades = namje_byos.get_upgrades(ship_slot)
+
     if ship_info and ship_stats then
         local function shorten_name(name)
             if not name then
@@ -372,7 +380,8 @@ function select_ship()
         }
 
         for k, v in pairs(ship_upgrades) do
-            if v > 0 then
+            if v > 0 and k ~= "modules" then
+                sb.logInfo("stat %s %s", k, v)
                 stats[k] = "^accent2_text_color;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or ship_config.stat_upgrades[k][v].stat)
             end
         end

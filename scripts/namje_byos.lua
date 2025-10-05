@@ -365,11 +365,7 @@ end
 function namje_byos.move_all_to_ship_spawn()
     local players = world.players()
     for _, player in ipairs (players) do
-        if namje_byos.is_fu() then
-            world.sendEntityMessage(player, "fs_respawn")
-        else
-            world.sendEntityMessage(player, "namje_moveToShipSpawn")
-        end
+        world.sendEntityMessage(player, "namje_moveToShipSpawn")
     end
     
     --TODO: use region_cache
@@ -836,9 +832,9 @@ function namje_byos.ship_to_table(...)
 
                         --delay the firstscan to detect the tenant(?)
                         if finalized_params.deed then
-                            finalized_params.deed.firstScan = {5.0, 6.0}
+                            finalized_params.deed.firstScan = {15.0, 16.0}
                         else
-                            finalized_params.deed = {firstScan = {5.0, 6.0}}
+                            finalized_params.deed = {firstScan = {15.0, 16.0}}
                         end
 
                         if occupier then

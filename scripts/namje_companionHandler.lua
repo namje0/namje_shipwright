@@ -77,6 +77,7 @@ function updateShipUpgrades() original_ship_upgrades()
 
     local crew_upgrades = recruitSpawner:getShipUpgrades()
     local ship_base_stats = ship_config.base_stats
+    local fuel_mod = ship_config.stat_upgrades.fu_fuel_modifier
     local stats = {
         capabilities = namje_byos.is_fu() and {} or ship_base_stats.capabilities,
         fuel_efficiency = ship_base_stats.fuel_efficiency,
@@ -103,11 +104,16 @@ function updateShipUpgrades() original_ship_upgrades()
         end
     end
 
-    player.upgradeShip({
+    local upgrades = {
         capabilities = stats.capabilities,
-        maxFuel = stats.max_fuel,
+        maxFuel = namje_byos.is_fu() and (stats.max_fuel * fuel_mod) or stats.max_fuel,
         fuelEfficiency = stats.fuel_efficiency,
         shipSpeed = stats.ship_speed,
         crewSize = stats.crew_size
-    })
+    }
+    if namje_byos.is_fu() then
+        status.setStatusProperty("fu_shipUpgradeStatProperty",upgrades)
+    else
+        player.upgradeShip(upgrades)
+    end
 end

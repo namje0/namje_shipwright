@@ -48,7 +48,13 @@ Ship Modules can provide a wide range of benefits to your ships.
 Ships come with a cargo hold, which is a storage container linked to the ship.
 - When you overwrite a ship, its cargo is automatically moved to the new one.
 ### FrackinUniverse Compatiblity
-Currently incompatible.
+Compatible with some caveats. Should be stable, but not fully tested.
+- FU BYOS is instantly enabled, and there is no option to choose your starter ship.
+- FU's exclusive S.A.I.L can be accessed via a new button on the S.A.I.L interface.
+- "Crew Capacity" upgrade is no longer available as crew capacity is handled through crew beds.
+- "FTL Panel" object is patched to function similarly to a Small FTL Drive. (TBA)
+- Ship maximum fuel is multipled by `fu_fuel_modifier` set in the `.namjeship` file.
+- Crew may get buggy while swapping ships.
 
 ## Technical Stuff
 - This framework caches the position of loaded chunks/sectors around the player that have collisions/background tiles in them to improve saving and loading times. This should cover all regular gameplay cases, though certain cases may result in chunks not being registered:
@@ -66,6 +72,7 @@ Currently incompatible.
 
 ## Bugs
 - Lounging crew members may not get teleported on a ship swap.
-- Colony deed NPCs on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
+- Colony deed tenants may be unlinked from the deed and have a new tenant spawn.
+- Colony deed tenants on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.

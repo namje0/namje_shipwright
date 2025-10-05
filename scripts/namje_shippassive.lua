@@ -10,9 +10,8 @@ function init()
     if namje_byos.is_fu() then
         fu_atmosphere = true
         sb.logInfo("namje // fu atmosphere detected")
-    else
-        message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
     end
+    message.setHandler("namje_moveToShipSpawn", move_to_ship_spawn)
     if not namje_byos.is_on_ship() then
         on_ship = false
         mcontroller.clearControls()

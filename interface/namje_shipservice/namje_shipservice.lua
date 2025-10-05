@@ -136,7 +136,11 @@ end
 
 local function update_gui()
   for i = 1, #UPG_BUTTONS do
-    widget.setButtonOverlayImage(UPG_BUTTONS[i], "/interface/namje_shipservice/".. UPG_BUTTONS[i] ..".png")
+    if UPG_BUTTONS[i] == "btn_upg_crew_size" and namje_byos.is_fu() then
+      widget.setButtonOverlayImage(UPG_BUTTONS[i], "/interface/namje_shipservice/upgradelocked.png")
+    else
+      widget.setButtonOverlayImage(UPG_BUTTONS[i], "/interface/namje_shipservice/".. UPG_BUTTONS[i] ..".png")
+    end
   end
 end
 
@@ -307,6 +311,11 @@ function createTooltip(screen_pos)
       local upgrades = config.stat_upgrades
       local upgrade_name, _ = string.match(UPG_BUTTONS[i], "btn_upg_(.+)")
 
+      if upgrade_name == "crew_size" and namje_byos.is_fu() then
+        widget.setText("lbl_upg_info", "^yellow;FU detected^reset; - Use crew beds for crew capacity.")
+        return
+      end
+
       if upgrade_name == "modules" then
         local level = math.min(math.max((ship_changes[upgrade_name] or selected_ship.upgrades[upgrade_name]) + 1, 1), upgrades.modules + 1)
         local desc = level > upgrades.modules and "Stat fully upgraded." or string.format("Increases the number of module slots to %s", level)
@@ -445,6 +454,11 @@ function select_upgrade(button_name)
 
   local upgrade = selected_ship.ship_config.stat_upgrades[upgrade_name]
   local upgrade_cap = type(upgrade)=="number" and math.min(5, upgrade) or #upgrade
+
+  if upgrade_name == "crew_size" and namje_byos.is_fu() then
+    pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
+    return
+  end
 
   if selected_ship.upgrades[upgrade_name] >= upgrade_cap then
     pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
