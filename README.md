@@ -71,11 +71,12 @@ Compatible with some caveats. Should be stable, but not fully tested. Use with c
 - You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
 - Plants will not grow in inactive ships, but their growth stage is saved.
 
-## Incompatabilities
+## Incompatibilities
 The following list does not include Frackin Universe, as FU compatibility is built into the framework.
 - Other BYOS mods
 - S.A.I.L mods
 - Any mod that calls `player.upgradeShip` may cause issues and/or brick your save
+    - Betabound is an exception.
 
 ## Upcoming Features
 - "Save as template" option on SAIL
@@ -91,3 +92,4 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Colony deed tenants on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
+- Entities such as the Rail Tram are currently not saved on ship swap.
