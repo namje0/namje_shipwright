@@ -1,6 +1,6 @@
 ![bongbong](https://i.imgur.com/FN9fjwi.gif)
 # 🚀 namjeShipwright
-> This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound)
+> This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
 > [!WARNING]
 > namjeShipwright is still in development and shouldn't be used in an actual playthrough. **Please report any bugs**
