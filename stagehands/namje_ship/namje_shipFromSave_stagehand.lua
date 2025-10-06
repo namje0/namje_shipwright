@@ -1,7 +1,8 @@
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
-require "/scripts/namje_serialization/namje_binarySerializer.lua"
+require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
+require "/scripts/namje_serialization/namje_shipTableSerializer.lua"
 
 function init()
     message.setHandler("namje_swap_ship", function(_, _, ply, ship, region)
@@ -10,7 +11,7 @@ function init()
             stagehand.die()
             return
         end
-        self.coroutine = namje_byos.table_to_ship(binary_serializer.unpack_ship_data(ship), region)
+        self.coroutine = namje_tableSerializer.table_to_ship(namje_binarySerializer.unpack_ship_data(ship), region)
         self.ply = ply
     end)
 end

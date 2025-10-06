@@ -2,11 +2,12 @@ require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/namje_byos.lua"
 require "/scripts/messageutil.lua"
+require "/scripts/namje_serialization/namje_shipTableSerializer.lua"
 
 function init()
     message.setHandler("namje_save_ship", function(_, _, ply, slot, action, ...)
         world.sendEntityMessage(ply, "namje_ship_loading")
-        self.coroutine = namje_byos.ship_to_table()
+        self.coroutine = namje_tableSerializer.ship_to_table()
         self.ply = ply
         self.slot = slot
         self.action = action

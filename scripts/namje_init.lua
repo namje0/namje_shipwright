@@ -1,6 +1,6 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
-require "/scripts/namje_serialization/namje_binarySerializer.lua"
+require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
 require "/scripts/namje_serialization/namje_b64.lua"
 
 local cargo_config
@@ -47,7 +47,7 @@ function init() ini()
     message.setHandler("namje_receive_serialized_ship", function(_, _, result, slot, action, ...)
         local args = {...}
         if action == 1 then
-            namje_byos.set_ship_content(slot, binary_serializer.pack_ship_data(result))
+            namje_byos.set_ship_content(slot, namje_binarySerializer.pack_ship_data(result))
             --interface.queueMessage("^orange;Ship for slot " .. slot .. " saved")
             local new_slot = args[1][1]
 
@@ -100,7 +100,7 @@ function init() ini()
             --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
-            local binary = binary_serializer.pack_ship_data(result)
+            local binary = namje_binarySerializer.pack_ship_data(result)
             local b64 = namje_b64.encode(binary)
             clipboard.setText(b64)
             

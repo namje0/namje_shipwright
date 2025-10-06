@@ -55,8 +55,8 @@ local DICT_HEADERS_REV = {
     [11] = "end_chunk"
 }
 
-binary_serializer = {}
-binary_serializer.seen_tables = {}
+namje_binarySerializer = {}
+namje_binarySerializer.seen_tables = {}
 
 -- honestly didn't feel like writing a "general-use-case" packer for object parameters, so Gemini can do it for me. it works so too bad
 local function _pack(value, buffer)
@@ -115,10 +115,10 @@ local function _pack(value, buffer)
         table.insert(buffer, value) -- Direct string insertion is fastest
 
     elseif v_type == "table" then
-        if binary_serializer.seen_tables[value] then
+        if namje_binarySerializer.seen_tables[value] then
             error("namje // circular reference found")
         end
-        binary_serializer.seen_tables[value] = true
+        namje_binarySerializer.seen_tables[value] = true
 
         local packed_entries_buffer = {}
         local entry_count = 0
@@ -130,7 +130,7 @@ local function _pack(value, buffer)
             entry_count = entry_count + 1
         end
 
-        binary_serializer.seen_tables[value] = nil
+        namje_binarySerializer.seen_tables[value] = nil
 
         -- 2. Pack the header (ID + Count)
         -- Optimization: Use I4 for table count (could be made variable, but I4 is safe)
@@ -145,13 +145,13 @@ local function _pack(value, buffer)
     end
 end
 
-function binary_serializer.pack_general_dictionary(value)
+function namje_binarySerializer.pack_general_dictionary(value)
     local buffer = {}
     _pack(value, buffer)
     return table.concat(buffer)
 end
 
-function binary_serializer.unpack_general_dictionary(data, pos)
+function namje_binarySerializer.unpack_general_dictionary(data, pos)
     pos = pos or 1
     local type_id, next_pos = string.unpack(FORMAT_TYPE_ID, data, pos)
 
@@ -207,8 +207,8 @@ function binary_serializer.unpack_general_dictionary(data, pos)
         
         for i = 1, entry_count do
             local key, value
-            key, pos = binary_serializer.unpack_general_dictionary(data, pos)
-            value, pos = binary_serializer.unpack_general_dictionary(data, pos)
+            key, pos = namje_binarySerializer.unpack_general_dictionary(data, pos)
+            value, pos = namje_binarySerializer.unpack_general_dictionary(data, pos)
             
             new_table[key] = value
         end
@@ -220,7 +220,7 @@ function binary_serializer.unpack_general_dictionary(data, pos)
     end
 end
 
-function binary_serializer.pack_ship_data(ship_table)
+function namje_binarySerializer.pack_ship_data(ship_table)
     local material_cache = ship_table[1]
     local ship_chunks = ship_table[2]
     local ship_wiring = ship_table[3]
@@ -262,7 +262,7 @@ function binary_serializer.pack_ship_data(ship_table)
                     table.insert(packed_data, string.pack(FORMAT_TYPE_ID, type(obj)=="table" and 2 or 1))
                     if type(obj) == "table" then
                         table.insert(packed_data, string.pack("I8", obj[1]))
-                        table.insert(packed_data, binary_serializer.pack_general_dictionary(obj[2]))
+                        table.insert(packed_data, namje_binarySerializer.pack_general_dictionary(obj[2]))
                     else
                         table.insert(packed_data, string.pack("I8", obj))
                     end
@@ -271,7 +271,7 @@ function binary_serializer.pack_ship_data(ship_table)
                 table.insert(packed_data, string.pack("I3", #v))
                 for _, monster in pairs(v) do
                     table.insert(packed_data, string.pack("I2", monster.type))
-                    table.insert(packed_data, binary_serializer.pack_general_dictionary(monster.parameters))
+                    table.insert(packed_data, namje_binarySerializer.pack_general_dictionary(monster.parameters))
                     table.insert(packed_data, string.pack("I4", monster.pos))
                 end
             elseif k == "npcs" then
@@ -306,7 +306,7 @@ function binary_serializer.pack_ship_data(ship_table)
     return table.concat(packed_data)
 end
 
-function binary_serializer.unpack_ship_data(ship_data)
+function namje_binarySerializer.unpack_ship_data(ship_data)
     local material_cache = {}
     local ship_chunks = {}
     local ship_wiring = {}
@@ -377,7 +377,7 @@ function binary_serializer.unpack_ship_data(ship_data)
                         local obj_id
                         obj_id, pos = string.unpack("I8", ship_data, pos)
                         local obj_params
-                        obj_params, pos = binary_serializer.unpack_general_dictionary(ship_data, pos)
+                        obj_params, pos = namje_binarySerializer.unpack_general_dictionary(ship_data, pos)
                         table.insert(chunk.objs, {obj_id, obj_params})
                     else
                         local obj_id
@@ -393,7 +393,7 @@ function binary_serializer.unpack_ship_data(ship_data)
                     local mon_type
                     mon_type, pos = string.unpack("I2", ship_data, pos)
                     local mon_params
-                    mon_params, pos = binary_serializer.unpack_general_dictionary(ship_data, pos)
+                    mon_params, pos = namje_binarySerializer.unpack_general_dictionary(ship_data, pos)
                     local mon_pos
                     mon_pos, pos = string.unpack("I4", ship_data, pos)
                     table.insert(chunk.monsters, {type = mon_type, parameters = mon_params, pos = mon_pos})
