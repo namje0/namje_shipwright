@@ -1,5 +1,5 @@
 {
-  "name" : "Atmospheric Gravity Module",
+  "name" : "Atmosphere Module",
   "description" : "Enables gravity in zero-g conditions. This affects the entire ship world, so you will ^red;fall to your death^reset; without any ground.\n^yellow;(Does not work in FU)",
   "price" : 20000,
   "rarity" : "legendary",

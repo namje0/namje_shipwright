@@ -1,10 +1,12 @@
 --utility module for all ship related stuff
 
+require "/scripts/namje_serialization/namje_b64.lua"
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/rect.lua"
 require "/scripts/messageutil.lua"
 require "/scripts/namje_util.lua"
+require "/scripts/namje_serialization/namje_binarySerializer.lua"
 
 namje_byos = {}
 namje_byos.current_ship = nil
@@ -36,7 +38,7 @@ end
 function namje_byos.get_ship_content(slot)
     if world.isClient() then
         local v_json = player.getProperty("namje_slot_" .. slot .. "_shipcontent")
-        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
+        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or nil
     else
         --TODO: get on server
         return nil
@@ -128,7 +130,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             return
         end
 
-        local previous_ship_content = namje_byos.get_ship_content(slot)
+        local previous_ship_content = binary_serializer.unpack_ship_data(namje_byos.get_ship_content(slot))
         local items = {}
 
         if old_stats then
@@ -144,9 +146,9 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
                 if chunk.objs and not isEmpty(chunk.objs) then
                     for _, object in pairs (chunk.objs) do
                         if type(object) == "table" then
-                            local object_extras = object[3]
-                            if object_extras then
-                                local container_items = object_extras.items or nil
+                            local object_params = object[2]
+                            if object_params then
+                                local container_items = object_params.namje_container_items or nil
                                 if container_items then
                                     for slot, item in pairs (container_items) do
                                         table.insert(items, item)
@@ -168,7 +170,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         player.addCurrency("money", refund)
     end
 
-    namje_byos.set_ship_content(slot, {})
+    namje_byos.set_ship_content(slot, "")
     return ships["slot_" .. slot]
 end
 
@@ -196,7 +198,7 @@ function namje_byos.add_ship_slots(num)
         local slot = "slot_" .. i
         if not ships[slot] then
             ships[slot] = {}
-            namje_byos.set_ship_content(slot, {})
+            namje_byos.set_ship_content(slot, "")
         end
     end
     namje_byos.set_ship_data(ships)
@@ -429,7 +431,7 @@ end
 --- changes ship from a table, comprised of the ship_info and the serialized ship
 --- @param ship table
 function namje_byos.change_ships_from_table(ship, region)
-    if isEmpty(ship) then
+    if #ship == 0 then
         error("namje // tried to change ship from save, but ship table is empty")
     end
     --TODO: server is never used atm, but instead of ply argument do variable arg
@@ -774,10 +776,10 @@ function namje_byos.ship_to_table(...)
             -- saying it placed. we'll just have to include the duplicate objects in the serialized ship for now.
             local chunk_objects = world.objectQuery({min_x, min_y}, {max_x, max_y})
             for i = 1, #chunk_objects do
-                local object_extras = {}
                 local object_id = chunk_objects[i]
 
                 if object_id > 0 then
+                    --TODO: remove object extras, add to parameters instead(?)
                     local pos = world.entityPosition(object_id)
                     local object_parameters = world.getObjectParameter(object_id,"")
                     local obj_name = object_parameters.objectName
@@ -802,7 +804,7 @@ function namje_byos.ship_to_table(...)
                     if not exclude_items then
                         local container_items = world.containerItems(object_id)
                         if container_items and not isEmpty(container_items) then
-                            object_extras["items"] = container_items
+                            finalized_params["namje_container_items"] = container_items
                         end
                     end
 
@@ -886,20 +888,17 @@ function namje_byos.ship_to_table(...)
                     if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
                         world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
                         local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
-                        object_extras["switch_state"] = current_state
+                        finalized_params["namje_switch_state"] = current_state
                     end
 
                     local object_data = packed_data
+                    --remove params that are not being trimmed properly for some reason, the fringe cases where these values are changed via lua arent worth it
+                    finalized_params.image = nil
+                    finalized_params.direction = nil
+                    finalized_params.scripts = nil
+                    finalized_params.flipImages = nil
                     if not isEmpty(finalized_params) then
                         object_data = {packed_data, finalized_params}
-                    end
-
-                    if not isEmpty(object_extras) then
-                        if type(object_data) == table then
-                            table.insert(object_data, object_extras)
-                        else
-                            object_data = {packed_data, {}, object_extras}
-                        end
                     end
 
                     table.insert(objects, object_data)
@@ -983,11 +982,9 @@ function namje_byos.ship_to_table(...)
                                 species = species,
                                 level = level,
                                 seed = seed,
-                                type = type
+                                type = type,
+                                uuid = unique_id
                             }
-                            if unique_id then
-                                npc_info.uuid = unique_id
-                            end
                             table.insert(npcs, npc_info)
                         end
                     end
@@ -1212,17 +1209,15 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                 for _, object in pairs (chunk.objs) do
                     local unpacked_data
                     local parameters
-                    local object_extras
                     if type(object) == "table" then
                         unpacked_data = object[1]
                         parameters = object[2]
-                        object_extras = object[3]
                     else
                         unpacked_data = object
                     end
                     local pos, object_id, dir = unpack_obj_vals(unpacked_data)
-                    local container_items = object_extras and object_extras.items or nil
-                    local switch_state = object_extras and object_extras.switch_state or nil
+                    local container_items = parameters and parameters.namje_container_items or nil
+                    local switch_state = parameters and parameters.namje_switch_state or nil
                     local object_name = id_cache[object_id]
 
                     dir = dir == 0 and -1 or 1
@@ -1278,7 +1273,7 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                 for _, npc in pairs (chunk.npcs) do
                     local pos = linear_to_pos(npc.pos)
                     local spawned_npc = world.spawnNpc(pos, npc.species, npc.type, npc.level, npc.seed)
-                    if spawned_npc then
+                    if spawned_npc and #npc.uuid > 0 then
                         world.setUniqueId(spawned_npc, npc.uuid)
                     end
                 end
@@ -1300,9 +1295,8 @@ function namje_byos.table_to_ship(ship_table, ship_region)
                         table.remove(failed_objects, k)
                     else
                         local parameters = type(object) == table and object[2] or nil
-                        local object_extras = type(object) == table and object[3] or nil
-                        local container_items = object_extras and object_extras.items or nil
-                        local switch_state = object_extras and object_extras.switch_state or nil
+                        local container_items = parameters and parameters.namje_container_items or nil
+                        local switch_state = parameters and parameters.namje_switch_state or nil
                         local object_name = id_cache[object_id]
 
                         if object_name then
@@ -1407,9 +1401,17 @@ function namje_byos.create_ship_from_config(ply, ship_config, ship_region)
             region_bounds = namje_util.get_chunk_rect(regions)
         end
         namje_byos.clear_ship_area(region_bounds)
-        if type(ship_config.ship) == "table" then
-            sb.logInfo("namje // placing table variant of ship")
-            --TODO: load table ship
+
+        local code = "namjeShip::"
+        if string.sub(ship_config.ship, 1, #code) == code then
+            --TODO: get ship region and stuff nicer
+            ship_position = {1024, 1024}
+            sb.logInfo("namje // placing shipcode variant of ship")
+            local data = string.match(ship_config.ship, "namjeShip::(.+)")
+            local binary = namje_b64.decode(data)
+
+            world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
+            world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", ply, binary, ship_region)
         else
             world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
         end

@@ -17,10 +17,10 @@ namjeShipwright templates support the `.dungeons` format. **This is the recommen
 
 If you don't know how to make a dungeon in Starbound, [refer to this article](https://starbounder.org/Modding:Tiled)
 
-### From Table
+### From Ship Code
 
-TBA
-
+You are able to save your existing ship as a Base64 ship code. If you put the code as the `ship` argument in a `.namjeship` file, it will build the ship properly.
+-Please note that these codes can get extremely long depending on ship size.
 
 ## Ship folder structure
 

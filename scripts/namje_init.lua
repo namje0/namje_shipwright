@@ -1,5 +1,7 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
+require "/scripts/namje_serialization/namje_binarySerializer.lua"
+require "/scripts/namje_serialization/namje_b64.lua"
 
 local cargo_config
 local ini = init or function() end
@@ -45,7 +47,7 @@ function init() ini()
     message.setHandler("namje_receive_serialized_ship", function(_, _, result, slot, action, ...)
         local args = {...}
         if action == 1 then
-            namje_byos.set_ship_content(slot, result)
+            namje_byos.set_ship_content(slot, binary_serializer.pack_ship_data(result))
             --interface.queueMessage("^orange;Ship for slot " .. slot .. " saved")
             local new_slot = args[1][1]
 
@@ -74,7 +76,7 @@ function init() ini()
             local current_region_cache = world.getProperty("namje_region_cache", {})
 
             -- default to config ship if the ship content is empty
-            if isEmpty(ship_content) then
+            if #ship_content == 0 then
                 namje_byos.change_ships_from_config(ship_info.ship_id, false, current_region_cache)
                 --region cache will be initialized based on ship_size
             else
@@ -98,11 +100,12 @@ function init() ini()
             --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
-            root.setConfigurationPath("namje_ship_template", result)
-            sb.logInfo("table result %s", result)
-		    interface.queueMessage("^orange;namje_ship_template^reset; will be cleared on item unload, so copy it beforehand")
+            local binary = binary_serializer.pack_ship_data(result)
+            local b64 = namje_b64.encode(binary)
+            clipboard.setText(b64)
+            
             interface.queueMessage("For info on how to use it in a ship file, check the github page")
-            interface.queueMessage("Template saved to starbound.config as ^orange;namje_ship_template")
+            interface.queueMessage("Template saved to clipboard")
         end
 	end)
 
