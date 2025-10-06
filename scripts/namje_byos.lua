@@ -1556,6 +1556,10 @@ function namje_byos.init_byos()
         namje_byos.set_stats(1, {celestial_pos = system})
 
         player.warp("nowhere")
+
+        if namje_byos.is_fu() then
+            player.startQuest("fu_byos")
+        end
         --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
         local cinematic = "/cinematics/namje/shipintro.cinematic"
         --player.playCinematic(cinematic, true)
