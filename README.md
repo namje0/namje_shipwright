@@ -40,6 +40,7 @@ A new larger S.A.I.L interface that allows for custom themes via `.namjetheme` f
 - Settings page can be added to by modders. (TBA)
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
+- The outpost ship service technician is only available after the Erchius Mining Facility.
 - Max fuel, fuel efficiency, ship speed, crew size, and cargo hold capacity can be upgraded.
 - Up to five module slots can be added to every ship. See the Ship Modules section for more information.
 - Ship icon and name can also be changed at a ship service technician.
@@ -81,9 +82,11 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Make crew members per-ship
 - Customizable SAIL pet
 - Add failsafe for existing characters without the framework enabled
+- Modular ship icons
+- Modular settings for SAIL
+- Add recipes and things to treasure pools
 
 ## Bugs
-- Lounging crew members may not get teleported on a ship swap.
 - Colony deed tenants may be unlinked from the deed and have a new tenant spawn.
 - Colony deed tenants on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.

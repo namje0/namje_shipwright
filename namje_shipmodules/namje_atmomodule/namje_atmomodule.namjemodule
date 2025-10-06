@@ -1,0 +1,7 @@
+{
+  "name" : "Atmospheric Gravity Module",
+  "description" : "Enables gravity in zero-g conditions. This affects the entire ship world, so you will ^red;fall to your death^reset; without any ground.\n^yellow;(Does not work in FU)",
+  "price" : 20000,
+  "rarity" : "legendary",
+  "icon" : "/namje_shipmodules/namje_atmomodule/namje_atmomodule.png"
+}

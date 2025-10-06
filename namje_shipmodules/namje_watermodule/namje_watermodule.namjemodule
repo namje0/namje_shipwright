@@ -1,8 +1,0 @@
-{
-  "name" : "Water Recycling Module",
-  "description" : "Enables ship water recycling systems, generating up to 1000 units of water in your cargo hold if there isn't any. ^yellow;Requires an empty cargo slot.",
-  "price" : 10000,
-  "rarity" : "Rare",
-  "icon" : "/namje_shipmodules/namje_watermodule/namje_watermodule.png",
-  "script" : "/namje_shipmodules/namje_watermodule/namje_watermodule.lua"
-}

@@ -58,7 +58,8 @@ function init()
 end
 
 function update(dt)
-    if fu_atmosphere then
+    local current_slot = player.getProperty("namje_current_ship", 1)
+    if fu_atmosphere or namje_byos.has_module(current_slot, "namje_atmomodule") then
         return
     end
     if not on_ship then
