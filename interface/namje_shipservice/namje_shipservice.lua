@@ -41,37 +41,26 @@ local selected_ship = {
   ship_config = {}
 }
 --TODO: grab all icons in path instead of hardcoded presets
-local icon_path = "/namje_ships/ship_icons/generic_%s.png"
+local icons
 local icon_index = 1
 local icon = "/namje_ships/ship_icons/generic_1.png"
-local max_icons = 6
 local module_slots = {}
 
 spin_count = {}
 spin_count.up = function()
-  icon_index = (icon_index % max_icons) + 1
-  icon = string.format(icon_path, icon_index)
+  icon_index = (icon_index % #icons) + 1
+  icon = icons[icon_index]
   widget.setImage("img_icon", icon)
   if selected_ship.ship_info then
-    local icon_num = string.match(selected_ship.ship_info.icon, "/namje_ships/ship_icons/generic_(%d)%.png")
-    if icon_index == tonumber(icon_num) then
-      ship_changes["icon"] = nil
-    else
-      ship_changes["icon"] = icon_index
-    end
+    ship_changes["icon"] = icons[icon_index]
   end
 end
 spin_count.down = function()
-  icon_index = (icon_index - 1 - 1 + max_icons) % max_icons + 1
-  icon = string.format(icon_path, icon_index)
+  icon_index = (icon_index - 1 - 1 + #icons) % #icons + 1
+  icon = icons[icon_index]
   widget.setImage("img_icon", icon)
   if selected_ship.ship_info then
-    local icon_num = string.match(selected_ship.ship_info.icon, "/namje_ships/ship_icons/generic_(%d)%.png")
-    if icon_index == tonumber(icon_num) then
-      ship_changes["icon"] = nil
-    else
-      ship_changes["icon"] = icon_index
-    end
+    ship_changes["icon"] = icons[icon_index]
   end
 end
 
@@ -224,14 +213,19 @@ local function reset_slot(slot_num)
 
   widget.setText("tb_ship_name", ship_info.name)
   widget.setText("lbl_upg_info", "Select an upgrade to view its benefits")
-  local icon_num = string.match(ship_info.icon, "/namje_ships/ship_icons/generic_(%d)%.png")
+  icon_index = 1
+  for i = 1, #icons do
+    if icons[i] == ship_info.icon then
+      icon_index = i
+    end
+  end
   widget.setImage("img_icon", ship_info.icon)
-  icon_index = tonumber(icon_num)
 
   return true
 end
 
 function init()
+  icons = root.assetJson("/namje_ships/ship_icons/icons.config").ship_icons
   populate_ship_list()
   toggle_info(false)
   widget.setButtonEnabled("btn_checkout", false)
@@ -515,10 +509,9 @@ function checkout()
   upg_total = 0
   money_total = 0
 
-  sb.logInfo("checked out")
   if player.consumeItem({name = "upgrademodule", count = upg_total}) and player.consumeCurrency("money", money_total) then
     if ship_changes.icon then
-      ship_changes.icon = string.format(icon_path, icon_index) 
+      ship_changes.icon = icons[icon_index]
     end
 
     namje_byos.set_upgrades(selected_ship.slot, ship_changes)

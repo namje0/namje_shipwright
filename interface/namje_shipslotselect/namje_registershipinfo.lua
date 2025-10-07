@@ -1,7 +1,6 @@
 require "/scripts/namje_byos.lua"
 
---TODO: grab all icons in path instead of hardcoded presets
-local icon_path = "/namje_ships/ship_icons/generic_%s.png"
+local icons
 local icon_index = 1
 local icon = "/namje_ships/ship_icons/generic_1.png"
 local name_prefixes = {
@@ -21,17 +20,24 @@ local name_affixes = {
 
 spin_count = {}
 spin_count.up = function()
-  icon_index = icon_index + 1 == 7 and 1 or icon_index + 1
-  icon = string.format(icon_path, icon_index)
+  if not icons then
+    return
+  end
+  icon_index = icon_index + 1 == #icons + 1 and 1 or icon_index + 1
+  icon = icons[icon_index]
   widget.setImage("img_icon", icon)
 end
 spin_count.down = function()
-  icon_index = icon_index - 1 == 0 and 6 or icon_index - 1
-  icon = string.format(icon_path, icon_index)
+  if not icons then
+    return
+  end
+  icon_index = icon_index - 1 == 0 and #icons or icon_index - 1
+  icon = icons[icon_index]
   widget.setImage("img_icon", icon)
 end
 
 function init()
+  icons = root.assetJson("/namje_ships/ship_icons/icons.config").ship_icons
 end
 
 function ok()
