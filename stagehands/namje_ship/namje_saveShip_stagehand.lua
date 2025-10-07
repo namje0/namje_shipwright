@@ -5,9 +5,9 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_serialization/namje_shipTableSerializer.lua"
 
 function init()
-    message.setHandler("namje_save_ship", function(_, _, ply, slot, action, ...)
+    message.setHandler("namje_save_ship", function(_, _, ply, slot, action, excludes, ...)
         world.sendEntityMessage(ply, "namje_ship_loading")
-        self.coroutine = namje_tableSerializer.ship_to_table()
+        self.coroutine = namje_tableSerializer.ship_to_table(excludes)
         self.ply = ply
         self.slot = slot
         self.action = action

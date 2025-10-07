@@ -8,7 +8,7 @@ local CHUNK_SIZE = 32
 namje_tableSerializer = {}
 
 -- TODO: Duplicate objects being grabbed
-function namje_tableSerializer.ship_to_table(...)
+function namje_tableSerializer.ship_to_table(excludes)
     if not world.isServer() then
         error("namje // saving ship to table is not supported on client")
     end
@@ -353,7 +353,7 @@ function namje_tableSerializer.ship_to_table(...)
                         finalized_params["startingUpgradeStage"] = current_stage or 0
                     end
 
-                    if not exclude_items then
+                    if not excludes.container_items then
                         local container_items = world.containerItems(object_id)
                         if container_items and not isEmpty(container_items) then
                             finalized_params["namje_container_items"] = container_items
@@ -458,86 +458,90 @@ function namje_tableSerializer.ship_to_table(...)
             end
 
             --process monsters
-            local chunk_monsters = world.monsterQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
-            for _, entity_id in ipairs (chunk_monsters) do
-                if entity_id > 0 then
-                    local duplicate_monster = false
-                    local seed = world.callScriptedEntity(entity_id, "monster.seed")
-                    local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
-                    local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
-                    --[[
-                        seems like mcontroller.pos is inbetween so its getting detected in multiple chunks, dont add if its a duplicate
-                        not the most efficient way to check for duplicates cause I think there could be fringe scenarios where you have multiple cloned
-                        animals in the exact same spot... but odds are low enough
-                    ]]
-                    for _, v in pairs(ship_chunks) do
-                        if v.monsters then
-                            for _, monster in pairs(v.monsters) do
-                                local existing_seed = monster.parameters.seed
-                                local existing_pos = monster.pos
-                                if seed == existing_seed and existing_pos == linear_pos then
-                                    duplicate_monster = true
-                                end
-                            end
-                        end
-                    end
-
-                    if not duplicate_monster then
-                        world.callScriptedEntity(entity_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                        local entity_storage = world.callScriptedEntity(entity_id, "get_ent_storage", "")
-                        local monster_type = world.callScriptedEntity(entity_id, "monster.type")
-                        local pet_info = {
-                            type = get_cached_id(monster_type),
-                            parameters = world.callScriptedEntity(entity_id, "monster.uniqueParameters"),
-                            pos = linear_pos
-                        }
-                        pet_info.parameters.storage = entity_storage
-                        pet_info.parameters.seed = seed
-
-                        --remove redundant data
-                        pet_info.parameters.storage["spawnPosition"] = nil
-                        pet_info.parameters.storage["playSpawnAnimation"] = nil
-
-                        table.insert(monsters, pet_info)
-                    end
-                end
-            end
-
-            --TODO: process npcs
-            local chunk_npcs = world.npcQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
-            for _, entity_id in ipairs (chunk_npcs) do
-                if entity_id > 0 then
-                    local duplicate_npc = false
-                    local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
-                    local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
-                    local seed = world.callScriptedEntity(entity_id, "npc.seed")
-                    local type = world.callScriptedEntity(entity_id, "npc.npcType")
-                    if not string.match(type, "crewmember") then
+            if not excludes.monsters then
+                local chunk_monsters = world.monsterQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
+                for _, entity_id in ipairs (chunk_monsters) do
+                    if entity_id > 0 then
+                        local duplicate_monster = false
+                        local seed = world.callScriptedEntity(entity_id, "monster.seed")
+                        local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
+                        local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
+                        --[[
+                            seems like mcontroller.pos is inbetween so its getting detected in multiple chunks, dont add if its a duplicate
+                            not the most efficient way to check for duplicates cause I think there could be fringe scenarios where you have multiple cloned
+                            animals in the exact same spot... but odds are low enough
+                        ]]
                         for _, v in pairs(ship_chunks) do
-                            if v.npcs then
-                                for _, npc in pairs(v.npcs) do
-                                    local existing_seed = npc.seed
-                                    local existing_pos = npc.pos
+                            if v.monsters then
+                                for _, monster in pairs(v.monsters) do
+                                    local existing_seed = monster.parameters.seed
+                                    local existing_pos = monster.pos
                                     if seed == existing_seed and existing_pos == linear_pos then
-                                        duplicate_npc = true
+                                        duplicate_monster = true
                                     end
                                 end
                             end
                         end
 
-                        if not duplicate_npc then
-                            local species = world.callScriptedEntity(entity_id, "npc.species")
-                            local level = world.callScriptedEntity(entity_id, "npc.level")
-                            local unique_id = world.entityUniqueId(entity_id)
-                            local npc_info = {
-                                pos = linear_pos,
-                                species = species,
-                                level = level,
-                                seed = seed,
-                                type = type,
-                                uuid = unique_id
+                        if not duplicate_monster then
+                            world.callScriptedEntity(entity_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                            local entity_storage = world.callScriptedEntity(entity_id, "get_ent_storage", "")
+                            local monster_type = world.callScriptedEntity(entity_id, "monster.type")
+                            local pet_info = {
+                                type = get_cached_id(monster_type),
+                                parameters = world.callScriptedEntity(entity_id, "monster.uniqueParameters"),
+                                pos = linear_pos
                             }
-                            table.insert(npcs, npc_info)
+                            pet_info.parameters.storage = entity_storage
+                            pet_info.parameters.seed = seed
+
+                            --remove redundant data
+                            pet_info.parameters.storage["spawnPosition"] = nil
+                            pet_info.parameters.storage["playSpawnAnimation"] = nil
+
+                            table.insert(monsters, pet_info)
+                        end
+                    end
+                end
+            end
+
+            --TODO: process npcs
+            if not excludes.npcs then
+                local chunk_npcs = world.npcQuery({min_x, min_y}, {max_x, max_y}, {boundMode  = "position"})
+                for _, entity_id in ipairs (chunk_npcs) do
+                    if entity_id > 0 then
+                        local duplicate_npc = false
+                        local pos = world.callScriptedEntity(entity_id, "mcontroller.position")
+                        local linear_pos = (math.floor(pos[2]) << bit_range) | math.floor(pos[1])
+                        local seed = world.callScriptedEntity(entity_id, "npc.seed")
+                        local type = world.callScriptedEntity(entity_id, "npc.npcType")
+                        if not string.match(type, "crewmember") then
+                            for _, v in pairs(ship_chunks) do
+                                if v.npcs then
+                                    for _, npc in pairs(v.npcs) do
+                                        local existing_seed = npc.seed
+                                        local existing_pos = npc.pos
+                                        if seed == existing_seed and existing_pos == linear_pos then
+                                            duplicate_npc = true
+                                        end
+                                    end
+                                end
+                            end
+
+                            if not duplicate_npc then
+                                local species = world.callScriptedEntity(entity_id, "npc.species")
+                                local level = world.callScriptedEntity(entity_id, "npc.level")
+                                local unique_id = world.entityUniqueId(entity_id)
+                                local npc_info = {
+                                    pos = linear_pos,
+                                    species = species,
+                                    level = level,
+                                    seed = seed,
+                                    type = type,
+                                    uuid = unique_id
+                                }
+                                table.insert(npcs, npc_info)
+                            end
                         end
                     end
                 end

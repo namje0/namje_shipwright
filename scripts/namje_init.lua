@@ -104,8 +104,7 @@ function init() ini()
             local b64 = namje_b64.encode(binary)
             clipboard.setText(b64)
             
-            interface.queueMessage("For info on how to use it in a ship file, check the github page")
-            interface.queueMessage("Template saved to clipboard")
+            player.interact("ScriptPane", "interface/namje_templatesaved/namje_templatesaved.config")
         end
 	end)
 

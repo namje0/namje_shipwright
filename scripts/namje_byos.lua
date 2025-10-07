@@ -182,7 +182,7 @@ function namje_byos.swap_ships(new_slot)
     local current_slot = player.getProperty("namje_current_ship", 1)
 
     world.spawnStagehand({1024, 1024}, "namje_saveShip_stagehand")
-    world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), current_slot, 1, new_slot)
+    world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), current_slot, 1, {}, new_slot)
 end
 
 --- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
