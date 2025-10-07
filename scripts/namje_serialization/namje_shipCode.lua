@@ -4,6 +4,10 @@ require "/scripts/namje_serialization/namje_b64.lua"
 
 namje_shipCode = {}
 
+--- generates a ship code from the ship binary data and regions table. returns the base64 ship code
+--- @param data string
+--- @param regions table
+--- @returns string
 function namje_shipCode.generate_ship_code(data, regions)
     local prefix = "namjeShip::"
     local compressed_regions = {}
@@ -14,6 +18,9 @@ function namje_shipCode.generate_ship_code(data, regions)
     return code
 end
 
+--- decodes a ship code. returns the region and data
+--- @param string code
+--- @returns table, string
 function namje_shipCode.decode_ship_code(code)
     local prefix = "namjeShip::"
 

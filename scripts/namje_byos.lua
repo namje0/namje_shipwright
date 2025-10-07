@@ -316,6 +316,7 @@ function namje_byos.set_ship_info(slot, info)
     return ship_info
 end
 
+--- despawns monsters in the cached ship regions.
 function namje_byos.despawn_ship_monsters()
     local region_cache = world.getProperty("namje_region_cache", {})
     local regions = {}
@@ -341,6 +342,7 @@ function namje_byos.despawn_ship_monsters()
     end
 end
 
+--- despawns npcs in the cached ship regions. ignores crewmembers.
 function namje_byos.despawn_ship_npcs()
     local region_cache = world.getProperty("namje_region_cache", {})
     local regions = {}
@@ -369,6 +371,7 @@ function namje_byos.despawn_ship_npcs()
     end
 end
 
+--- moves all players on the shipworld and crewmembers to the ship spawn.
 function namje_byos.move_all_to_ship_spawn()
     local players = world.players()
     for _, player in ipairs (players) do
@@ -399,6 +402,10 @@ function namje_byos.move_all_to_ship_spawn()
     end
 end
 
+--- changes the ship using a config .namjeship file's ship_id.
+--- @param ship_id string
+--- @param init boolean
+--- @param region table
 function namje_byos.change_ships_from_config(ship_id, init, region)
     local ship_config = namje_byos.get_ship_config(ship_id)
     if not ship_config then
@@ -423,7 +430,7 @@ function namje_byos.change_ships_from_config(ship_id, init, region)
             error("namje // tried to change ship on client while player world id is not their ship world id")
         end
         if init then
-            fill_shiplocker(player.species())
+            namje_byos.fill_shiplocker(player.species())
         end
         world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
         world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", player.id(), ship_config, init, region)
@@ -649,8 +656,11 @@ function namje_byos.init_byos()
     end
 end
 
+--- resets all fu_byos stats if fu is enabled.
 function namje_byos.reset_fu_stats()
-    if not namje_byos.is_fu() then return end
+    if not namje_byos.is_fu() then
+        return
+    end
 
     local ship_stats = {
         "shipSpeed",
@@ -675,12 +685,9 @@ function namje_byos.reset_fu_stats()
     world.setProperty("fu_byos.group.ftlDrive", 0)
 end
 
---[[
-    Fills the ship with their racial starter treasure pool. only to be used on initial ship creation
-    method of grabbing racial treasure pool based on how FU does it
-    since we're using a custom cargo hold instead of the ship locker for the starter ship, we're just gonna fill random storage containers onboard the ship
-]]
-function fill_shiplocker(species, ply)
+--- fills the cargo hold with the player's racial starter items
+--- @param species string
+function namje_byos.fill_shiplocker(species)
     if not species then
         error("namje // no species provided to fill ship locker")
     end

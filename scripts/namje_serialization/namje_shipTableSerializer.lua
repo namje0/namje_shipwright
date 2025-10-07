@@ -8,6 +8,9 @@ local CHUNK_SIZE = 32
 namje_tableSerializer = {}
 
 -- TODO: Duplicate objects being grabbed
+--- starts the serialization coroutine. returns the serialized table form of the shipworld. excludes include npcs, monsters, and container_items.
+--- @param excludes table
+--- @returns coroutine
 function namje_tableSerializer.ship_to_table(excludes)
     if not world.isServer() then
         error("namje // saving ship to table is not supported on client")
@@ -582,6 +585,10 @@ function namje_tableSerializer.ship_to_table(excludes)
     return serialize_coroutine
 end
 
+--- starts the coroutine to build a ship from a serialized table. returns the coroutine.
+--- @param ship_table table
+--- @param ship_region table
+--- @returns coroutine
 function namje_tableSerializer.table_to_ship(ship_table, ship_region)
     if not world.isServer() then
         error("namje // loading ship from table is not supported on client")
