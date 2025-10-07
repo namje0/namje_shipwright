@@ -1,0 +1,18 @@
+{
+  "itemName" : "namje_outpostshipslotvoucher",
+  "shortdescription" : "Outpost Parking Pass",
+  "description" : "Allows docking at the outpost. ^orange;Increases ship slots by 1. ^red;Can only be used once.",
+  "price" : 80000,
+  "rarity" : "essential",
+  "category": "tool",
+  "tooltipFields": {
+      "subtitle": "Ship Parking Pass"
+  },
+  "itemTags" : [],
+  "inventoryIcon" : "namje_outpostshipslotvoucher.png",
+  "twoHanded" : true,
+  "maxStack" : 1,
+  "scripts" : ["namje_outpostshipslotvoucher.lua"],
+
+  "loot" : {}
+}

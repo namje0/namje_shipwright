@@ -1,4 +1,4 @@
-![bongbong](https://i.imgur.com/FN9fjwi.gif)
+![icon](https://i.imgur.com/9SPGmeG.png)
 # 🚀 namjeShipwright
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
@@ -80,7 +80,7 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 
 ## Upcoming Features
 - Building ship from code option at ship technician
-- Better error handling for mod incompatibilities and missing assets
+- Better error handling for mod incompatibilities, missing assets, load failures
 - Make crew members per-ship
 - Customizable SAIL pet
 - Add failsafe for existing characters without the framework enabled
@@ -94,3 +94,4 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
 - Entities such as the Rail Tram are currently not saved on ship swap.
+![bongbong](https://i.imgur.com/FN9fjwi.gif)
