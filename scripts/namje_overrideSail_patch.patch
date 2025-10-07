@@ -10,7 +10,7 @@
     ],
     [
         { "op" : "test", "path" : "/interactData", "value" : "/zb/newSail/newSail.config" },
-        { "op" : "add", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" },
+        { "op" : "replace", "path" : "/interactData", "value" : "/interface/namje_sail/namje_sail.config" },
         { "op" : "replace", "path" : "/scripts", "value" : ["/objects/namje_ship/techstations/namje_techstation.lua", "/objects/scripts/customtechstation.lua"] }
     ]
 ]
