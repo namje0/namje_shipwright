@@ -6,7 +6,7 @@
     "manufacturer" : "boxofcuriosity",
     "recommended_crew_size" : "1-4",
     "auto_create_license" : true,
-    "price" : 75000,
+    "price" : 120000,
     "add_to_penguin_bay" : true,
 
     "base_stats" : {
@@ -54,10 +54,10 @@
         ],
         "cargo_size": [
             { "stat": 400, "description": "Increases cargo hold capacity by 100 units." },
-            { "stat": 500, "description": "Increases cargo hold capacity by 200 units." },
             { "stat": 600, "description": "Increases cargo hold capacity by 300 units." },
-            { "stat": 700, "description": "Increases cargo hold capacity by 400 units." },
-            { "stat": 800, "description": "Increases cargo hold capacity by 500 units."}
+            { "stat": 800, "description": "Increases cargo hold capacity by 500 units." },
+            { "stat": 1000, "description": "Increases cargo hold capacity by 700 units." },
+            { "stat": 1200, "description": "Increases cargo hold capacity by 900 units."}
         ]
     },
     

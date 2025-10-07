@@ -6,7 +6,7 @@
     "manufacturer" : "boxofcuriosity",
     "recommended_crew_size" : "1-2",
     "auto_create_license" : true,
-    "price" : 35000,
+    "price" : 50000,
     "add_to_penguin_bay" : true,
     "license_icon" : "/namje_ships/ships/box_beemobile/license_icon.png",
 
@@ -58,7 +58,7 @@
             { "stat": 400, "description": "Increases cargo hold capacity by 200 units." },
             { "stat": 500, "description": "Increases cargo hold capacity by 300 units." },
             { "stat": 600, "description": "Increases cargo hold capacity by 400 units." },
-            { "stat": 700, "description": "Increases cargo hold capacity by 500 units."}
+            { "stat": 800, "description": "Increases cargo hold capacity by 600 units."}
         ]
     },
     

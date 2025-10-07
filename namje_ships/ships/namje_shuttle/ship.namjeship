@@ -59,7 +59,7 @@
             { "stat": 500, "description": "Increases cargo hold capacity by 300 units." },
             { "stat": 650, "description": "Increases cargo hold capacity by 450 units." },
             { "stat": 800, "description": "Increases cargo hold capacity by 600 units." },
-            { "stat": 950, "description": "Increases cargo hold capacity by 750 units."}
+            { "stat": 1000, "description": "Increases cargo hold capacity by 800 units."}
         ]
     },
     

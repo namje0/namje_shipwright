@@ -6,7 +6,7 @@
     "manufacturer" : "",
     "recommended_crew_size" : "1-12",
     "auto_create_license" : true,
-    "price" : 30000,
+    "price" : 80000,
     "add_to_penguin_bay" : false,
 
     "base_stats" : {

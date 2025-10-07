@@ -7,7 +7,7 @@
     "manufacturer_icon" : "/namje_ships/manufacturers/protectorate.png",
     "recommended_crew_size" : "1-2",
     "auto_create_license" : true,
-    "price" : 10000,
+    "price" : 15000,
     "add_to_penguin_bay" : true,
     "license_icon" : "/namje_ships/ships/namje_startership/license_icon.png",
 
@@ -54,11 +54,11 @@
             { "stat": 12, "description": "Increases maximum crew capacity to 12." }
         ],
         "cargo_size": [
-            { "stat": 200, "description": "Increases cargo hold capacity by 50 units." },
             { "stat": 250, "description": "Increases cargo hold capacity by 100 units." },
-            { "stat": 300, "description": "Increases cargo hold capacity by 150 units." },
-            { "stat": 350, "description": "Increases cargo hold capacity by 200 units." },
-            { "stat": 400, "description": "Increases cargo hold capacity by 250 units."}
+            { "stat": 450, "description": "Increases cargo hold capacity by 300 units." },
+            { "stat": 600, "description": "Increases cargo hold capacity by 450 units." },
+            { "stat": 700, "description": "Increases cargo hold capacity by 550 units." },
+            { "stat": 800, "description": "Increases cargo hold capacity by 650 units."}
         ]
     },
 
