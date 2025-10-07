@@ -66,7 +66,7 @@ Compatible with some caveats. Should be stable, but not fully tested. Use with c
 ## Technical Stuff
 - This framework caches the position of loaded chunks/sectors around the player that have collisions/background tiles in them to improve saving and loading times. This should cover all regular gameplay cases, though certain cases may result in chunks not being registered:
     - Placing down a large dungeon or build with an external mod (e.g Base In A Box) and swapping ships without exploring the whole thing
-    - Placing things down and leaving the 96x96 scan area faster than the region cache update interval (2s)
+    - Placing things down and leaving the 96x96 scan area faster than the region cache update interval (every second)
     - Making your zoom level so small that the game does not load the sectors adjacent to you
 - You shouldn't make extremely big ships in base Starbound, and you shouldn't in this framework either. Stored ships are pretty large and can bloat the player file, and larger ships will have longer loading times for serializing. An extremely large ship will take a while to swap to and from.
 - Plants will not grow in inactive ships, but their growth stage is saved.
