@@ -1,5 +1,6 @@
 <h1><a href="https://github.com/namje0/namje_shipwright/releases">Download</a></h1>
-<p align="center"><img src="https://i.imgur.com/9SPGmeG.png"/></p>
+<p align="center"><img src="https://i.imgur.com/FN9fjwi.gif"/></p>
+
 # 🚀 namjeShipwright
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
