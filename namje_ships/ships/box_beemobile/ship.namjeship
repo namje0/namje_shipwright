@@ -3,7 +3,7 @@
 
     "name" : "Beemobile",
     "description" : "Contributed by ^yellow;boxofcuriosity",
-    "manufacturer" : "",
+    "manufacturer" : "boxofcuriosity",
     "recommended_crew_size" : "1-2",
     "auto_create_license" : true,
     "price" : 35000,

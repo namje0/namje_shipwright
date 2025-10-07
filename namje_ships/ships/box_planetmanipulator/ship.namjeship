@@ -3,7 +3,7 @@
 
     "name" : "Planet Manipulator",
     "description" : "Manipulates everything that matters!\nContributed by ^yellow;boxofcuriosity",
-    "manufacturer" : "",
+    "manufacturer" : "boxofcuriosity",
     "recommended_crew_size" : "1-4",
     "auto_create_license" : true,
     "price" : 75000,
