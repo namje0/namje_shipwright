@@ -37,7 +37,7 @@ Multiple ships can be owned by a player in this framework, and players can freel
 A new larger S.A.I.L interface that allows for custom themes via `.namjetheme` files.
 - Searches the player's save for current and previous missions instead of doing guesswork.
 - Allows for swapping between owned ships and seeing ship information.
-- Settings page can be added to by modders. (TBA)
+- Settings page for miscellaneous stuff.
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
 - The outpost ship service technician is only available after the Erchius Mining Facility.
@@ -84,7 +84,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Customizable SAIL pet
 - Add failsafe for existing characters without the framework enabled
 - Modular ship icons
-- Modular settings for SAIL
 - Add recipes and things to treasure pools
 
 ## Bugs

@@ -8,7 +8,7 @@ local tabs = {
     {"main.home"},
     {"main.crew", "main.crew.crew_select.crew_list", "main.crew.crew_info"},
     {"main.ships", "main.ships.ship_select.ship_list", "main.ships.ship_info"},
-    {"main.settings"}
+    {"main.settings", "main.settings.options_list"}
 }
 local typing_sound = "/sfx/interface/aichatter1_loop.ogg"
 
@@ -149,7 +149,7 @@ function swap_theme(new_theme)
     widget.setButtonImages("show_settings", current_theme.left_buttons or default.left_buttons)
 
     --update the settings page
-    settings_tab()
+    --settings_tab()
 end
 
 function init_settings()
@@ -510,13 +510,37 @@ function salvage_ship()
 end
 
 function settings_tab()
+    local options_list = tabs[5][2]
+    local options = root.assetJson("/interface/namje_sail/sail_options.config").sail_options
+    local player_theme = player.getProperty("namje_sail_theme", "default")
     namje_ai_typer.clear_queue()
     update_directory({"settings"})
-    widget.setText("main.settings.settings_area.lbl_theme", theme_format(localization.settings_theme_lbl))
+
+    widget.clearListItems(options_list)
+    for i = 1, #options do
+        local option = options[i]
+        local list_item = options_list .. "."..widget.addListItem(options_list)
+        widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
+        widget.setText(list_item..".item_name", "^" .. current_theme.main_text_color .. ";" .. option.title)
+        widget.setText(list_item..".item_desc", "^" .. current_theme.os_text_color .. ";" .. (option.callback=="button_theme" and sail_themes[player_theme].name or option.desc))
+        widget.setImage(list_item..".item_icon", option.icon)
+        widget.setData(list_item, {option.callback, option.args or nil})
+    end
+    --widget.setText("main.settings.settings_area.lbl_theme", theme_format(localization.settings_theme_lbl))
 end
 
-function change_setting(setting_name)
-    if setting_name == "button_theme" then
+function change_setting()
+    local options_list = tabs[5][2]
+    local selected_option = widget.getListSelected(options_list)
+    if not selected_option then
+        return
+    end
+    local callback = widget.getData(options_list .. "." .. selected_option)[1]
+
+    if callback == "ScriptPane" then
+        local config = widget.getData(options_list .. "." .. selected_option)[2]
+        player.interact("ScriptPane", config, pane.sourceEntity())
+    elseif callback == "button_theme" then
         local theme, first_theme
         local player_theme = player.getProperty("namje_sail_theme", "default")
         local found_theme = false
@@ -539,10 +563,13 @@ function change_setting(setting_name)
         end
         if theme then
             player.setProperty("namje_sail_theme", theme)
-            widget.setText("main.settings.settings_area.button_theme", sail_themes[theme].name)
+            widget.setText(options_list .. "." .. selected_option.. ".item_desc", "^" .. current_theme.os_text_color .. ";" .. sail_themes[theme].name)
+            --widget.setText("main.settings.settings_area.button_theme", sail_themes[theme].name)
             swap_theme(theme)
         end
     end
+
+    settings_tab()
 end
 
 function crew_tab()
