@@ -15,8 +15,7 @@ namje_byos.current_ship = nil
 local CHUNK_SIZE = 32
 local VERSION_ID = "namje_shipwright"
 --the upper limit of ships a player can have
---currently set to 1-3, as ship changing does not have wiring support yet. This will be changed on release to 5-8
-local PLAYER_SHIP_CAP = 6
+local PLAYER_SHIP_CAP = 8
 
 function namje_byos.get_ship_data()
     if world.isClient() then
@@ -116,7 +115,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
         local intro = ship_config.id == "namje_startership" and true or false
         if not intro then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            --player.playCinematic(cinematic)
+            player.playCinematic(cinematic)
         end
         local region_cache = world.getProperty("namje_region_cache", {})
         namje_byos.change_ships_from_config(ship_config.id, intro, region_cache)
@@ -185,13 +184,16 @@ function namje_byos.swap_ships(new_slot)
     world.sendEntityMessage("namje_saveShip_stagehand", "namje_save_ship", player.id(), current_slot, 1, {}, new_slot)
 end
 
---- give the player num amount of ship slots, clamped to the PLAYER_SHIP_CAP. returns the adjusted ship slots table
+--- give the player num amount of ship slots if it's under the PLAYER_SHIP_CAP. returns true if the slots were added, and false if it wasnt
 --- @param num number
---- @return table
+--- @return boolean
 function namje_byos.add_ship_slots(num)
     local current_slots = player.getProperty("namje_ship_slots", 0)
     local ships = namje_byos.get_ship_data()
 
+    if current_slots + num > PLAYER_SHIP_CAP then
+        return false
+    end
     local num_slots = math.min(current_slots + num, PLAYER_SHIP_CAP)
     player.setProperty("namje_ship_slots", num_slots)
     for i = 1, num_slots do
@@ -202,7 +204,7 @@ function namje_byos.add_ship_slots(num)
         end
     end
     namje_byos.set_ship_data(ships)
-    return ships
+    return true
 end
 
 --- sets the current ship slot for the player
