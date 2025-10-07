@@ -25,8 +25,8 @@ This framework removes racial ships and replaces them with ships made out of blo
 ### Ship templates
 This framework allows you to create and use ship templates.
 - Automatic ship license generation for `.namjeship` files.
-- Choose to either use a dungeon file for templates, or save your current in-game ship's design as a template.
-    - `.dungeon` files take up less space.
+- Choose to either use a dungeon file for templates, or save your current in-game ship's design as a template by generating a ship code.
+    - `.dungeon` files are preferred.
 ### Owning multiple ships
 Multiple ships can be owned by a player in this framework, and players can freely swap between them.
 - Different ships have their own separate cargo holds.
@@ -79,7 +79,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
     - Betabound is an exception.
 
 ## Upcoming Features
-- "Save as template" option on SAIL
 - Make crew members per-ship
 - Customizable SAIL pet
 - Add failsafe for existing characters without the framework enabled
