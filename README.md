@@ -1,4 +1,4 @@
-#[Download](https://github.com/namje0/namje_shipwright/releases)
+<h1><a href="https://github.com/namje0/namje_shipwright/releases">Download</a></h1>
 <p align="center"><img src="https://i.imgur.com/9SPGmeG.png"/></p>
 # 🚀 namjeShipwright
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
@@ -95,4 +95,3 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
 - Entities such as the Rail Tram are currently not saved on ship swap.
-##[bongbong](https://i.imgur.com/FN9fjwi.gif)
