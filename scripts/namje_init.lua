@@ -71,7 +71,7 @@ function init() ini()
             end
 
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            --player.playCinematic(cinematic)
+            player.playCinematic(cinematic)
 
             local current_region_cache = world.getProperty("namje_region_cache", {})
 
