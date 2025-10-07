@@ -129,7 +129,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             return
         end
 
-        local previous_ship_content = namje_binarySerializer.unpack_ship_data(namje_byos.get_ship_content(slot))
+        local previous_ship_content = #namje_byos.get_ship_content(slot) > 0 and namje_binarySerializer.unpack_ship_data(namje_byos.get_ship_content(slot)) or {}
         local items = {}
 
         if old_stats then
