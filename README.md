@@ -86,12 +86,10 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Make crew members per-ship
 - Customizable SAIL pet
 - Add failsafe for existing characters without the framework enabled
-- Modular ship icons
 - Add recipes and things to treasure pools
 
 ## Bugs
 - Ships generated from a ship code currently do not generate region caches properly, and may have missing chunks when swapping to them.
-- Colony deed tenants may be unlinked from the deed and have a new tenant spawn.
 - Colony deed tenants on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
