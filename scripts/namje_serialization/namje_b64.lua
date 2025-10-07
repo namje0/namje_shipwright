@@ -47,7 +47,7 @@ function namje_b64.encode(data)
         result[#result] = "="
     end
 
-    return "namjeShip::" .. table.concat(result)
+    return table.concat(result)
 end
 
 --- Decodes a Base64 string back to a binary string.

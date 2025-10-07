@@ -1,12 +1,12 @@
 --utility module for all ship related stuff
 
-require "/scripts/namje_serialization/namje_b64.lua"
 require "/scripts/vec2.lua"
 require "/scripts/util.lua"
 require "/scripts/rect.lua"
 require "/scripts/messageutil.lua"
 require "/scripts/namje_util.lua"
 require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
+require "/scripts/namje_serialization/namje_shipCode.lua"
 
 namje_byos = {}
 namje_byos.current_ship = nil
@@ -465,10 +465,6 @@ function namje_byos.create_ship_from_config(ply, ship_config, ship_region)
         error("namje // create_ship_from_config cannot be called on client")
     end
 
-    local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
-    local ship_offset = ship_config.namje_stats.ship_center_pos
-    local ship_position = vec2.sub({1024, 1024}, {ship_offset[1], -ship_offset[2]})
-
     local coroutine = coroutine.create(function()
         --get the cached bounds, then clear the area
         local regions = {}
@@ -485,43 +481,45 @@ function namje_byos.create_ship_from_config(ply, ship_config, ship_region)
         end
         namje_byos.clear_ship_area(region_bounds)
 
-        local code = "namjeShip::"
-        if string.sub(ship_config.ship, 1, #code) == code then
+        local code_prefix = "namjeShip::"
+        if string.sub(ship_config.ship, 1, #code_prefix) == code_prefix then
             --TODO: get ship region and stuff nicer
-            ship_position = {1024, 1024}
             sb.logInfo("namje // placing shipcode variant of ship")
-            local data = string.match(ship_config.ship, "namjeShip::(.+)")
-            local binary = namje_b64.decode(data)
+            local regions, data = namje_shipCode.decode_ship_code(ship_config.ship)
 
             world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
-            world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", ply, binary, ship_region)
+            world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", ply, data, regions)
+            world.setProperty("namje_region_cache", regions)
         else
+            local ship_dungeon_id = config.getParameter("shipDungeonId", 10101)
+            local ship_offset = ship_config.namje_stats.ship_center_pos
+            local ship_position = vec2.sub({1024, 1024}, {ship_offset[1], -ship_offset[2]})
+            
             world.placeDungeon(ship_config.ship, ship_position, ship_dungeon_id)
+            --initialize the new region cache based on the ship_size in .namjeship
+            local region_cache = {}
+            local ship_size = ship_config.namje_stats.ship_size
+            local width_chunks = math.ceil(ship_size[1] / CHUNK_SIZE)
+            local height_chunks = math.ceil(ship_size[2] / CHUNK_SIZE)
+
+            for i = 0, (height_chunks) do
+                for k = 0, (width_chunks) do
+                    local chunk = namje_util.get_chunk({ship_position[1] + (CHUNK_SIZE * k), ship_position[2] - (CHUNK_SIZE * i)})
+                    local chunk_area = rect.fromVec2({chunk[1], chunk[2]}, {chunk[1] + (CHUNK_SIZE), chunk[2] + CHUNK_SIZE})
+                    local collision_detected = world.rectTileCollision(chunk_area, {"Block", "Dynamic", "Slippery", "Platform"})
+                    local cache_code = string.format("%s.%s", chunk[1], chunk[2])
+                    if collision_detected or namje_util.find_background_tiles(chunk[1], chunk[2]) then
+                        region_cache[cache_code] = true
+                    end
+                end
+            end
+
+            world.setProperty("namje_region_cache", region_cache)
         end
 
         if namje_byos.is_fu() then
             namje_byos.reset_fu_stats()
         end
-
-        --initialize the new region cache based on the ship_size in .namjeship
-        local region_cache = {}
-        local ship_size = ship_config.namje_stats.ship_size
-        local width_chunks = math.ceil(ship_size[1] / CHUNK_SIZE)
-        local height_chunks = math.ceil(ship_size[2] / CHUNK_SIZE)
-
-        for i = 0, (height_chunks) do
-            for k = 0, (width_chunks) do
-                local chunk = namje_util.get_chunk({ship_position[1] + (CHUNK_SIZE * k), ship_position[2] - (CHUNK_SIZE * i)})
-                local chunk_area = rect.fromVec2({chunk[1], chunk[2]}, {chunk[1] + (CHUNK_SIZE), chunk[2] + CHUNK_SIZE})
-                local collision_detected = world.rectTileCollision(chunk_area, {"Block", "Dynamic", "Slippery", "Platform"})
-                local cache_code = string.format("%s.%s", chunk[1], chunk[2])
-                if collision_detected or namje_util.find_background_tiles(chunk[1], chunk[2]) then
-                    region_cache[cache_code] = true
-                end
-            end
-        end
-
-        world.setProperty("namje_region_cache", region_cache)
 
         world.sendEntityMessage(ply, "namje_upgradeShip", ship_config.base_stats)
         return true

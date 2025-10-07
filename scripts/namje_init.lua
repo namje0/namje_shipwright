@@ -1,7 +1,7 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_util.lua"
 require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
-require "/scripts/namje_serialization/namje_b64.lua"
+require "/scripts/namje_serialization/namje_shipCode.lua"
 
 local cargo_config
 local ini = init or function() end
@@ -71,7 +71,7 @@ function init() ini()
             end
 
             local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+            --player.playCinematic(cinematic)
 
             local current_region_cache = world.getProperty("namje_region_cache", {})
 
@@ -100,10 +100,16 @@ function init() ini()
             --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
-            local binary = namje_binarySerializer.pack_ship_data(result)
-            local b64 = namje_b64.encode(binary)
-            clipboard.setText(b64)
+            local data = namje_binarySerializer.pack_ship_data(result)
+            local code = namje_shipCode.generate_ship_code(data, world.getProperty("namje_region_cache", {}))
+            clipboard.setText(code)
+
+            local regions, data = namje_shipCode.decode_ship_code(code)
             
+            sb.logInfo("decode test %s %s", regions, data)
+            local ggdata = namje_binarySerializer.unpack_ship_data(data)
+            sb.logInfo("decode data test: %s", ggdata)
+
             player.interact("ScriptPane", "interface/namje_templatesaved/namje_templatesaved.config")
         end
 	end)

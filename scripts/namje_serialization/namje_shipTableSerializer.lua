@@ -917,7 +917,9 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
         if ship_table[4] and not isEmpty(ship_table[4]) then
             for _, liquid in pairs (ship_table[4]) do
                 local pos, id, level = unpack_liquid_vals(liquid)
-                world.spawnLiquid(pos, id, level)
+                --TODO: something wrong with spawning liquids that gives it more quantity than expected? try reducing the quantity to a point, though this
+                --may affect smaller bodies of liquids
+                world.spawnLiquid(pos, id, (level*0.84))
             end
         end
 
