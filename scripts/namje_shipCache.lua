@@ -4,7 +4,7 @@ require "/scripts/rect.lua"
 require "/scripts/util.lua"
 
 local CHUNK_SIZE = 32
-local DEBUG = true
+local DEBUG = false
 
 local on_ship = false
 local on_own_ship = false
