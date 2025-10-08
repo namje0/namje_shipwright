@@ -10,6 +10,7 @@
     "price" : 15000,
     "add_to_penguin_bay" : true,
     "license_icon" : "/namje_ships/ships/namje_startership/license_icon.png",
+    "preview" : "/namje_ships/ships/namje_aomkellion/ship_preview.png",
 
     "base_stats" : {
         "capabilities" : ["teleport", "planetTravel", "systemTravel"],

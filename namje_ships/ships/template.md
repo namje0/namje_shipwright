@@ -99,5 +99,5 @@
         ]
     },
 
-    // The dungeon id for the ship, or the ship table.
+    // The dungeon id for the ship, or the ship code.
     "ship" : "namje_aomkellion"
