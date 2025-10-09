@@ -5,5 +5,19 @@
     "value": {
       "item": "namje_outpostshipslotvoucher"
     }
+  },
+  {
+    "op": "add",
+    "path": "/interactData/items/-",
+    "value": {
+      "item": "namje_planetariummusicmodule"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/interactData/items/-",
+    "value": {
+      "item": "namje_atmomodule"
+    }
   }
 ]
