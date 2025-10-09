@@ -39,6 +39,5 @@ end
 for i = 1, #ship_folders do
   local species = string.match(ship_folders[i], "^/[^/]+/([^/]+)")
   local tier_path = ship_folders[i] .. species ..  "T9.structure"
-    sb.logInfo("new upgrade level: %s", tier_path)
   assets.add(tier_path, test_structure)
 end

@@ -5,8 +5,10 @@ local exclude_mons = true
 local exclude_items = true
 
 function init()
-  local hideExpansionSlots = config.getParameter("hideExpansionSlots")
-  widget.setChecked("btnHideExpansionSlots", hideExpansionSlots)
+  if not namje_byos.is_on_own_ship() then
+    interface.queueMessage("^yellow;You can only save templates on ships you own.")
+    pane.dismiss()
+  end
 end
 
 function confirm()
