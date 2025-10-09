@@ -96,20 +96,15 @@ function init() ini()
 
             namje_byos.set_current_ship(new_slot)
             local new_dest = ship_stats.celestial_pos
-            celestial.flyShip(new_dest.system.location, new_dest.location)
+            if new_dest then
+                celestial.flyShip(new_dest.system.location, new_dest.location)
+            end
             --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
         elseif action == 2 then
             local data = namje_binarySerializer.pack_ship_data(result)
             local code = namje_shipCode.generate_ship_code(data, world.getProperty("namje_region_cache", {}))
             clipboard.setText(code)
-
-            local regions, data = namje_shipCode.decode_ship_code(code)
-            
-            sb.logInfo("decode test %s %s", regions, data)
-            local ggdata = namje_binarySerializer.unpack_ship_data(data)
-            sb.logInfo("decode data test: %s", ggdata)
-
             player.interact("ScriptPane", "interface/namje_templatesaved/namje_templatesaved.config")
         end
 	end)

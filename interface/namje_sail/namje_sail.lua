@@ -397,7 +397,7 @@ function select_ship()
 
         local sys_name 
         if ship_stats.celestial_pos.system then
-            sys_name = celestial.planetName(ship_stats.celestial_pos.system)
+            sys_name = celestial.planetName(ship_stats.celestial_pos.system) or "unknown"
         else
             sys_name = "unknown"
         end
