@@ -1,0 +1,9 @@
+{
+  "name" : "Music - Planetarium",
+  "description" : "Plays ^orange;Starbound Original Soundtrack - Planetarium^reset; on your ship.",
+  "price" : 5000,
+  "rarity" : "Uncommon",
+  "icon" : "/namje_shipmodules/namje_planetariummusicmodule/namje_planetariummusicmodule.png",
+  "music" : true,
+  "script" : "/namje_shipmodules/namje_planetariummusicmodule/namje_planetariummusicmodule.lua"
+}
