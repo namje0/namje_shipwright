@@ -388,7 +388,7 @@ function select_ship()
 
         local stats_1 = string.format(
             "%s%%\n%s\n%s\n%s\n%s", 
-            stats["fuel_efficiency"] or "^os_text_color;" .. math.floor(ship_config.base_stats.fuel_efficiency*10),
+            stats["fuel_efficiency"] or "^os_text_color;" .. math.floor(ship_config.base_stats.fuel_efficiency*100),
             stats["max_fuel"] or "^os_text_color;" .. ship_config.base_stats.max_fuel,
             stats["ship_speed"] or "^os_text_color;" .. ship_config.base_stats.ship_speed,
             stats["crew_size"] or "^os_text_color;" .. ship_config.base_stats.crew_size, 
@@ -406,7 +406,7 @@ function select_ship()
             namje_util.dict_size(ship_stats.cargo_hold),
             ship_stats.fuel_amount,
             ship_stats.crew_amount,
-            0,
+            namje_util.dict_size(ship_stats.modules),
             string.sub(shorten_name(sys_name), 1, 12)
         )
 

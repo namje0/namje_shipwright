@@ -84,6 +84,7 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Make crew members per-ship
 - Customizable SAIL pet
 - Add recipes and things to treasure pools
+- Salvage existing ships
 
 ## Bugs
 - Liquid quantity is inconsistent on ship swap.
