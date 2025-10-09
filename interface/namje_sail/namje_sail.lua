@@ -422,7 +422,9 @@ function select_ship()
             widget.setButtonEnabled(shipslot_info .. ".swap_ship", false)
             widget.setButtonEnabled(shipslot_info .. ".salvage_ship", favorite)
         else
-            widget.setButtonEnabled(shipslot_info .. ".swap_ship", true)
+            if namje_byos.is_on_own_ship() then
+                widget.setButtonEnabled(shipslot_info .. ".swap_ship", true)
+            end
             widget.setButtonEnabled(shipslot_info .. ".salvage_ship", false)
         end
     end
@@ -430,6 +432,11 @@ function select_ship()
 end
 
 function swap_ship()
+    if not namje_byos.is_on_own_ship() then
+        sb.logInfo("namje // tried to swap ships while not on own ship")
+        return
+    end
+
     local shipslot_info = tabs[4][3]
     local ship_list = tabs[4][2]
     local selected_ship = widget.getListSelected(ship_list)
