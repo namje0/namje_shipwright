@@ -124,10 +124,23 @@ function init() ini()
         end
         return on_ship
     end)
+
+    local existing_char = player.hasCompletedQuest("bootship")
+    if existing_char and not player.getProperty("namje_byos_setup") then
+        if not namje_byos.is_on_own_ship() then
+            player.warp(player.ownShipWorldId())
+        else
+            player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config", player.id())
+        end
+    end
 end
 
 function update(dt) updat(dt)
     swap_promise:update()
+    local existing_char = player.hasCompletedQuest("bootship")
+    if existing_char then
+        return
+    end
     if player.introComplete() and not player.getProperty("namje_byos_setup") then
         if namje_byos.is_on_ship() then
             namje_byos.init_byos()

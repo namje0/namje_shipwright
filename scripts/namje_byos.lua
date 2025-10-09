@@ -626,34 +626,26 @@ function namje_byos.get_ship_config(ship_id)
 end
 
 --- initializes the BYOS system for players, usually before the bootship quest but a failsafe is implemented for existing characters
-function namje_byos.init_byos()
+function namje_byos.init_byos(starting_ship)
+    starting_ship = starting_ship or "namje_startership"
+    
     player.setProperty("namje_byos_setup", true)
     namje_byos.add_ship_slots(2)
     namje_byos.set_current_ship(1)
+    world.spawnStagehand({1024, 1024}, "namje_initBYOS_stagehand")
+    local ship = namje_byos.register_new_ship(1, starting_ship, "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
+    local system = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
+    --TODO: set the stat in the cockpit as well
+    namje_byos.set_stats(1, {celestial_pos = system})
 
-    local existing_char = player.hasCompletedQuest("bootship")
-    if existing_char then
-        --being used on an existing character, show interface disclaimer thing and give the player an item to 
-        --enable byos systems and a starter shiplicense
-        --TODO: review and revamp existing char failsafe
-        player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
-        player.giveItem("namje_enablebyositem")
-    else
-        world.spawnStagehand({1024, 1024}, "namje_initBYOS_stagehand")
-        local ship = namje_byos.register_new_ship(1, "namje_startership", "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
-        local system = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
-        --TODO: set the stat in the cockpit as well
-        namje_byos.set_stats(1, {celestial_pos = system})
+    player.warp("nowhere")
 
-        player.warp("nowhere")
-
-        if namje_byos.is_fu() then
-            player.startQuest("fu_byos")
-        end
-        --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
-        local cinematic = "/cinematics/namje/shipintro.cinematic"
-        --player.playCinematic(cinematic, true)
+    if namje_byos.is_fu() then
+        player.startQuest("fu_byos")
     end
+    --TODO: replaces the cinematic from the actual intro ending as well. Find a way to detect, or just use that one
+    local cinematic = "/cinematics/namje/shipintro.cinematic"
+    --player.playCinematic(cinematic, true)
 end
 
 --- resets all fu_byos stats if fu is enabled.

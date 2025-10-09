@@ -12,7 +12,7 @@ function build(directory, config, parameters, level, seed)
     
     config.tooltipFields = config.tooltipFields or {}
 
-    config.tooltipFields.shipImage = ship_config.preview or ""
+    config.tooltipFields.shipImage = ship_config.preview or "/namje_ships/missing_preview.png"
     config.tooltipFields.crewLabel = ship_config.recommended_crew_size and "^orange;Recommended Crew Size:^reset; " .. ship_config.recommended_crew_size or "^orange;Recommended Crew Size:^reset; ^red;N/A^reset;"
     config.tooltipFields.cargoLabel = ship_config.namje_stats.cargo_size and "^orange;Ship Cargo Hold Size:^reset; " .. ship_config.namje_stats.cargo_size or "^orange;Ship Cargo Hold Size:^reset; ^red;N/A^reset;"
     config.tooltipFields.speedLabel = ship_config.base_stats.ship_speed and "^orange;Ship Speed:^reset; " .. ship_config.base_stats.ship_speed or "^orange;Ship Speed:^reset; ^red;N/A^reset;"

@@ -5,9 +5,7 @@
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
 > [!WARNING]
-> namjeShipwright is still in development and shouldn't be used in an actual playthrough. **Please report any bugs**
-> This framework has not been tested in multiplayer.
-> Don't use it on a pre-existing character.
+> This framework has not been tested in multiplayer. Please report any issues with the framework!
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 
@@ -85,7 +83,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Better error handling for mod incompatibilities, missing assets, load failures
 - Make crew members per-ship
 - Customizable SAIL pet
-- Add failsafe for existing characters without the framework enabled
 - Add recipes and things to treasure pools
 
 ## Bugs

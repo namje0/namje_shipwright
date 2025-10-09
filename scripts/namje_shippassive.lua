@@ -27,27 +27,29 @@ function init()
 
     local current_slot = player.getProperty("namje_current_ship", 1)
     local ship_stats = namje_byos.get_stats(current_slot)
-    local ship_modules = ship_stats.modules
-    local module_paths = root.assetsByExtension("namjemodule")
-    local music_mods = {}
-    for i = 1, #module_paths do
-        for k, v in pairs(ship_modules) do
-            if v then
-                local module_id = module_paths[i]:match("^.*/([^%.]+)%.namjemodule$")
-                if v == module_id then
-                    local module_config = root.assetJson(module_paths[i])
-                    if module_config.music and module_config.script then
-                        table.insert(music_mods, module_config.script)
-                    elseif module_config.script then
-                        require(module_config.script)
+    if ship_stats then
+        local ship_modules = ship_stats.modules
+        local module_paths = root.assetsByExtension("namjemodule")
+        local music_mods = {}
+        for i = 1, #module_paths do
+            for k, v in pairs(ship_modules) do
+                if v then
+                    local module_id = module_paths[i]:match("^.*/([^%.]+)%.namjemodule$")
+                    if v == module_id then
+                        local module_config = root.assetJson(module_paths[i])
+                        if module_config.music and module_config.script then
+                            table.insert(music_mods, module_config.script)
+                        elseif module_config.script then
+                            require(module_config.script)
+                        end
                     end
                 end
             end
         end
-    end
-    --the music modules implemented in this framework share a stagehand to reduce bloat, shuffle music so theres no dupe stagehands
-    if #music_mods > 0 then
-        require(music_mods[math.random(1, #music_mods)])
+        --the music modules implemented in this framework share a stagehand to reduce bloat, shuffle music so theres no dupe stagehands
+        if #music_mods > 0 then
+            require(music_mods[math.random(1, #music_mods)])
+        end
     end
 
     message.setHandler("namje_upgradeShip", function(_, _, ship_stats)

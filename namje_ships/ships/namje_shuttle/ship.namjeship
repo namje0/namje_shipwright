@@ -20,7 +20,7 @@
         "crew_size" : 2
     },
     "namje_stats" : {
-        "cargo_size" : 200,
+        "cargo_size" : 100,
         "ship_center_pos" : [50, 50],
         "ship_size" : [100, 100]
     },
@@ -56,7 +56,7 @@
             { "stat": 12, "description": "Increases maximum crew capacity to 12." }
         ],
         "cargo_size": [
-            { "stat": 350, "description": "Increases cargo hold capacity by 150 units." },
+            { "stat": 350, "description": "Increases cargo hold capacity by 250 units." },
             { "stat": 500, "description": "Increases cargo hold capacity by 300 units." },
             { "stat": 650, "description": "Increases cargo hold capacity by 450 units." },
             { "stat": 800, "description": "Increases cargo hold capacity by 600 units." },

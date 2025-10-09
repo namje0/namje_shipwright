@@ -1,3 +1,5 @@
+local fake_licenses = {"fakelicense1","fakelicense2","fakelicense3","fakelicense4","fakelicense5"}
+--TODO: pre-existing characters before the byos system have the licenses in the shop, remove them here
 function patch(config)
   local ships = assets.byExtension("namjeship")
   for i = 1, #ships do
