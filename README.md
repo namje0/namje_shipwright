@@ -4,8 +4,7 @@
 # 🚀 namjeShipwright
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
-> [!WARNING]
-> This framework has not been tested in multiplayer. Please report any issues with the framework!
+This framework is in beta and while stable, it may have game-breaking bugs. Please report any issues with the framework!
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 
