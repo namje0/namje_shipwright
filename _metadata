@@ -12,7 +12,8 @@
     ],
     "onLoad" : [
       "/scripts/namje_makeShipLicenses.lua",
-      "/scripts/namje_makeShipModules.lua"
+      "/scripts/namje_makeShipModules.lua",
+      "/scripts/namje_pets/namje_makePetModules.lua"
     ]
   },
   "priority" : 9999,

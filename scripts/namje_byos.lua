@@ -95,8 +95,9 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
             crew_amount = old_stats and old_stats.crew_amount or 0,
             cargo_hold = old_stats and old_stats.cargo_hold or {},
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
-            celestial_pos = old_stats and old_stats.celestial_pos or {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()},
+            celestial_pos = old_stats and old_stats.celestial_pos or {system = celestial.currentSystem(), location = celestial.shipLocation()},
             modules = {}, -- return modules as items instead
+            pet = old_stats and old_stats.pet or {}
         },
         upgrades = {
             fuel_efficiency = 0,
@@ -207,14 +208,18 @@ function namje_byos.add_ship_slots(num)
     return true
 end
 
---- sets the current ship slot for the player
+--- sets the current ship slot for the player, and the shipworld. must be on player's shipworld
 --- @param slot number
 function namje_byos.set_current_ship(slot)
+    if not namje_byos.is_on_own_ship() then
+        return
+    end
     local current_slots = player.getProperty("namje_ship_slots", 1)
     if slot > current_slots or slot < 1 then
         error("namje // tried to set current ship to slot " .. slot .. " but only " .. current_slots .. " slots are available")
     end
-    return player.setProperty("namje_current_ship", slot)
+    world.setProperty("namje_current_ship", slot)
+    player.setProperty("namje_current_ship", slot)
 end
 
 --- returns the stats table for the ship in the given slot
@@ -239,9 +244,7 @@ function namje_byos.set_stats(slot, stats)
         return nil
     end
     for stat, value in pairs(stats) do
-        if ship_stats[stat] ~= nil then
-            ship_stats[stat] = value
-        end
+        ship_stats[stat] = value
     end
     local ships = namje_byos.get_ship_data()
     local ship = ships["slot_" .. slot]

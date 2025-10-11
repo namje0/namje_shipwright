@@ -90,7 +90,8 @@ function init() ini()
                     ["cached_regions"] = current_region_cache,
                     ["fuel_amount"] = prev_ship_stats.fuel_amount, 
                     ["cargo_hold"] = prev_cargo_hold, 
-                    ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
+                    ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()},
+                    ["pet"] = prev_ship_stats.pet
                 })
             end
 
@@ -101,6 +102,7 @@ function init() ini()
             end
             --world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             world.setProperty("ship.fuel", ship_stats.fuel_amount)
+            world.setProperty("namje_ship_pet", ship_stats.pet and {ship_stats.pet.id, ship_stats.pet.seed} or nil)
         elseif action == 2 then
             local data = namje_binarySerializer.pack_ship_data(result)
             local code = namje_shipCode.generate_ship_code(data, world.getProperty("namje_region_cache", {}))

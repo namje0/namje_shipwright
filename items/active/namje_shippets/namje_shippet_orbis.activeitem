@@ -1,0 +1,19 @@
+{
+    "itemName": "namje_shippet_orbis",
+    "shortdescription": "Orbis",
+    "description": "beep boop",
+    "price": 5000,
+    "rarity": "legendary",
+    "category": "upgradeComponent",
+    "tooltipFields": {
+        "subtitle": "Ship Pet"
+    },
+    "tooltipKind": "namje_shipPet",
+    "itemTags": [],
+    "inventoryIcon": "/items/active/namje_shippets/orbis.png",
+    "twoHanded": true,
+    "maxStack": 1,
+    "scripts": [],
+    "radioMessagesOnPickup" : [ "namje_pickup_pet" ],
+    "namjePetType": "petorbis"
+}
