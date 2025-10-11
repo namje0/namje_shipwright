@@ -38,6 +38,8 @@ A new larger S.A.I.L interface that allows for custom themes via `.namjetheme` f
 - Searches the player's save for current and previous missions instead of doing guesswork.
 - Allows for swapping between owned ships and seeing ship information.
 - Settings page for miscellaneous stuff.
+- Ship Pets are no longer bound to different S.A.I.L interfaces. Ships come with no pet by default and must be slotted in using the S.A.I.L.
+    - All racial ship pets for every species can be found at Terramart.
 ### New Upgrade System
 Individual ship stats can be upgraded at a ship service technician. This framework implements one at the outpost.
 - The outpost ship service technician is only available after the Erchius Mining Facility.
@@ -82,7 +84,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Building ship from code option at ship technician
 - Better error handling for mod incompatibilities, missing assets, load failures
 - Make crew members per-ship
-- Customizable SAIL pet
 - Add recipes and things to treasure pools
 - Salvage existing ships
 
