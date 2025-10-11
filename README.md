@@ -7,6 +7,7 @@
 This framework is in beta and while stable, it may have game-breaking bugs. Please report any issues with the framework!
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
+Includes compatibility options for existing characters, including conversion from vanilla to BYOS, and the option to transfer BYOS ships to namjeShipwright systems.
 
 Steam Link (TBA)
 
