@@ -57,6 +57,7 @@ Ships come with a cargo hold, which is a storage container linked to the ship.
 - When you overwrite a ship, its cargo is automatically moved to the new one.
 ### FrackinUniverse Compatiblity
 Compatible with some caveats. Should be stable, but not fully tested. Use with caution!
+- FTL Drives may be permanently enabled due to a bug.
 - FU BYOS is instantly enabled, and there is no option to choose your starter ship.
 - FU's exclusive S.A.I.L. can be accessed via a new button on the S.A.I.L. interface.
 - "Crew Capacity" upgrade is no longer available as crew capacity is handled through crew beds.
@@ -92,3 +93,4 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
 - Entities such as the Rail Tram are currently not saved on ship swap.
+- Saving an existing ship for Frackin' Universe BYOS may result in ship-related objects (Pilot chair, teleporter, fuel hatch, SAIL) turning invisible. This is due to an issue with `fu_byosobjectanimation.lua` and will require those objects to be replaced. Any other objects will be fine. 

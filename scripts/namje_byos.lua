@@ -51,13 +51,15 @@ function namje_byos.set_ship_content(slot, data)
     end
 end
 
---- register a new ship for the player, overwriting/adding to a slot
+--- register a new ship for the player, overwriting/adding to a slot. use_existing is only for the starter ship when handling existing characters.
 --- @param slot number
 --- @param ship_type string
 --- @param name string
 --- @param icon string
+--- @param use_existing boolean
 --- @return table
-function namje_byos.register_new_ship(slot, ship_type, name, icon)
+function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
+    use_existing = use_existing or false
     if world.isServer() then
         error("namje_byos.register_new_ship // register_new_ship cannot be called on server")
     end
@@ -112,7 +114,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon)
     ships["slot_" .. slot] = ship_data
 
     namje_byos.set_ship_data(ships)
-    if player.getProperty("namje_current_ship", 1) == slot then
+    if player.getProperty("namje_current_ship", 1) == slot and not use_existing then
         local intro = ship_config.id == "namje_startership" and true or false
         if not intro then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
@@ -629,14 +631,17 @@ function namje_byos.get_ship_config(ship_id)
 end
 
 --- initializes the BYOS system for players, usually before the bootship quest but a failsafe is implemented for existing characters
-function namje_byos.init_byos(starting_ship)
+function namje_byos.init_byos(starting_ship, use_existing)
+    use_existing = use_existing or false
     starting_ship = starting_ship or "namje_startership"
     
     player.setProperty("namje_byos_setup", true)
     namje_byos.add_ship_slots(2)
     namje_byos.set_current_ship(1)
-    world.spawnStagehand({1024, 1024}, "namje_initBYOS_stagehand")
-    local ship = namje_byos.register_new_ship(1, starting_ship, "Lone Trail", "/namje_ships/ship_icons/generic_1.png")
+    if not use_existing then
+        world.spawnStagehand({1024, 1024}, "namje_initBYOS_stagehand")
+    end
+    local ship = namje_byos.register_new_ship(1, starting_ship, "Lone Trail", "/namje_ships/ship_icons/generic_1.png", use_existing)
     local system = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()}
     --TODO: set the stat in the cockpit as well
     namje_byos.set_stats(1, {celestial_pos = system})

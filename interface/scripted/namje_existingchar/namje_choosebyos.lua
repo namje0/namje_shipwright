@@ -14,10 +14,12 @@ local available_ships = {
   "namje_asteroidship",
   "namje_shuttle",
   "namje_island",
-  "namje_aomkellion"
+  "namje_aomkellion",
+  "namje_byoscompatibility"
 }
 local scroll_area = "ship_select.ship_list"
 local current_template, ship_coroutine
+local custom_ship = false
 
 function init()
   local ships = root.assetsByExtension("namjeship")
@@ -43,10 +45,18 @@ end
 function populate_ship_list()
   widget.clearListItems(scroll_area)
 
-  for _, v in pairs(available_ships) do
+  if namje_byos.is_fu() and world.getProperty("fu_byos") or player.shipUpgrades().shipLevel == 69 then
     local list_item = scroll_area.."."..widget.addListItem(scroll_area)
-    widget.setText(list_item..".item_name", ship_configs[v].name)
-    widget.setData(list_item, {v})
+    widget.setText(list_item..".item_name", "Current BYOS Ship")
+    widget.setData(list_item, {"namje_byoscompatibility"})
+  end
+
+  for _, v in pairs(available_ships) do
+    if v ~= "namje_byoscompatibility" then
+      local list_item = scroll_area.."."..widget.addListItem(scroll_area)
+      widget.setText(list_item..".item_name", ship_configs[v].name)
+      widget.setData(list_item, {v})
+    end
   end
 end
 
@@ -63,9 +73,15 @@ function select_ship()
       return
   end
 
+  if ship_id == "namje_byoscompatibility" then
+    custom_ship = true
+  else
+    custom_ship = false
+  end
+
   current_template = ship_id
   local ship_config = ship_configs[ship_id]
-  widget.setImage("ship_image", ship_config.preview)
+  widget.setImage("ship_image", custom_ship and "/interface/scripted/namje_existingchar/byos_preview.png" or ship_config.preview)
   local stats_1 = string.format(
     "^white;%s%%\n%s\n%s", 
     "^white;" .. math.floor(ship_config.base_stats.fuel_efficiency*100),
@@ -89,8 +105,14 @@ end
 function init_byos()
   ship_coroutine = coroutine.create(function()
     local upgrades = player.shipUpgrades()
-    player.giveItem({name = "upgrademodule", count = upgrade_refunds[math.min(8, upgrades.shipLevel)]})
-    player.upgradeShip({shipLevel = 9})
+    if upgrades.shipLevel ~= 69 then
+      player.giveItem({name = "upgrademodule", count = upgrade_refunds[math.min(8, upgrades.shipLevel)]})
+    end
+    if custom_ship then
+      player.giveItem({name = "namje_cargohold_shiplocker_2"})
+    else
+      player.upgradeShip({shipLevel = 9})
+    end
     player.startQuest("namje_shipPassive")
     player.startQuest("namje_shipCache")
     if namje_byos.is_fu() then
@@ -98,8 +120,12 @@ function init_byos()
       player.startQuest("fu_shipupgrades")
     end
     util.wait(0.1)
-    namje_byos.init_byos(current_template)
-    pane.dismiss()
+    namje_byos.init_byos(current_template, custom_ship)
+    if custom_ship then
+      player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_custombyoswarning.config", player.id())
+    else
+      pane.dismiss()
+    end
   end)
 end
 

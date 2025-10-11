@@ -127,7 +127,12 @@ function init() ini()
         if not namje_byos.is_on_own_ship() then
             player.warp(player.ownShipWorldId())
         else
-            player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config", player.id())
+            if namje_byos.is_fu() then
+                --something is closing the pane, so just dont put a source id
+                player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config")
+            else
+                player.interact("scriptPane", "/interface/scripted/namje_existingchar/namje_existingchar.config", player.id())
+            end
         end
     end
 end
