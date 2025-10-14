@@ -1,6 +1,5 @@
 sb.logInfo("namje // checking for fu compatibility")
 if assets.json("/versioning.config").FrackinUniverse == nil then
-  sb.logInfo("namje // not fu, skipping compatibility patches")
   return
 end
 sb.logInfo("namje // fu detected, adding compatibility patches")

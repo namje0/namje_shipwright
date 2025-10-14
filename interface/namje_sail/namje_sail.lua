@@ -381,7 +381,6 @@ function select_ship()
 
         for k, v in pairs(ship_upgrades) do
             if v > 0 and k ~= "modules" then
-                sb.logInfo("stat %s %s", k, v)
                 stats[k] = "^accent2_text_color;" .. (k == "fuel_efficiency" and math.floor(ship_config.stat_upgrades[k][v].stat*100) or ship_config.stat_upgrades[k][v].stat)
             end
         end
