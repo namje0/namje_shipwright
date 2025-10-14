@@ -31,6 +31,7 @@ function update(dt)
     self.currentPetSeed = pet[2]
     storage.petParams.level = 1
     storage.petParams.seed = pet[2]
+    storage.petParams.damageTeamType = "ghostly"
     self.petId = world.spawnMonster(pet[1], object.toAbsolutePosition(self.spawnOffset), storage.petParams)
     world.callScriptedEntity(self.petId, "setAnchor", entity.id())
     storage.spawnTimer = 0.5
