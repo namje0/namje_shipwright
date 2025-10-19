@@ -19,5 +19,12 @@
     "value": {
       "item": "namje_atmomodule"
     }
+  },
+  {
+    "op": "add",
+    "path": "/interactData/items/-",
+    "value": {
+      "item": "namje_repairshipvoucher"
+    }
   }
 ]
