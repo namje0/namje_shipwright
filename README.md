@@ -9,7 +9,12 @@ This framework is in beta and while stable, it may have game-breaking bugs. Plea
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 Includes compatibility options for existing characters, including conversion from vanilla to BYOS, and the option to transfer BYOS ships to namjeShipwright systems.
 
-Steam Link (TBA)
+### Installation
+Steam Workshop Link
+- Currently unreleased. Will release when OpenStarbound publishes a new release.
+
+Github
+- Install one of the [releases](https://github.com/namje0/namje_shipwright/releases) and extract the folder. Put it into your `starbound/mods` folder.
 
 ## For Modders
 Contributions to the framework are welcome!
@@ -95,3 +100,8 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Dropped items won't be stored on ship swap.
 - Entities such as the Rail Tram are currently not saved on ship swap.
 - Saving an existing ship for Frackin' Universe BYOS may result in ship-related objects (Pilot chair, teleporter, fuel hatch, SAIL) turning invisible. This is due to an issue with `fu_byosobjectanimation.lua` and will require those objects to be replaced. Any other objects will be fine. 
+
+## Credits
+- Zennle - Edited sprites
+- Nitrosteel - Workshop Icon
+- Malevolent_VoidHeart - AOM Kellion Inspiration
