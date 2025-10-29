@@ -601,12 +601,15 @@ function namje_byos.is_on_own_ship()
     end
 end
 
---- returns true if the module is found for the ship in the slot, false otherwise
+--- returns true if the module is found for the ship in the slot, false otherwise. Returns false when ship_stats are invalid
 --- @param slot number
 --- @param module string
 --- @return boolean
 function namje_byos.has_module(slot, module)
     local ship_stats = namje_byos.get_stats(slot)
+    if not ship_stats then
+        return false
+    end
     local ship_modules = ship_stats.modules
     for _, v in pairs(ship_modules) do
         if v and v == module then
@@ -692,7 +695,9 @@ function namje_byos.fill_shiplocker(species)
         error("namje // no species provided to fill ship locker")
     end
 
-    local racial_key = root.assetJson("/ships/" .. species .. "/blockKey.config:blockKey")
+    local universe_config = root.assetJson("/universe_server.config")
+    local species_ships = universe_config.speciesShips[species] or universe_config.speciesShips["apex"]
+    local racial_key = root.assetJson("/ships/" .. string.match(species_ships[1], "^/[^/]*/([^/]+)/") .. "/blockKey.config:blockKey")
     local treasure_pools
     local starter_treasure = {}
 
