@@ -27,6 +27,9 @@ function update(dt)
 
   local pet = world.getProperty("namje_ship_pet", nil)
   if storage.spawnTimer < 0 and self.petId == nil and pet ~= nil then
+    if type(pet[1]) ~= "string" then
+      return
+    end
     self.currentPetType = pet[1]
     self.currentPetSeed = pet[2]
     storage.petParams.level = 1
