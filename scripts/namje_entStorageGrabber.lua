@@ -6,6 +6,6 @@ function get_ent_storage(value)
     end
 end
 
-function set_ent_storage(key, value)
-    storage[key] = value
+function set_ent_storage(value)
+    storage = value
 end

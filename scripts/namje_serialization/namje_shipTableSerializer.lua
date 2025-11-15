@@ -343,17 +343,26 @@ function namje_tableSerializer.ship_to_table(excludes)
                     local packed_data = pack_obj_vals(pos, get_cached_id(obj_name), packed_direction)
                     local temp_obj_item = root.itemConfig(obj_name)
                     local old_parameters = temp_obj_item.config
-                    local required
-
+                    world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                    
                     local finalized_params = remove_duplicate_keys(object_parameters, old_parameters)
 
-                    local object_upgrade_stage = world.callScriptedEntity(object_id, "currentStageData")
-                    if object_upgrade_stage then
-                        if not required then
-                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+                    local obj_data_storage = world.callScriptedEntity(object_id, "get_ent_storage", "") or {}
+                    if namje_util.dict_size(obj_data_storage) > 0 then
+                        finalized_params["namje_data_storage"] = obj_data_storage
+                    end
+
+                    --upgrade stages
+                    if obj_data_storage.currentStage then
+                        finalized_params["startingUpgradeStage"] = obj_data_storage.currentStage or 0
+                    end
+
+                    --harvestable test
+                    if old_parameters.stages then
+                        local age = world.callScriptedEntity(object_id, "activeAge")
+                        if age then
+                            finalized_params["startingAge"] = age
                         end
-                        local current_stage = world.callScriptedEntity(object_id, "get_ent_storage", "currentStage")
-                        finalized_params["startingUpgradeStage"] = current_stage or 0
                     end
 
                     if not excludes.container_items then
@@ -368,43 +377,12 @@ function namje_tableSerializer.ship_to_table(excludes)
                         finalized_params["startingStage"] = farmable_stage
                     end
 
-                    if old_parameters.stages then
-                        if not required then
-                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                        end
-                        local durations = world.callScriptedEntity(object_id, "get_ent_storage", "durations")
-                        local age = world.callScriptedEntity(object_id, "activeAge")
-                        if age then
-                            finalized_params["startingAge"] = age
-                        end
-                        if durations and not finalized_params["harvestable_durations"] then
-                            finalized_params["harvestable_durations"] = durations
-                        end
-                    end
-
                     if old_parameters.deed then
-                        if not required then
-                            required = world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                        end
-                        local occupier = world.callScriptedEntity(object_id, "get_ent_storage", "occupier")
-                        local house = world.callScriptedEntity(object_id, "get_ent_storage", "house")
-                        local grumbles = world.callScriptedEntity(object_id, "get_ent_storage", "grumbles")
-
                         --delay the firstscan to detect the tenant(?)
                         if finalized_params.deed then
                             finalized_params.deed.firstScan = {15.0, 16.0}
                         else
                             finalized_params.deed = {firstScan = {15.0, 16.0}}
-                        end
-
-                        if occupier then
-                            finalized_params["colonydeed_occupier"] = occupier
-                        end
-                        if house then
-                            finalized_params["colonydeed_house"] = house
-                        end
-                        if grumbles then
-                            finalized_params["colonydeed_grumbles"] = grumbles
                         end
                     end
 
@@ -440,14 +418,14 @@ function namje_tableSerializer.ship_to_table(excludes)
                         end
                     end
 
+                    --[[
                     if input_nodes and input_nodes > 0 or output_nodes and output_nodes > 0 then
-                        world.callScriptedEntity(object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                        local current_state = world.callScriptedEntity(object_id, "get_ent_storage", "state")
+                        local current_state = obj_data_storage.state
                         finalized_params["namje_switch_state"] = current_state
-                    end
+                    end]]
 
                     local object_data = packed_data
-                    --remove params that are not being trimmed properly for some reason, the fringe cases where these values are changed via lua arent worth it
+                    --remove params that are not being trimmed properly for some reason, the fringe cases where these values are changed via lua arent worth the size increase
                     finalized_params.image = nil
                     finalized_params.direction = nil
                     finalized_params.scripts = nil
@@ -702,6 +680,29 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
         end
     end
 
+    local function manage_placed_object(placed_object_id, parameters)
+        local container_items = parameters and parameters.namje_container_items or nil
+        if parameters and parameters["namje_data_storage"] then
+            -- setting output state for wireables/doors
+            local object_state = parameters["namje_data_storage"].state
+            if object_state then
+                world.callScriptedEntity(placed_object_id, "output", object_state)
+                world.callScriptedEntity(placed_object_id, "openDoor")
+            end
+
+            world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
+            world.callScriptedEntity(placed_object_id, "set_ent_storage", parameters["namje_data_storage"])
+        end
+        if parameters and parameters["startingAge"] then
+            world.callScriptedEntity(placed_object_id, "setStage")
+        end
+        if container_items and next(container_items) ~= nil then
+            for slot, item in pairs (container_items) do
+                world.containerPutItemsAt(placed_object_id, item, slot - 1)
+            end
+        end
+    end
+
     local deserialize_coroutine = coroutine.create(function()
         --get the cached bounds, then clear the area
         local regions = {}
@@ -779,8 +780,6 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
                         unpacked_data = object
                     end
                     local pos, object_id, dir = unpack_obj_vals(unpacked_data)
-                    local container_items = parameters and parameters.namje_container_items or nil
-                    local switch_state = parameters and parameters.namje_switch_state or nil
                     local object_name = id_cache[object_id]
 
                     dir = dir == 0 and -1 or 1
@@ -791,30 +790,10 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
                         if place then
                             local placed_object_id = world.objectAt(pos)
                             if placed_object_id then
-                                if parameters and parameters["startingAge"] then
-                                    world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "created", world.time() - parameters["startingAge"])
-                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
-                                    world.callScriptedEntity(placed_object_id, "setStage")
-                                end
-                                if parameters and parameters["colonydeed_occupier"] and parameters["colonydeed_house"] and parameters["colonydeed_grumbles"] then
-                                    world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
-                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "house", parameters["colonydeed_house"])
-                                    world.callScriptedEntity(placed_object_id, "set_ent_storage", "grumbles", parameters["colonydeed_grumbles"])
-                                end
-                                if switch_state then
-                                    world.callScriptedEntity(placed_object_id, "output", switch_state)
-                                end
-                                if container_items and next(container_items) ~= nil then
-                                    for slot, item in pairs (container_items) do
-                                        world.containerPutItemsAt(placed_object_id, item, slot - 1)
-                                    end
-                                end
+                                manage_placed_object(placed_object_id, parameters)
                             end
                             placed_objects = placed_objects + 1
                         else
-                            sb.logInfo("namje // failed to place object " .. object_name .. " at " .. pos[1] .. "," .. pos[2])
                             table.insert(failed_objects, object)
                         end
                     else
@@ -858,38 +837,16 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
                         table.remove(failed_objects, k)
                     else
                         local parameters = type(object) == table and object[2] or nil
-                        local container_items = parameters and parameters.namje_container_items or nil
-                        local switch_state = parameters and parameters.namje_switch_state or nil
                         local object_name = id_cache[object_id]
 
                         if object_name then
                             dir = dir == 0 and -1 or 1
 
-                            --TODO: create a function so you dont need to do this twice
                             local place = world.placeObject(object_name, pos, dir or 0, parameters)
                             if place then
                                 local placed_object_id = world.objectAt(pos)
                                 if placed_object_id then
-                                    if switch_state then
-                                        world.callScriptedEntity(placed_object_id, "output", switch_state)
-                                    end
-                                    if parameters and parameters["startingAge"] then
-                                        world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "created", world.time() - parameters["startingAge"])
-                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "durations", parameters["harvestable_durations"])
-                                        world.callScriptedEntity(placed_object_id, "setStage")
-                                    end
-                                    if parameters and parameters["colonydeed_occupier"] and parameters["colonydeed_house"] and parameters["colonydeed_grumbles"] then
-                                        world.callScriptedEntity(placed_object_id, "require", "/scripts/namje_entStorageGrabber.lua")
-                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "occupier", parameters["colonydeed_occupier"])
-                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "house", parameters["colonydeed_house"])
-                                        world.callScriptedEntity(placed_object_id, "set_ent_storage", "grumbles", parameters["colonydeed_grumbles"])
-                                    end
-                                end
-                                if container_items then
-                                    for slot, item in pairs (container_items) do
-                                        world.containerPutItemsAt(object_id, item, slot-1)
-                                    end
+                                    manage_placed_object(placed_object_id, parameters)
                                 end
                                 placed_objects = placed_objects + 1
                                 table.remove(failed_objects, k)
