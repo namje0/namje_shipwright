@@ -13,6 +13,8 @@ local module_format = [[
         },
         "itemTags": [],
         "inventoryIcon": "%s",
+        "music": %s,
+        "script": "%s",
         "twoHanded": true,
         "maxStack": 1,
         "scripts": [],
@@ -26,7 +28,7 @@ for i = 1, #modules do
     local module_icon = module.icon or "/namje_shipmodules/namje_genericmodule.png"
     local module_id = modules[i]:match("^.*/([^%.]+)%.namjemodule$")
 
-    local formatted_module = string.format(module_format, module_id, module.name, module.description, module.price, module.rarity, module.icon)
+    local formatted_module = string.format(module_format, module_id, module.name, module.description, module.price, module.rarity, module_icon, module.music or false, module.script or "")
 
     local path = "/" .. module_id .. ".activeitem"
     assets.add(path, formatted_module)
