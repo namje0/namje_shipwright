@@ -10,21 +10,8 @@
         "op": "add",
         "path": "/namjeships",
         "value": [
-            "/spawnitem shiplicense_onyx",
-            "/spawnitem namje_startership"
-        ]
-    },
-    {
-        "op": "add",
-        "path": "/namjequickupgrades",
-        "value": [
-            "/startquest gaterepair",
-            "/completequest gaterepair",
-            "/startquest human_mission1",
-            "/completequest human_mission1",
-            "/startquest shiprepair",
-            "/completequest shiprepair",
-            "/spawnitem fakelicense1"
+            "/spawnitem shiplicense_namje_shuttle",
+            "/spawnitem shiplicense_namje_island"
         ]
     }
 ]
