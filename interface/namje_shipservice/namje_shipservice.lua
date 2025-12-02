@@ -225,6 +225,12 @@ local function reset_slot(slot_num)
 end
 
 function init()
+  if namje_byos.is_on_ship() then
+    interface.queueMessage("^yellow;Technician unavailable on ships.")
+    pane.dismiss()
+    return
+  end
+
   icons = root.assetJson("/namje_ships/ship_icons/icons.config").ship_icons
   populate_ship_list()
   toggle_info(false)
