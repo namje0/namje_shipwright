@@ -105,3 +105,4 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Zennle - Edited sprites
 - Nitrosteel - Workshop Icon
 - Malevolent_VoidHeart - AOM Kellion Inspiration
+- kazookid_, qsmaster - Ship Icon Contributions
