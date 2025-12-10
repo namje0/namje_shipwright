@@ -13,7 +13,7 @@
   },
   "namje_pickup_module" : {
     "type" : "tutorial",
-    "text" : "You obtained a ship module. These modules can provide a wide range of benefits for your ship. You can install them at a ^orange;Ship Service Technician.^reset; You may have to upgrade your ship first."
+    "text" : "You obtained a ship module. These modules can provide a wide range of benefits for your ship. You can install them at a ^orange;Ship Service Technician or in your S.A.I.L.^reset; You may have to upgrade your ship first."
   },
   "namje_pickup_pet" : {
     "type" : "tutorial",
