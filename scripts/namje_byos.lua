@@ -144,16 +144,20 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
         end
 
         if not isEmpty(previous_ship_content) then
+            local obj_cache = {}
             for _, chunk in pairs (previous_ship_content[2]) do
                 if chunk.objs and not isEmpty(chunk.objs) then
                     for _, object in pairs (chunk.objs) do
                         if type(object) == "table" then
-                            local object_params = object[2]
-                            if object_params then
-                                local container_items = object_params.namje_container_items or nil
-                                if container_items then
-                                    for slot, item in pairs (container_items) do
-                                        table.insert(items, item)
+                            if not obj_cache[object[1]] then
+                                obj_cache[object[1]] = true
+                                local object_params = object[2]
+                                if object_params then
+                                    local container_items = object_params.namje_container_items or nil
+                                    if container_items then
+                                        for slot, item in pairs (container_items) do
+                                            table.insert(items, item)
+                                        end
                                     end
                                 end
                             end
