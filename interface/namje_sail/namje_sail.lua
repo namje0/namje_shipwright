@@ -417,14 +417,14 @@ function select_ship()
 
         widget.setButtonEnabled(shipslot_info .. ".favorite_ship", true)
         if string.find(ship_slot, tostring(current_slot)) then
-            local favorite = not ship_info.favorited
             widget.setButtonEnabled(shipslot_info .. ".swap_ship", false)
-            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", favorite)
+            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", false)
         else
+            local favorite = not ship_info.favorited
             if namje_byos.is_on_own_ship() then
                 widget.setButtonEnabled(shipslot_info .. ".swap_ship", true)
             end
-            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", false)
+            widget.setButtonEnabled(shipslot_info .. ".salvage_ship", favorite)
         end
     end
     last_selected_widget = selected_ship
@@ -502,17 +502,36 @@ function favorite_ship()
     end
 
     ship_info.favorited = not ship_info.favorited
-    sb.logInfo("favorite %s", ship_info.favorited)
     namje_byos.set_ship_info(ship_slot, {["favorited"] = ship_info.favorited})
     widget.setText(ship_list .. "." .. selected_ship .. ".item_name", "^" .. current_theme.main_text_color .. ";" .. ship_info.name .. (ship_info.favorited and " " or "")
         .. (string.find(ship_slot, tostring(current_slot)) and " ^yellow;[Current]^reset;" or ""))
-    if current_slot == ship_slot then
+    if current_slot ~= ship_slot then
         widget.setButtonEnabled(shipslot_info .. ".salvage_ship", not ship_info.favorited)
     end
 end
 
 function salvage_ship()
-    interface.queueMessage("Ship salvaging currently unavailable.")
+    if not namje_byos.is_on_own_ship() then
+        sb.logInfo("namje // tried to salvage ships while not on own ship")
+        return
+    end
+
+    local shipslot_info = tabs[4][3]
+    local ship_list = tabs[4][2]
+    local selected_ship = widget.getListSelected(ship_list)
+
+    if not selected_ship then
+        return
+    end
+
+    local ship_slot = widget.getData(ship_list .. "." .. selected_ship)[1]
+    local salvage_pane = root.assetJson("/interface/namje_salvage/namje_salvage.config")
+    salvage_pane.slot = ship_slot
+
+    sb.logInfo("SELECTED SLOT %s", ship_slot)
+
+    player.interact("ScriptPane", salvage_pane, pane.sourceEntity())
+    pane.dismiss()
 end
 
 function settings_tab()

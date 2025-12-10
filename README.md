@@ -91,7 +91,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Better error handling for mod incompatibilities, missing assets, load failures
 - Make crew members per-ship
 - Add recipes and things to treasure pools
-- Salvage existing ships
 
 ## Bugs
 - Liquid quantity is inconsistent on ship swap.
