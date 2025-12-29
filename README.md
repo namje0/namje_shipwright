@@ -4,7 +4,7 @@
 # 🚀 namjeShipwright
 > This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
 
-This framework is in beta and while stable, it may have game-breaking bugs. Please report any issues with the framework!
+**This framework is in beta.** It has been tested in singleplayer and multiplayer for stability, though features of the framework are subject to large changes and may have undiscovered bugs. Use at your own discretion, and backups are recommended. Please report issues with the framework!
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 Includes compatibility options for existing characters, including conversion from vanilla to BYOS, and the option to transfer BYOS ships to namjeShipwright systems.
