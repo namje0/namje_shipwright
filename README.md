@@ -2,9 +2,9 @@
 <p align="center"><img src="https://i.imgur.com/FN9fjwi.gif"/></p>
 
 # 🚀 namjeShipwright
-> This framework requires [OpenStarbound Nightly Build](https://github.com/OpenStarbound/OpenStarbound)
+> This framework requires [OpenStarbound](https://github.com/OpenStarbound/OpenStarbound/releases)
 
-**This framework is in beta.** It has been tested in singleplayer and multiplayer for stability, though features of the framework are subject to large changes and may have undiscovered bugs. Use at your own discretion, and backups are recommended. Please report issues with the framework!
+**This framework is in beta.** It has been tested in singleplayer and multiplayer for stability, though features of the framework are subject to change and may have undiscovered bugs. Backups are recommended. Please report issues with the framework!
 
 A ship overhaul framework that adds a modern BYOS implementation, the ability to store and move between multiple ships, a new ship upgrading implementation, and the ability to create and use ship templates.
 Includes compatibility options for existing characters, including conversion from vanilla to BYOS, and the option to transfer BYOS ships to namjeShipwright systems.
@@ -58,6 +58,8 @@ Ship Modules can provide a wide range of benefits to your ships.
 - Module script delta is 60. This may be changed later.
 - Module scripts are only initialized for the ship owner clientside when they are on their ship.
     - Use stagehands to create global module effects
+### Ship Cassettes
+Cassettes play music on your ship, shuffling between them each time you enter it. Due to starbound limitations, they won't shuffle on loop.
 ### Cargo Hold
 Ships come with a cargo hold, which is a storage container linked to the ship.
 - When you overwrite a ship, its cargo is automatically moved to the new one.

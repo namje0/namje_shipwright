@@ -622,6 +622,7 @@ function crew_tab()
         widget.setImage(list_item..".item_background", current_theme.list_item_bg or sail_themes["default"].list_item_bg)
         
         local canvas = widget.bindCanvas(list_item..".portrait")
+        sb.logInfo("member portrait %s", member.portrait)
         for _, portrait in ipairs(member.portrait) do
             canvas:drawImage(portrait.image, {-15.5, -19.5})
         end

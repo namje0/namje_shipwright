@@ -1,0 +1,8 @@
+{
+  "name" : "On The Beach At Night",
+  "description" : "Plays ^orange;Curtis Schweitzer - On The Beach At Night^reset; on your ship.",
+  "price" : 20000,
+  "rarity" : "essential",
+  "icon" : "/namje_shipcassettes/namje_onthebeach/namje_onthebeach.png",
+  "audio" : "/music/on-the-beach-at-night.ogg"
+}

@@ -1,0 +1,8 @@
+{
+  "name" : "Dance! Dance! Dance!",
+  "description" : "Plays music from the hit game Dance-Dance on your ship.",
+  "price" : 10000,
+  "rarity" : "Rare",
+  "icon" : "/namje_shipcassettes/namje_dancedance/namje_dancedance.png",
+  "audio" : "/sfx/objects/dancebound.ogg"
+}

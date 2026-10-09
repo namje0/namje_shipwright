@@ -99,6 +99,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
             celestial_pos = old_stats and old_stats.celestial_pos or {system = celestial.currentSystem(), location = celestial.shipLocation()},
             modules = {}, -- return modules as items instead
+            cassettes = {}, -- return cassettes as items too
             pet = old_stats and old_stats.pet or {}
         },
         upgrades = {
@@ -138,6 +139,12 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
         if old_stats then
             local modules = old_stats.modules
             for _, v in pairs(modules) do
+                local item = {name = v, count = 1}
+                table.insert(items, item)
+            end
+
+            local cassettes = old_stats.cassettes
+            for _, v in pairs(cassettes) do
                 local item = {name = v, count = 1}
                 table.insert(items, item)
             end

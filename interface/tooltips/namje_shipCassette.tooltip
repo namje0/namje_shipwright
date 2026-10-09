@@ -41,11 +41,11 @@
   },
   "instructionLabel" : {
     "type" : "label",
-    "position" : [11, 60],
+    "position" : [12, 60],
     "hAnchor" : "left",
     "vAnchor" : "top",
-    "wrapWidth" : 125,
-    "value" : "Slot modules at a technician or your S.A.I.L.",
+    "wrapWidth" : 127,
+    "value" : "Slot cassettes into your S.A.I.L.",
     "color" : "gray"
   }
 }

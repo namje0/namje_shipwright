@@ -5,8 +5,15 @@ local fu_atmosphere = false
 local initial_outside = false
 local on_ship = false
 local on_own_ship = false
+local promise
+local pending_music_tracks = {}
+local music_refresh_pending = false
+local music_lookup_pending = false
+local music_die_sent = false
+local MUSIC_STAGEHAND = "namje_music_stagehand"
 
 function init()
+    promise = PromiseKeeper.new()
     if namje_byos.is_fu() then
         fu_atmosphere = true
         sb.logInfo("namje // fu atmosphere detected")
@@ -25,28 +32,38 @@ function init()
         on_own_ship = false
     end
 
+    music_refresh_pending = on_own_ship
+
     local current_slot = player.getProperty("namje_current_ship", 1)
     local ship_stats = namje_byos.get_stats(current_slot)
     if ship_stats then
         local ship_modules = ship_stats.modules
-        local music_mods = {}
         for k, v in pairs(ship_modules) do
             if v then
                 local module = root.itemConfig(v)
                 if module then
                     local module_config = module.config
-                    if module_config.music and #module_config.script > 0 then
-                        table.insert(music_mods, module_config.script)
-                    elseif #module_config.script > 0 then
+                    if #module_config.script > 0 then
                         require(module_config.script)
                     end
                 end
             end
         end
-        --the music modules implemented in this framework share a stagehand to reduce bloat, shuffle music so theres no dupe stagehands
-        if #music_mods > 0 then
-            require(music_mods[math.random(1, #music_mods)])
+
+        local ship_cassettes = ship_stats.cassettes
+        local tracks = {}
+
+        for k, v in pairs(ship_cassettes) do
+            if v then
+                local cassette = root.itemConfig(v)
+                if cassette then
+                    local cassette_config = cassette.config
+                    local track = cassette_config.audio
+                    table.insert(tracks, track)
+                end
+            end
         end
+        pending_music_tracks = tracks
     end
 
     message.setHandler("namje_upgradeShip", function(_, _, ship_stats)
@@ -57,6 +74,9 @@ function init()
 end
 
 function update(dt)
+    promise:update()
+    try_spawn_music_stagehand()
+
     local current_slot = player.getProperty("namje_current_ship", 1)
     if fu_atmosphere or namje_byos.has_module(current_slot, "namje_atmomodule") then
         return
@@ -84,4 +104,57 @@ function move_to_ship_spawn()
     --[[local spawn = world.getProperty("namje_ship_spawn", {1024, 1024})
     mcontroller.setPosition(vec2.add(spawn, {0, 2}))]]
     player.warp("nowhere")
+end
+
+function try_spawn_music_stagehand()
+    if not music_refresh_pending then
+        return
+    end
+    if music_lookup_pending then
+        return
+    end
+
+    music_lookup_pending = true
+    promise:add(world.findUniqueEntity(MUSIC_STAGEHAND),
+        function(result)
+            music_lookup_pending = false
+            if result then
+                if not music_die_sent then
+                    music_die_sent = true
+                    promise:add(world.sendEntityMessage(MUSIC_STAGEHAND, "namje_die"), nil,
+                        function(err)
+                            sb.logInfo("namje // music stagehand die promise error: %s", tostring(err))
+                            music_die_sent = false
+                        end
+                    )
+                end
+            else
+                spawn_music_stagehand()
+            end
+        end,
+        function()
+            music_lookup_pending = false
+            spawn_music_stagehand()
+        end
+    )
+end
+
+function spawn_music_stagehand()
+    if #pending_music_tracks > 0 then
+        world.spawnStagehand({1024, 1024}, MUSIC_STAGEHAND, {musicTable = shuffle(pending_music_tracks)})
+    end
+    music_refresh_pending = false
+    music_die_sent = false
+end
+
+function shuffle(tracks)
+    local shuffled = {}
+    for i, v in ipairs(tracks) do
+        shuffled[i] = v
+    end
+    for i = #shuffled, 2, -1 do
+        local j = math.random(1, i)
+        shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
+    end
+    return shuffled
 end

@@ -1,12 +1,12 @@
 {
     "id" : "namje_byoscompatibility",
 
-    "name" : "BYOS Ship",
-    "description" : "A compatibility option for pre-existing characters. Not to be used for anything else.",
+    "name" : "Custom Ship",
+    "description" : "A custom ship, either imported via code or for pre-existing BYOS compatibility.",
     "manufacturer" : "",
     "recommended_crew_size" : "1-12",
     "auto_create_license" : false,
-    "price" : 10,
+    "price" : 10000,
     "add_to_penguin_bay" : false,
 
     "base_stats" : {
