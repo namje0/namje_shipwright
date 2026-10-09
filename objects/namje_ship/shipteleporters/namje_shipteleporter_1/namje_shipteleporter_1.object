@@ -39,7 +39,7 @@
       "position" : [-0.5, 5],
       "size" : 1.0,
       "color" : [111, 233, 149, 255],
-      "light" : [32, 160, 89],
+      "light" : [12, 80, 55],
       "fade" : 0.9,
       "destructionAction" : "shrink",
       "destructionTime" : 0.5,
