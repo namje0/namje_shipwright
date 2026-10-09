@@ -11,7 +11,7 @@ Includes compatibility options for existing characters, including conversion fro
 
 ### Installation
 Steam Workshop Link
-- Currently unreleased. Will release when OpenStarbound publishes a new release.
+- Currently unreleased. Will release when code importing is added.
 
 Github
 - Install one of the [releases](https://github.com/namje0/namje_shipwright/releases) and extract the folder. Put it into your `starbound/mods` folder.
@@ -60,6 +60,7 @@ Ship Modules can provide a wide range of benefits to your ships.
     - Use stagehands to create global module effects
 ### Ship Cassettes
 Cassettes play music on your ship, shuffling between them each time you enter it. Due to starbound limitations, they won't shuffle on loop.
+- Requires no coding, just needs a `.namjecassette` json file. Refer to [existing cassettes](https://github.com/namje0/namje_shipwright/blob/main/namje_shipcassettes/namje_tranqbase/namje_tranqbase.namjecassette) for reference.
 ### Cargo Hold
 Ships come with a cargo hold, which is a storage container linked to the ship.
 - When you overwrite a ship, its cargo is automatically moved to the new one.
@@ -91,7 +92,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 ## Upcoming Features
 - Building ship from code option at ship technician
 - Better error handling for mod incompatibilities, missing assets, load failures
-- Make crew members per-ship
 - Add recipes and things to treasure pools
 
 ## Bugs
