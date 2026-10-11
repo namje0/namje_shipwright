@@ -7,6 +7,7 @@ require "/scripts/messageutil.lua"
 require "/scripts/namje_util.lua"
 require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
 require "/scripts/namje_serialization/namje_shipCode.lua"
+require "/scripts/namje_serialization/namje_b64.lua"
 
 namje_byos = {}
 namje_byos.current_ship = nil
@@ -37,7 +38,12 @@ end
 function namje_byos.get_ship_content(slot)
     if world.isClient() then
         local v_json = player.getProperty("namje_slot_" .. slot .. "_shipcontent")
-        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or nil
+        local content = v_json and root.loadVersionedJson(v_json, VERSION_ID) or nil
+        -- content saved before compression was added is stored as the raw binary, so only unpack packed content
+        if namje_b64.is_packed(content) then
+            content = namje_b64.unpack(content)
+        end
+        return content
     else
         --TODO: get on server
         return nil
@@ -46,7 +52,7 @@ end
 
 function namje_byos.set_ship_content(slot, data)
     if world.isClient() then
-        local v_json = root.makeCurrentVersionedJson(VERSION_ID, data)
+        local v_json = root.makeCurrentVersionedJson(VERSION_ID, #data > 0 and namje_b64.pack(data) or data)
         player.setProperty("namje_slot_" .. slot .. "_shipcontent", v_json)
     end
 end
@@ -133,7 +139,8 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
             return
         end
 
-        local previous_ship_content = #namje_byos.get_ship_content(slot) > 0 and namje_binarySerializer.unpack_ship_data(namje_byos.get_ship_content(slot)) or {}
+        local content = namje_byos.get_ship_content(slot)
+        local previous_ship_content = #content > 0 and namje_binarySerializer.unpack_ship_data(content) or {}
         local items = {}
 
         if old_stats then

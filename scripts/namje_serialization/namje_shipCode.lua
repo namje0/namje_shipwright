@@ -1,49 +1,46 @@
 require "/scripts/namje_byos.lua"
 require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
+require "/scripts/namje_serialization/namje_serializationCompat.lua"
 require "/scripts/namje_serialization/namje_b64.lua"
 
 namje_shipCode = {}
 
---- generates a ship code from the ship binary data and regions table. returns the base64 ship code
+local PREFIX = "namjeShip::"
+
+--- generates a ship code from the ship binary data and regions table. returns the compressed, base64 ship code
 --- @param data string
 --- @param regions table
 --- @returns string
 function namje_shipCode.generate_ship_code(data, regions)
-    local prefix = "namjeShip::"
-    local compressed_regions = {}
-    for k, _ in pairs(regions) do
-        table.insert(compressed_regions, k)
-    end
-    local code = prefix .. namje_b64.encode(table.concat(compressed_regions, "|") .. ":" .. data)
-    return code
+    return PREFIX .. namje_b64.pack(namje_binarySerializer.attach_regions(data, regions))
 end
 
---- decodes a ship code. returns the region and data
+--- decodes a ship code. returns the regions and the ship binary data, or nil if the code is invalid.
+--- accepts current and legacy codes
 --- @param string code
 --- @returns table, string
 function namje_shipCode.decode_ship_code(code)
-    local prefix = "namjeShip::"
-
-    if not (code:sub(1, #prefix) == prefix) then
+    if not (code:sub(1, #PREFIX) == PREFIX) then
         return nil, nil
     end
 
-    local encoded_payload = code:sub(#prefix + 1)
-    local decoded_string = namje_b64.decode(encoded_payload)
-    
-    local region_part, data = decoded_string:match("^([^:]*):(.*)$")
-    if not region_part or not data then
+    local payload = code:sub(#PREFIX + 1)
+    local success, regions, data = pcall(function()
+        if namje_b64.is_packed(payload) then
+            local decoded = namje_b64.unpack(payload)
+            if namje_binarySerializer.is_current(decoded) then
+                return namje_binarySerializer.read_regions(decoded), decoded
+            end
+            return namje_serializationCompat.split_ship_code_v1(decoded)
+        end
+        return namje_serializationCompat.decode_ship_code_v1(payload)
+    end)
+    if not success then
+        sb.logInfo("namje // failed to decode ship code: %s", regions)
         return nil, nil
     end
-
-    local region_list = {}
-    for region in string.gmatch(region_part, "([^|]+)") do
-        table.insert(region_list, region)
-    end
-    
-    local regions = {}
-    for _, region in ipairs(region_list) do
-        regions[region] = true
+    if not regions or not data then
+        return nil, nil
     end
     return regions, data
 end
