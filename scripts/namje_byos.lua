@@ -12,6 +12,9 @@ require "/scripts/namje_serialization/namje_b64.lua"
 namje_byos = {}
 namje_byos.current_ship = nil
 
+--currently only skips the shipswap cinematic
+local DEBUG = true
+
 --chunk size, for ship serialization purposes
 local CHUNK_SIZE = 32
 local VERSION_ID = "namje_shipwright"
@@ -123,7 +126,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
     namje_byos.set_ship_data(ships)
     if player.getProperty("namje_current_ship", 1) == slot and not use_existing then
         local intro = ship_config.id == "namje_startership" and true or false
-        if not intro then
+        if not intro and not DEBUG then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
             player.playCinematic(cinematic)
         end
@@ -391,6 +394,27 @@ function namje_byos.despawn_ship_npcs()
                 world.callScriptedEntity(entity_id, "status.addEphemeralEffect", "namje_shipdespawn")
             end
         end
+    end
+end
+
+--- despawns vehicle entities in the cached ship regions.
+function namje_byos.despawn_ship_vehicles()
+    local region_cache = world.getProperty("namje_region_cache", {})
+    local regions = {}
+    local region_bounds
+    if isEmpty(region_cache) then
+        sb.logInfo("namje // region cache is empty, though it shouldn't be. using defaults")
+        region_bounds = rect.fromVec2({974, 974}, {1074, 1074})
+    else
+        for region, _ in pairs(region_cache) do
+            local chunk = namje_util.region_decode(region)
+            table.insert(regions, chunk)
+        end
+        region_bounds = namje_util.get_chunk_rect(regions)
+    end
+    local entities = world.entityQuery({region_bounds[1], region_bounds[2]}, {region_bounds[3], region_bounds[4]}, {includedTypes = {"vehicle"}})
+    for _, entity_id in ipairs(entities) do
+        world.callScriptedEntity(entity_id, "vehicle.destroy")
     end
 end
 
