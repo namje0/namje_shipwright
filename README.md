@@ -107,3 +107,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Nitrosteel - Workshop Icon
 - Malevolent_VoidHeart - AOM Kellion Inspiration
 - kazookid_, qsmaster - Ship Icon Contributions
+
+## AI Disclaimer
+Opus 5.5 was used to help with [ship serialization](https://github.com/namje0/namje_shipwright/tree/main/scripts/namje_serialization). All other code and assets were created without AI.
