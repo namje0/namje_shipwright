@@ -402,7 +402,7 @@ function select_ship()
         end
         local stats_2 = string.format(
             "^os_text_color;%s\n%s\n%s\n%s\n%s", 
-            namje_util.dict_size(ship_stats.cargo_hold),
+            namje_util.dict_size(namje_byos.get_cargo_hold(ship_slot)),
             ship_stats.fuel_amount,
             ship_stats.crew_amount,
             namje_util.dict_size(ship_stats.modules),

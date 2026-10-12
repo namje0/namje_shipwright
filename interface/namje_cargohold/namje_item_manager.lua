@@ -32,13 +32,7 @@ end
 
 function namje_item_manager:update_stats()
     local ship_slot = player.getProperty("namje_current_ship", 1)
-    local ship_stats = namje_byos.get_stats(ship_slot)
-    if not ship_stats then
-        sb.logInfo("namje // no ship stats found for slot %s", ship_slot)
-        return
-    end
-
-    local stats = namje_byos.set_stats(ship_slot, {["cargo_hold"] = namje_util.deep_copy(self.cargo_content)})
+    namje_byos.set_cargo_hold(ship_slot, self.cargo_content)
     self:update_capacity_text()
 end
 

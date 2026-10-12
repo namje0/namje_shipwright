@@ -84,12 +84,10 @@ function init() ini()
                 world.setProperty("namje_region_cache", ship_stats.cached_regions or {})
             end
             
-            local prev_cargo_hold = isEmpty(prev_ship_stats.cargo_hold) and {} or namje_util.deep_copy(prev_ship_stats.cargo_hold)
             if prev_ship_stats then
                 namje_byos.set_stats(slot, {
                     ["cached_regions"] = current_region_cache,
-                    ["fuel_amount"] = prev_ship_stats.fuel_amount, 
-                    ["cargo_hold"] = prev_cargo_hold, 
+                    ["fuel_amount"] = prev_ship_stats.fuel_amount,
                     ["celestial_pos"] = {["system"] = celestial.currentSystem(), ["location"] = celestial.shipLocation()},
                     ["pet"] = prev_ship_stats.pet
                 })
@@ -121,6 +119,11 @@ function init() ini()
         end
         return on_ship
     end)
+
+    -- cargo holds used to be stored in the ship stats, move them into their own properties
+    if player.getProperty("namje_byos_setup") then
+        namje_byos.migrate_cargo_holds()
+    end
 
     local existing_char = player.hasCompletedQuest("bootship")
     if existing_char and not player.getProperty("namje_byos_setup") then

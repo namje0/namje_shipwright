@@ -60,6 +60,62 @@ function namje_byos.set_ship_content(slot, data)
     end
 end
 
+--- returns the cargo hold items for the ship in the given slot. cargo holds are kept in their own property, outside of the ship stats
+--- @param slot number
+--- @return table
+function namje_byos.get_cargo_hold(slot)
+    if world.isClient() then
+        local v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
+        if not v_json then
+            -- the cargo hold may still be in the ship stats if it was saved before cargo holds had their own property
+            if not namje_byos.migrate_cargo_holds() then
+                return {}
+            end
+            v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
+        end
+        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
+    else
+        --TODO: get on server
+        return nil
+    end
+end
+
+--- sets the cargo hold items for the ship in the given slot. nil clears the cargo hold
+--- @param slot number
+--- @param cargo_hold table
+function namje_byos.set_cargo_hold(slot, cargo_hold)
+    if world.isClient() then
+        local v_json = cargo_hold and root.makeCurrentVersionedJson(VERSION_ID, cargo_hold) or nil
+        player.setProperty("namje_slot_" .. slot .. "_cargohold", v_json)
+    end
+end
+
+--- moves cargo holds saved in the ship stats by older versions into their own properties. returns true if any were moved
+--- @return boolean
+function namje_byos.migrate_cargo_holds()
+    if not world.isClient() then
+        return false
+    end
+    local ships = namje_byos.get_ship_data()
+    local migrated = false
+    for key, ship in pairs(ships) do
+        local slot = type(ship) == "table" and ship.stats and ship.stats.cargo_hold and tonumber(key:match("^slot_(%d+)$"))
+        if slot then
+            -- never overwrite a cargo hold that is already in the new property
+            if not player.getProperty("namje_slot_" .. slot .. "_cargohold") then
+                namje_byos.set_cargo_hold(slot, ship.stats.cargo_hold)
+            end
+            ship.stats.cargo_hold = nil
+            migrated = true
+        end
+    end
+    if migrated then
+        sb.logInfo("namje // moved cargo holds out of ship stats")
+        namje_byos.set_ship_data(ships)
+    end
+    return migrated
+end
+
 --- register a new ship for the player, overwriting/adding to a slot. use_existing is only for the starter ship when handling existing characters.
 --- @param slot number
 --- @param ship_type string
@@ -72,6 +128,9 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
     if world.isServer() then
         error("namje_byos.register_new_ship // register_new_ship cannot be called on server")
     end
+
+    -- the cargo hold is kept when a slot is overwritten, so move it out of the old stats before they're replaced
+    namje_byos.migrate_cargo_holds()
 
     local ship_config = namje_byos.get_ship_config(ship_type)
     local ships = namje_byos.get_ship_data()
@@ -104,7 +163,6 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
         stats = {
             cached_regions = old_stats and old_stats.cached_regions or {},
             crew_amount = old_stats and old_stats.crew_amount or 0,
-            cargo_hold = old_stats and old_stats.cargo_hold or {},
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
             celestial_pos = old_stats and old_stats.celestial_pos or {system = celestial.currentSystem(), location = celestial.shipLocation()},
             modules = {}, -- return modules as items instead
@@ -773,6 +831,5 @@ function namje_byos.fill_shiplocker(species)
     end
 
     local ship_slot = player.getProperty("namje_current_ship", 1)
-    local ship_stats = namje_byos.get_stats(ship_slot)
-    namje_byos.set_stats(ship_slot, {["cargo_hold"] = cargo_hold})
+    namje_byos.set_cargo_hold(ship_slot, cargo_hold)
 end

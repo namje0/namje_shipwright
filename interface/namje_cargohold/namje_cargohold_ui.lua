@@ -30,7 +30,7 @@ function init()
     end
 
     cargo_size = ship_upgrades.cargo_size > 0 and ship_config.stat_upgrades["cargo_size"][ship_upgrades.cargo_size].stat or ship_config.namje_stats.cargo_size
-    cargo_content = ship_stats.cargo_hold
+    cargo_content = namje_byos.get_cargo_hold(current_slot)
 
     item_grid = namje_item_manager.new(cargo_size, cargo_content, SLOT_LIST)
     item_grid:populate_grid("")

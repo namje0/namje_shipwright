@@ -46,7 +46,7 @@ function confirm()
     end
   end
 
-  for _, v in pairs(ship_data.stats.cargo_hold) do
+  for _, v in pairs(namje_byos.get_cargo_hold(slot)) do
     table.insert(items, v)
   end
 
@@ -88,6 +88,7 @@ function confirm()
   player.addCurrency("money", refund)
 
   namje_byos.set_ship_content(slot, "")
+  namje_byos.set_cargo_hold(slot, nil)
   ply_ships["slot_"..slot] = {}
   namje_byos.set_ship_data(ply_ships)
   pane.dismiss()
