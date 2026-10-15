@@ -107,7 +107,7 @@ function namje_tableSerializer.ship_to_table(excludes)
         local is_same_hue = (current_hue == run_table.last_hue)
 
         if current_id == run_table.last_id and is_same_color and is_same_hue then
-run_table.length = run_table.length + 1
+            run_table.length = run_table.length + 1
         else
             if run_table.start_pos then
                 local packed_data = pack_tile_vals(run_table.length, run_table.last_id, run_table.last_color, run_table.last_hue)

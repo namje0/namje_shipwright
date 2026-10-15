@@ -184,7 +184,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
     namje_byos.set_ship_data(ships)
     if player.getProperty("namje_current_ship", 1) == slot and not use_existing then
         local intro = ship_config.id == "namje_startership" and true or false
-        if not intro and not DEBUG then
+        if not intro or not DEBUG then
             local cinematic = "/cinematics/namje/shipswap.cinematic"
             player.playCinematic(cinematic)
         end
@@ -282,7 +282,7 @@ function namje_byos.add_ship_slots(num)
         local slot = "slot_" .. i
         if not ships[slot] then
             ships[slot] = {}
-            namje_byos.set_ship_content(slot, "")
+            namje_byos.set_ship_content(i, "")
         end
     end
     namje_byos.set_ship_data(ships)

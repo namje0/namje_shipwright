@@ -12,11 +12,11 @@ function init()
     end
 
     local current_slot = player.getProperty("namje_current_ship", 1)
-    local ship_stats = namje_byos.get_stats(current_slot)
     local ship_info = namje_byos.get_ship_info(current_slot)
     local ship_upgrades = namje_byos.get_upgrades(current_slot)
+    local ship_cargo = namje_byos.get_cargo_hold(current_slot)
 
-    if not ship_stats or not ship_info or not ship_upgrades then
+    if not ship_cargo or not ship_info or not ship_upgrades then
         sb.logInfo("namje // could not get ship information")
         pane.dismiss()
         return
@@ -30,7 +30,7 @@ function init()
     end
 
     cargo_size = ship_upgrades.cargo_size > 0 and ship_config.stat_upgrades["cargo_size"][ship_upgrades.cargo_size].stat or ship_config.namje_stats.cargo_size
-    cargo_content = namje_byos.get_cargo_hold(current_slot)
+    cargo_content = ship_cargo
 
     item_grid = namje_item_manager.new(cargo_size, cargo_content, SLOT_LIST)
     item_grid:populate_grid("")

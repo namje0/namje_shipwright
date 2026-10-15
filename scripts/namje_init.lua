@@ -120,7 +120,6 @@ function init() ini()
         return on_ship
     end)
 
-    -- cargo holds used to be stored in the ship stats, move them into their own properties
     if player.getProperty("namje_byos_setup") then
         namje_byos.migrate_cargo_holds()
     end

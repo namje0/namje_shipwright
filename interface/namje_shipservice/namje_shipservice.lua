@@ -1,5 +1,12 @@
 require "/scripts/namje_byos.lua"
 
+local IMPORT_PRICES = {
+  base = 10000,
+  tile = 10,
+  object_multiplier = 2.5,
+  item_multiplier = 4,
+  final_multiplier = 1.5
+}
 local CHANGE_PRICES = {
   name = {500, 0},
   icon = {250, 0},
@@ -20,6 +27,27 @@ local INFO_AREA = {
   "lbl_stats_2",
   "lbl_stats_1_num",
   "lbl_stats_2_num"
+}
+local STATS_AREA = {
+  "lbl_stats_1",
+  "lbl_stats_2",
+  "lbl_stats_1_num",
+  "lbl_stats_2_num"
+}
+local IMPORT_AREA = {
+  "tb_import_code",
+  "lbl_import_name",
+  "tb_import_name",
+  "img_import_name",
+  "lbl_import_status",
+  "lbl_import_stats",
+  "lbl_import_stats_num"
+}
+-- shift icons down a bit for imports to make room for code textbox
+local IMPORT_SHIFTED = {
+  "lbl_icon",
+  "img_icon",
+  "spin_count"
 }
 local UPG_BUTTONS = {
   "btn_upg_max_fuel",
@@ -45,6 +73,11 @@ local icons
 local icon_index = 1
 local icon = "/namje_ships/ship_icons/generic_1.png"
 local module_slots = {}
+local importing = false
+local decoded_ship = {}
+local default_positions = {}
+local code_ship_stats = nil
+local import_price = 0
 
 spin_count = {}
 spin_count.up = function()
@@ -64,9 +97,142 @@ spin_count.down = function()
   end
 end
 
+local function get_item_price(name, parameters)
+  local success, item_config = pcall(root.itemConfig, {name = name, count = 1, parameters = parameters or {}})
+  if not success or not item_config then
+    return 0
+  end
+  return (parameters and parameters.price) or item_config.parameters.price or item_config.config.price or 0
+end
+
+local function count_tiles(runs)
+  local count = 0
+  for _, entry in ipairs(runs or {}) do
+    local length, id = namje_binarySerializer.unpack_tile(type(entry) == "table" and entry[2] or entry)
+    if id ~= 0 then
+      count = count + length
+    end
+  end
+  return count
+end
+
+local function get_code_ship_stats(ship_data)
+  local ship_table = namje_binarySerializer.unpack_ship_data(ship_data)
+  local material_cache = ship_table[1]
+  local stats = {tiles = 0, objects = 0, objectvalue = 0, containeritems = {}}
+
+  for _, chunk in ipairs(ship_table[2]) do
+    local tiles = chunk.tiles or {}
+    stats.tiles = stats.tiles + count_tiles(tiles.foreground) + count_tiles(tiles.background)
+
+    for _, obj in ipairs(chunk.objs or {}) do
+      local packed, params = obj, nil
+      if type(obj) == "table" then
+        packed, params = obj[1], obj[2]
+      end
+      local _, _, id = namje_binarySerializer.unpack_object(packed)
+      local obj_name = material_cache[id]
+      if obj_name then
+        stats.objects = stats.objects + 1
+        stats.objectvalue = stats.objectvalue + get_item_price(obj_name)
+      end
+
+      local container_items = params and params.namje_container_items
+      if type(container_items) == "table" then
+        for _, item in pairs(container_items) do
+          if type(item) == "table" and item.name then
+            local count = item.count or 1
+            local entry = stats.containeritems[item.name] or {count = 0, value = 0}
+            entry.count = entry.count + count
+            entry.value = entry.value + get_item_price(item.name, item.parameters) * count
+            stats.containeritems[item.name] = entry
+          end
+        end
+      end
+    end
+  end
+
+  return stats
+end
+
+local function get_import_price(stats)
+  local items_value = 0
+  for _, item in pairs(stats.containeritems) do
+    items_value = items_value + item.value
+  end
+  return math.floor(
+    (
+      IMPORT_PRICES.base 
+      + stats.tiles * IMPORT_PRICES.tile 
+      + stats.objectvalue * IMPORT_PRICES.object_multiplier 
+      + items_value * IMPORT_PRICES.item_multiplier
+    ) * IMPORT_PRICES.final_multiplier
+  )
+end
+
+local function update_import_stats()
+  if not code_ship_stats then
+    widget.setText("lbl_import_stats_num", "^white;-\n-\n-")
+    return
+  end
+  local item_count = 0
+  for _, item in pairs(code_ship_stats.containeritems) do
+    item_count = item_count + item.count
+  end
+  widget.setText("lbl_import_stats_num", string.format(
+    "^white;%s\n%s\n%s",
+    code_ship_stats.tiles,
+    code_ship_stats.objects,
+    item_count
+  ))
+end
+
+local function toggle_imports(toggle)
+  importing = toggle
+  decoded_ship = {}
+  code_ship_stats = nil
+  import_price = 0
+  widget.setButtonEnabled("btn_checkout", false)
+  widget.setText("btn_checkout", importing and "IMPORT" or "CHECKOUT")
+  widget.setText("lbl_ship_name", importing and "^gray;Code:" or "^gray;Name:")
+  widget.setVisible("tb_ship_name", not importing)
+  for i = 1, #IMPORT_AREA do
+    widget.setVisible(IMPORT_AREA[i], importing)
+  end
+  for i = 1, #IMPORT_SHIFTED do
+    local pos = default_positions[IMPORT_SHIFTED[i]]
+    widget.setPosition(IMPORT_SHIFTED[i], importing and {pos[1], pos[2] - 14} or pos)
+  end
+
+  if importing then
+    for i = 1, #INFO_AREA do
+      widget.setVisible(INFO_AREA[i], INFO_AREA[i] ~= "tb_ship_name")
+    end
+    for i = 1, #STATS_AREA do
+      widget.setVisible(STATS_AREA[i], false)
+    end
+    widget.setText("tb_import_code", "")
+    widget.setText("tb_import_name", "")
+    widget.setText("lbl_import_status", "")
+    update_import_stats()
+    icon_index = 1
+    icon = icons[icon_index]
+    widget.setImage("img_icon", icon)
+  end
+end
+
 local function update_checkout()
   upg_total = 0
   money_total = 0
+
+  if importing then
+    money_total = import_price
+    local money_count = player.currency("money")
+    widget.setText("lbl_ply_money", money_count < money_total and "^red;" .. money_total or money_total)
+    widget.setText("lbl_ply_upgmod", 0)
+    widget.setButtonEnabled("btn_checkout", code_ship_stats ~= nil and (player.isAdmin() or money_count >= money_total))
+    return
+  end
 
   if isEmpty(selected_ship.ship_info) then
     return
@@ -182,6 +348,12 @@ end
 local function reset_slot(slot_num)
   local ship_info = namje_byos.get_ship_info(slot_num)
   if not ship_info then
+    selected_ship = {
+      slot = nil,
+      ship_info = {},
+      upgrades = {},
+      ship_config = {}
+    }
     return false
   end
   local ship_upgrades = namje_byos.get_upgrades(slot_num)
@@ -232,6 +404,9 @@ function init()
   end
 
   icons = root.assetJson("/namje_ships/ship_icons/icons.config").ship_icons
+  for i = 1, #IMPORT_SHIFTED do
+    default_positions[IMPORT_SHIFTED[i]] = widget.getPosition(IMPORT_SHIFTED[i])
+  end
   populate_ship_list()
   toggle_info(false)
   widget.setButtonEnabled("btn_checkout", false)
@@ -389,10 +564,11 @@ function select_slot()
   local slot_num = tonumber(ship_slot:match("slot_(%d+)"))
 
   if not reset_slot(slot_num) then
-    toggle_info(false)
-    widget.setButtonEnabled("btn_checkout", false)
+    toggle_imports(true)
   else
+    toggle_imports(false)
     widget.setButtonEnabled("btn_checkout", true)
+    widget.setText("btn_checkout", "CHECKOUT")
   end
 end
 
@@ -406,6 +582,33 @@ function tb_ship_name()
       ship_changes["name"] = text
     end
   end
+end
+
+function tb_import_code()
+  decoded_ship = {}
+  code_ship_stats = nil
+  import_price = 0
+  local code = widget.getText("tb_import_code"):gsub("%s", "")
+  if #code == 0 then
+    widget.setText("lbl_import_status", "")
+    update_import_stats()
+    return
+  end
+
+  local regions, data = namje_shipCode.decode_ship_code(code)
+  if regions and data then
+    local success, stats = pcall(get_code_ship_stats, data)
+    if success and stats.tiles > 0 then
+      decoded_ship = {regions = regions, data = data}
+      code_ship_stats = stats
+      import_price = get_import_price(stats)
+    elseif not success then
+      sb.logInfo("namje // failed to read imported ship data: %s", stats)
+    end
+  end
+
+  widget.setText("lbl_import_status", code_ship_stats and "^green;Ship valid" or "^red;Invalid ship code")
+  update_import_stats()
 end
 
 function tb_revert()
@@ -498,6 +701,15 @@ function select_upgrade(button_name)
 end
 
 function checkout()
+  if importing then
+    if isEmpty(decoded_ship) then
+      return
+    end
+    --TODO: import ship
+    interface.queueMessage("testetest")
+    return
+  end
+
   if not confirm_checkout then
     confirm_checkout = true
     widget.setText("btn_checkout", "CONFIRM")
