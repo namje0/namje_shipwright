@@ -724,10 +724,10 @@ function checkout()
     return
   end
 
-  upg_total = 0
-  money_total = 0
-
   if player.consumeItem({name = "upgrademodule", count = upg_total}) and player.consumeCurrency("money", money_total) then
+    upg_total = 0
+    money_total = 0
+
     if ship_changes.icon then
       ship_changes.icon = icons[icon_index]
     end
