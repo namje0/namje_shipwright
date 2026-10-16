@@ -8,6 +8,8 @@ local ini = init or function() end
 local updat = update or function() end
 local swap_promise
 
+local DEBUG = true
+
 function init() ini()
     swap_promise = PromiseKeeper.new()
     message.setHandler("namje_give_cargo", function(_, _, items) 
@@ -70,8 +72,10 @@ function init() ini()
                 error("namje_byos.swap_ships // could not find ship data for %s", new_slot)
             end
 
-            local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+            if not DEBUG then
+                local cinematic = "/cinematics/namje/shipswap.cinematic"
+                player.playCinematic(cinematic)
+            end
 
             local current_region_cache = world.getProperty("namje_region_cache", {})
 
