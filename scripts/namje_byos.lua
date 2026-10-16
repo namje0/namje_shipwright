@@ -184,12 +184,12 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
     namje_byos.set_ship_data(ships)
     if player.getProperty("namje_current_ship", 1) == slot and not use_existing then
         local intro = ship_config.id == "namje_startership" and true or false
-        if not intro or not DEBUG then
-            local cinematic = "/cinematics/namje/shipswap.cinematic"
-            player.playCinematic(cinematic)
+        if namje_byos.is_on_own_ship() then
+            namje_byos.load_new_ship(ship_config.id, intro)
+        else
+            -- skip intro on init load
+            player.setProperty("namje_ship_queue", {slot = slot, ship_id = ship_config.id, intro = true})
         end
-        local region_cache = world.getProperty("namje_region_cache", {})
-        namje_byos.change_ships_from_config(ship_config.id, intro, region_cache)
     end
 
     --overwrite
@@ -253,6 +253,41 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
 
     namje_byos.set_ship_content(slot, "")
     return ships["slot_" .. slot]
+end
+
+--- plays the swap cinematic and builds the ship from its config
+--- @param ship_id string
+--- @param intro boolean
+function namje_byos.load_new_ship(ship_id, intro)
+    if not intro or not DEBUG then
+        local cinematic = "/cinematics/namje/shipswap.cinematic"
+        player.playCinematic(cinematic)
+    end
+    local region_cache = world.getProperty("namje_region_cache", {})
+    namje_byos.change_ships_from_config(ship_id, intro, region_cache)
+end
+
+--- processes the ship queue, building the ship if it exists in queue. must be on the players own shipworld. returns true if a ship was built
+--- @return boolean
+function namje_byos.process_ship_queue()
+    if world.isServer() then
+        error("namje_byos.process_ship_queue // process_ship_queue cannot be called on server")
+    end
+    local queue = player.getProperty("namje_ship_queue")
+    if not queue or not namje_byos.is_on_own_ship() then
+        return false
+    end
+
+    local ship_info = namje_byos.get_ship_info(queue.slot)
+    if queue.slot ~= player.getProperty("namje_current_ship", 1) or not ship_info or ship_info.ship_id ~= queue.ship_id then
+         -- ship/slot was overwritten somehow and is now stale, discard
+        player.setProperty("namje_ship_queue", nil)
+        return false
+    end
+
+    namje_byos.load_new_ship(queue.ship_id, queue.intro)
+    player.setProperty("namje_ship_queue", nil)
+    return true
 end
 
 function namje_byos.swap_ships(new_slot)

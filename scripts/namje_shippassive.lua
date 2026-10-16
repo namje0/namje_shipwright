@@ -12,6 +12,12 @@ local music_lookup_pending = false
 local music_die_sent = false
 local MUSIC_STAGEHAND = "namje_music_stagehand"
 
+function move_to_ship_spawn()
+    --[[local spawn = world.getProperty("namje_ship_spawn", {1024, 1024})
+    mcontroller.setPosition(vec2.add(spawn, {0, 2}))]]
+    player.warp("nowhere")
+end
+
 function init()
     promise = PromiseKeeper.new()
     if namje_byos.is_fu() then
@@ -71,6 +77,13 @@ function init()
         local capabilities = namje_byos.is_fu() and {} or ship_stats.capabilities
         player.upgradeShip({capabilities = capabilities, maxFuel = ship_stats.max_fuel, fuelEfficiency = ship_stats.fuel_efficiency, shipSpeed = ship_stats.ship_speed, crewSize = ship_stats.crew_size})
     end)
+
+    if on_own_ship then
+        local success = namje_byos.process_ship_queue()
+        if success then
+            move_to_ship_spawn()
+        end
+    end
 end
 
 function update(dt)
@@ -98,12 +111,6 @@ function update(dt)
         mcontroller.clearControls()
         initial_outside = true
     end
-end
-
-function move_to_ship_spawn()
-    --[[local spawn = world.getProperty("namje_ship_spawn", {1024, 1024})
-    mcontroller.setPosition(vec2.add(spawn, {0, 2}))]]
-    player.warp("nowhere")
 end
 
 function try_spawn_music_stagehand()

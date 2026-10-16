@@ -30,10 +30,12 @@ function activate()
 			return
 		end
 
+		--[[
 		if not namje_byos.is_on_own_ship() then
 			world.sendEntityMessage(activeItem.ownerEntityId(), "queueRadioMessage", "namje_ship_invalidowner")
 			return
 		end
+		]]
 
 		animator.playSound("activate")
 		activeItem.interact("ScriptPane", "/interface/namje_shipslotselect/namje_shipslotselect.config", entity.id())
