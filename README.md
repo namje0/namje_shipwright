@@ -11,7 +11,7 @@ Includes compatibility options for existing characters, including conversion fro
 
 ### Installation
 Steam Workshop Link
-- Currently unreleased. Will release when code importing is added.
+- Currently unreleased.
 
 Github
 - Install one of the [releases](https://github.com/namje0/namje_shipwright/releases) and extract the folder. Put it into your `starbound/mods` folder.
@@ -32,6 +32,7 @@ This framework allows you to create and use ship templates.
 - Automatic ship license generation for `.namjeship` files.
 - Choose to either use a dungeon file for templates, or save your current in-game ship's design as a template by generating a ship code.
     - `.dungeon` files are preferred.
+Ship codes can also be imported in-game via the ship service technician, skipping the need for a separate mod.
 ### Owning multiple ships
 Multiple ships can be owned by a player in this framework, and players can freely swap between them.
 - Different ships have their own separate cargo holds.
@@ -90,8 +91,7 @@ The following list does not include Frackin Universe, as FU compatibility is bui
     - Betabound is an exception.
 
 ## Upcoming Features
-- Building ship from code option at ship technician
-- Better error handling for mod incompatibilities, missing assets, load failures
+- Better error handling for load failures
 - Add recipes and things to treasure pools
 
 ## Bugs
@@ -99,7 +99,6 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - Colony deed tenants on your ship will have their quests failed when swapping ships. This is a limitation from how ships are stored
 - Harvestables (e.g mothtrap) are inconsistent on ship swap and may reset.
 - Dropped items won't be stored on ship swap.
-- Entities such as the Rail Tram are currently not saved on ship swap.
 - Saving an existing ship for Frackin' Universe BYOS may result in ship-related objects (Pilot chair, teleporter, fuel hatch, SAIL) turning invisible. This is due to an issue with `fu_byosobjectanimation.lua` and will require those objects to be replaced. Any other objects will be fine. 
 
 ## Credits
