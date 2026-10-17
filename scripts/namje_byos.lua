@@ -13,7 +13,7 @@ namje_byos = {}
 namje_byos.current_ship = nil
 
 --currently only skips the shipswap cinematic
-local DEBUG = true
+local DEBUG = false
 
 --chunk size, for ship serialization purposes
 local CHUNK_SIZE = 32
@@ -117,6 +117,7 @@ function namje_byos.migrate_cargo_holds()
 end
 
 --- register a new ship for the player, overwriting/adding to a slot. use_existing is only for the starter ship when handling existing characters.
+--- if ship_type is detected as a code, builds it instead using namje_byoscompatibility as default
 --- @param slot number
 --- @param ship_type string
 --- @param name string
@@ -131,6 +132,16 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
 
     -- the cargo hold is kept when a slot is overwritten, so move it out of the old stats before they're replaced
     namje_byos.migrate_cargo_holds()
+
+    local ship_code
+    local code_regions, code_data
+    if type(ship_type) == "string" then
+        code_regions, code_data = namje_shipCode.decode_ship_code(ship_type)
+    end
+    if code_regions and code_data then
+        ship_code = ship_type
+        ship_type = "namje_byoscompatibility"
+    end
 
     local ship_config = namje_byos.get_ship_config(ship_type)
     local ships = namje_byos.get_ship_data()
@@ -161,7 +172,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
             favorited = false
         },
         stats = {
-            cached_regions = old_stats and old_stats.cached_regions or {},
+            cached_regions = ship_code and code_regions or old_stats and old_stats.cached_regions or {},
             crew_amount = old_stats and old_stats.crew_amount or 0,
             fuel_amount = math.max(old_stats and old_stats.fuel_amount or 500, 500),
             celestial_pos = old_stats and old_stats.celestial_pos or {system = celestial.currentSystem(), location = celestial.shipLocation()},
@@ -181,14 +192,16 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
 
     ships["slot_" .. slot] = ship_data
 
+    local old_content = old_info and namje_byos.get_ship_content(slot) or ""
     namje_byos.set_ship_data(ships)
+    namje_byos.set_ship_content(slot, code_data or "")
     if player.getProperty("namje_current_ship", 1) == slot and not use_existing then
         local intro = ship_config.id == "namje_startership" and true or false
         if namje_byos.is_on_own_ship() then
-            namje_byos.load_new_ship(ship_config.id, intro)
+            namje_byos.load_new_ship(ship_config.id, intro, ship_code)
         else
             -- skip intro on init load
-            player.setProperty("namje_ship_queue", {slot = slot, ship_id = ship_config.id, intro = true})
+            player.setProperty("namje_ship_queue", {slot = slot, ship_id = ship_config.id, intro = intro, ship_code = ship_code})
         end
     end
 
@@ -200,8 +213,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
             return
         end
 
-        local content = namje_byos.get_ship_content(slot)
-        local previous_ship_content = #content > 0 and namje_binarySerializer.unpack_ship_data(content) or {}
+        local previous_ship_content = old_content and #old_content > 0 and namje_binarySerializer.unpack_ship_data(old_content) or {}
         local items = {}
 
         if old_stats then
@@ -251,20 +263,21 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
         player.addCurrency("money", refund)
     end
 
-    namje_byos.set_ship_content(slot, "")
     return ships["slot_" .. slot]
 end
 
 --- plays the swap cinematic and builds the ship from its config
 --- @param ship_id string
 --- @param intro boolean
-function namje_byos.load_new_ship(ship_id, intro)
-    if not intro or not DEBUG then
+--- @param ship_code string
+--- @param skip_cinematic boolean
+function namje_byos.load_new_ship(ship_id, intro, ship_code, skip_cinematic)
+    if not skip_cinematic and (not intro or not DEBUG) then
         local cinematic = "/cinematics/namje/shipswap.cinematic"
         player.playCinematic(cinematic)
     end
     local region_cache = world.getProperty("namje_region_cache", {})
-    namje_byos.change_ships_from_config(ship_id, intro, region_cache)
+    namje_byos.change_ships_from_config(ship_id, intro, region_cache, ship_code)
 end
 
 --- processes the ship queue, building the ship if it exists in queue. must be on the players own shipworld. returns true if a ship was built
@@ -285,7 +298,7 @@ function namje_byos.process_ship_queue()
         return false
     end
 
-    namje_byos.load_new_ship(queue.ship_id, queue.intro)
+    namje_byos.load_new_ship(queue.ship_id, queue.intro, queue.ship_code, true)
     player.setProperty("namje_ship_queue", nil)
     return true
 end
@@ -543,16 +556,21 @@ function namje_byos.move_all_to_ship_spawn()
 end
 
 --- changes the ship using a config .namjeship file's ship_id.
+--- if ship_code exists, use that in place of the ship
 --- @param ship_id string
 --- @param init boolean
 --- @param region table
-function namje_byos.change_ships_from_config(ship_id, init, region)
+--- @param ship_code string
+function namje_byos.change_ships_from_config(ship_id, init, region, ship_code)
     local ship_config = namje_byos.get_ship_config(ship_id)
     if not ship_config then
         error("namje // ship config not found for " .. ship_id)
     end
     if ship_config.id ~= ship_id then
         error("namje // ship config does not match ship type " .. ship_id)
+    end
+    if ship_code then
+        ship_config.ship = ship_code
     end
     --TODO: server is never used atm, but instead of ply argument do variable arg
     if world.isServer() then

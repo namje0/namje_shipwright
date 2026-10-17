@@ -8,7 +8,7 @@ local ini = init or function() end
 local updat = update or function() end
 local swap_promise
 
-local DEBUG = true
+local DEBUG = false
 
 function init() ini()
     swap_promise = PromiseKeeper.new()

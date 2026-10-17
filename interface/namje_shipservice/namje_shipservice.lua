@@ -78,6 +78,8 @@ local decoded_ship = {}
 local default_positions = {}
 local code_ship_stats = nil
 local import_price = 0
+-- the empty slot being imported into
+local import_slot = nil
 
 spin_count = {}
 spin_count.up = function()
@@ -564,8 +566,10 @@ function select_slot()
   local slot_num = tonumber(ship_slot:match("slot_(%d+)"))
 
   if not reset_slot(slot_num) then
+    import_slot = slot_num
     toggle_imports(true)
   else
+    import_slot = nil
     toggle_imports(false)
     widget.setButtonEnabled("btn_checkout", true)
     widget.setText("btn_checkout", "CHECKOUT")
@@ -588,6 +592,9 @@ function tb_import_code()
   decoded_ship = {}
   code_ship_stats = nil
   import_price = 0
+  confirm_checkout = false
+
+  widget.setText("btn_checkout", "IMPORT")
   local code = widget.getText("tb_import_code"):gsub("%s", "")
   if #code == 0 then
     widget.setText("lbl_import_status", "")
@@ -599,7 +606,7 @@ function tb_import_code()
   if regions and data then
     local success, stats = pcall(get_code_ship_stats, data)
     if success and stats.tiles > 0 then
-      decoded_ship = {regions = regions, data = data}
+      decoded_ship = {regions = regions, data = data, code = code}
       code_ship_stats = stats
       import_price = get_import_price(stats)
     elseif not success then
@@ -702,11 +709,10 @@ end
 
 function checkout()
   if importing then
-    if isEmpty(decoded_ship) then
+    if isEmpty(decoded_ship) or not code_ship_stats or not import_slot then
       return
     end
-    --TODO: import ship
-    interface.queueMessage("testetest")
+    import_ship()
     return
   end
 
@@ -744,4 +750,47 @@ function checkout()
 
     reset_slot(selected_ship.slot)
   end
+end
+
+function import_ship()
+  if not confirm_checkout then
+    confirm_checkout = true
+    widget.setText("btn_checkout", "CONFIRM")
+    return
+  end
+  confirm_checkout = false
+  widget.setText("btn_checkout", "IMPORT")
+
+  if namje_byos.get_ship_info(import_slot) then
+    return
+  end
+
+  local money_count = player.currency("money")
+  if not player.isAdmin() and player.currency("money") < import_price then
+    sb.logInfo("namje // not enough money to import ship")
+    return
+  end
+  
+  if not player.isAdmin() and not player.consumeCurrency("money", price) then
+    sb.logInfo("namje // failed to consume money for ship import")
+    return
+  end
+
+  local name = widget.getText("tb_import_name")
+  if #name == 0 then
+    local custom_config = namje_byos.get_ship_config("namje_byoscompatibility")
+    name = custom_config and custom_config.name or "Custom Ship"
+  end
+
+  local ship = namje_byos.register_new_ship(import_slot, decoded_ship.code, name, icon)
+  interface.queueMessage("Interact with your ^orange;S.A.I.L.^reset; to swap to your new ship.")
+  interface.queueMessage("^orange;" .. name .. "^reset; is now registered in your name.")
+
+  local slot = import_slot
+  import_slot = nil
+  populate_ship_list()
+  reset_slot(slot)
+  toggle_imports(false)
+  widget.setButtonEnabled("btn_checkout", true)
+  widget.setText("btn_checkout", "CHECKOUT")
 end
