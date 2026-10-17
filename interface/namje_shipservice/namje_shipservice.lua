@@ -1,4 +1,5 @@
 require "/scripts/namje_byos.lua"
+require "/scripts/namje_serialization/namje_shipValidator.lua"
 
 local IMPORT_PRICES = {
   base = 10000,
@@ -77,6 +78,7 @@ local importing = false
 local decoded_ship = {}
 local default_positions = {}
 local code_ship_stats = nil
+local awaiting_import = false
 local import_price = 0
 -- the empty slot being imported into
 local import_slot = nil
@@ -154,7 +156,7 @@ local function get_code_ship_stats(ship_data)
     end
   end
 
-  return stats
+  return stats, ship_table
 end
 
 local function get_import_price(stats)
@@ -191,6 +193,7 @@ end
 
 local function toggle_imports(toggle)
   importing = toggle
+  awaiting_import = false
   decoded_ship = {}
   code_ship_stats = nil
   import_price = 0
@@ -472,7 +475,20 @@ function module_slot(index)
   end
 end
 
+local function finish_import()
+  local slot = import_slot
+  import_slot = nil
+  populate_ship_list()
+  reset_slot(slot)
+  toggle_imports(false)
+  widget.setButtonEnabled("btn_checkout", true)
+  widget.setText("btn_checkout", "CHECKOUT")
+end
+
 function update(dt)
+  if awaiting_import and import_slot and namje_byos.get_ship_info(import_slot) then
+    finish_import()
+  end
   update_checkout()
   update_gui()
 end
@@ -604,9 +620,9 @@ function tb_import_code()
 
   local regions, data = namje_shipCode.decode_ship_code(code)
   if regions and data then
-    local success, stats = pcall(get_code_ship_stats, data)
+    local success, stats, ship_table = pcall(get_code_ship_stats, data)
     if success and stats.tiles > 0 then
-      decoded_ship = {regions = regions, data = data, code = code}
+      decoded_ship = {regions = regions, data = data, code = code, ship_table = ship_table}
       code_ship_stats = stats
       import_price = get_import_price(stats)
     elseif not success then
@@ -753,7 +769,19 @@ function checkout()
 end
 
 function import_ship()
+  local name = widget.getText("tb_import_name")
+
   if not confirm_checkout then
+    -- mod incompat
+    local invalid_ids = namje_shipValidator.get_invalid_ids(decoded_ship.ship_table)
+    if namje_shipValidator.has_invalid_ids(invalid_ids) then
+      local invalid_pane = root.assetJson("/interface/namje_invalidids/namje_invalidids.config")
+      invalid_pane.invalid_ids = invalid_ids
+      invalid_pane.import = {slot = import_slot, code = decoded_ship.code, name = name, icon = icon, price = import_price}
+      player.interact("ScriptPane", invalid_pane)
+      awaiting_import = true
+      return
+    end
     confirm_checkout = true
     widget.setText("btn_checkout", "CONFIRM")
     return
@@ -761,36 +789,7 @@ function import_ship()
   confirm_checkout = false
   widget.setText("btn_checkout", "IMPORT")
 
-  if namje_byos.get_ship_info(import_slot) then
-    return
+  if namje_byos.import_ship(import_slot, decoded_ship.code, name, icon, import_price) then
+    finish_import()
   end
-
-  local money_count = player.currency("money")
-  if not player.isAdmin() and player.currency("money") < import_price then
-    sb.logInfo("namje // not enough money to import ship")
-    return
-  end
-  
-  if not player.isAdmin() and not player.consumeCurrency("money", price) then
-    sb.logInfo("namje // failed to consume money for ship import")
-    return
-  end
-
-  local name = widget.getText("tb_import_name")
-  if #name == 0 then
-    local custom_config = namje_byos.get_ship_config("namje_byoscompatibility")
-    name = custom_config and custom_config.name or "Custom Ship"
-  end
-
-  local ship = namje_byos.register_new_ship(import_slot, decoded_ship.code, name, icon)
-  interface.queueMessage("Interact with your ^orange;S.A.I.L.^reset; to swap to your new ship.")
-  interface.queueMessage("^orange;" .. name .. "^reset; is now registered in your name.")
-
-  local slot = import_slot
-  import_slot = nil
-  populate_ship_list()
-  reset_slot(slot)
-  toggle_imports(false)
-  widget.setButtonEnabled("btn_checkout", true)
-  widget.setText("btn_checkout", "CHECKOUT")
 end

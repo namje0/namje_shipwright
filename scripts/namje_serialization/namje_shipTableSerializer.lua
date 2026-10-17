@@ -4,6 +4,7 @@ require "/scripts/util.lua"
 require "/scripts/rect.lua"
 require "/scripts/namje_serialization/namje_shipBinarySerializer.lua"
 require "/scripts/namje_serialization/namje_serializationCompat.lua"
+require "/scripts/namje_serialization/namje_shipValidator.lua"
 
 local CHUNK_SIZE = 32
 local STORAGE_GRABBER = "/scripts/namje_entStorageGrabber.lua"
@@ -552,11 +553,9 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
         error("namje // loading ship from table is not supported on client")
     end
 
-    --todo: probably move mat_cache and invalid_ids into coroutine
-    local load_mat_cache = {}
-    local invalid_ids = {}
     local id_cache = ship_table[1]
     local ship_chunks = ship_table[2]
+    local invalid_ids = namje_shipValidator.get_invalid_ids(ship_table)
     local bit_range = 16
 
     local function unpack_pos(packed_data)
@@ -618,6 +617,15 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
             
             local length, id, color, hue = unpack_tile(packed_data)
             local material_name = id_cache[id]
+            if material_name then
+                --invalid tiles replaced with dirt
+                if (layer_type == "foreground" or layer_type == "background") and invalid_ids.tiles[material_name] then
+                    material_name = "dirt"
+                    color, hue = 0, 0
+                elseif (layer_type == "foreground_mods" or layer_type == "background_mods") and invalid_ids.mods[material_name] then
+                    material_name = nil
+                end
+            end
             -- runs can continue across rows, so every tile is wrapped back into the chunk's columns
             local offset = current_pos_x - chunk_x
             if material_name then
@@ -756,8 +764,10 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
 
                     dir = dir == 0 and -1 or 1
 
-                    --TODO: add missing object ids (and tiles) to a list to display later and just dont place them (or place dirt for tiles)
-                    if object_name then
+                    if object_name and invalid_ids.objects[object_name] then
+                        -- missing objects are skipped
+                        total_object_count = total_object_count - 1
+                    elseif object_name then
                         local place = world.placeObject(object_name, pos, dir or 0, parameters)
                         if place then
                             local placed_object_id = world.objectAt(pos)
@@ -898,11 +908,6 @@ function namje_tableSerializer.table_to_ship(ship_table, ship_region)
                 --may affect smaller bodies of liquids
                 world.spawnLiquid(pos, id, (level*0.84))
             end
-        end
-
-        if not isEmpty(invalid_ids) then
-            --TODO: open UI listing invalid ids
-            sb.logInfo("invalid ids: %s", invalid_ids)
         end
         return true
     end)

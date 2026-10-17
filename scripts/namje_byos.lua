@@ -266,13 +266,51 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
     return ships["slot_" .. slot]
 end
 
+--- imports a ship code into an empty slot
+--- returns true if the ship was registered
+--- @param slot number
+--- @param code string
+--- @param name string
+--- @param icon string
+--- @param price number
+--- @return boolean
+function namje_byos.import_ship(slot, code, name, icon, price)
+    if world.isServer() then
+        error("namje_byos.import_ship // import_ship cannot be called on server")
+    end
+    if namje_byos.get_ship_info(slot) then
+        sb.logInfo("namje // tried to import ship into slot %s, but it isn't empty", slot)
+        return false
+    end
+
+    local is_admin = player.isAdmin()
+    if not is_admin and player.currency("money") < price then
+        sb.logInfo("namje // not enough money to import ship")
+        return false
+    end
+    if not is_admin and not player.consumeCurrency("money", price) then
+        sb.logInfo("namje // failed to consume money for ship import")
+        return false
+    end
+
+    if not name or #name == 0 then
+        local custom_config = namje_byos.get_ship_config("namje_byoscompatibility")
+        name = custom_config and custom_config.name or "Custom Ship"
+    end
+
+    namje_byos.register_new_ship(slot, code, name, icon)
+    interface.queueMessage("Interact with your ^orange;S.A.I.L.^reset; to swap to your new ship.")
+    interface.queueMessage("^orange;" .. name .. "^reset; is now registered in your name.")
+    return true
+end
+
 --- plays the swap cinematic and builds the ship from its config
 --- @param ship_id string
 --- @param intro boolean
 --- @param ship_code string
 --- @param skip_cinematic boolean
 function namje_byos.load_new_ship(ship_id, intro, ship_code, skip_cinematic)
-    if not skip_cinematic and (not intro or not DEBUG) then
+    if not skip_cinematic and not intro and not DEBUG then
         local cinematic = "/cinematics/namje/shipswap.cinematic"
         player.playCinematic(cinematic)
     end
