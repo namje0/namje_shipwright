@@ -32,7 +32,7 @@ This framework allows you to create and use ship templates.
 - Automatic ship license generation for `.namjeship` files.
 - Choose to either use a dungeon file for templates, or save your current in-game ship's design as a template by generating a ship code.
     - `.dungeon` files are preferred.
-Ship codes can also be imported in-game via the ship service technician, skipping the need for a separate mod.
+- Ship codes can also be imported in-game via the ship service technician, skipping the need for a separate mod.
 ### Owning multiple ships
 Multiple ships can be owned by a player in this framework, and players can freely swap between them.
 - Different ships have their own separate cargo holds.
