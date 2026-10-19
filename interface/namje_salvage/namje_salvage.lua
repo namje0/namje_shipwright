@@ -10,50 +10,7 @@ function confirm()
     return
   end
 
-  local content = namje_byos.get_ship_content(slot)
-  local previous_ship_content = #content > 0 and namje_binarySerializer.unpack_ship_data(content) or {}
-  local items = {}
-
-  if ship_data.stats then
-    local modules = ship_data.stats.modules
-    for _, v in pairs(modules) do
-      local item = {name = v, count = 1}
-      table.insert(items, item)
-    end
-  end
-
-  if not isEmpty(previous_ship_content) then
-    local obj_cache = {}
-    for _, chunk in pairs (previous_ship_content[2]) do
-      if chunk.objs and not isEmpty(chunk.objs) then
-        for _, object in pairs (chunk.objs) do
-          if type(object) == "table" then
-            if not obj_cache[object[1]] then
-              obj_cache[object[1]] = true
-              local object_params = object[2]
-              if object_params then
-                local container_items = object_params.namje_container_items or nil
-                if container_items then
-                  for slot, item in pairs (container_items) do
-                    table.insert(items, item)
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-
-  for _, v in pairs(namje_byos.get_cargo_hold(slot)) do
-    table.insert(items, v)
-  end
-
-  if not isEmpty(items) then
-    interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
-    world.sendEntityMessage(player.id(), "namje_give_cargo", items)
-  end
+  namje_byos.salvage_ship(ship_data, namje_byos.get_ship_content(slot), namje_byos.get_cargo_hold(slot))
 
   local fuel_amount = ship_data.stats.fuel_amount
   if fuel_amount > 0 then
@@ -76,16 +33,6 @@ function confirm()
         player.giveItem(item)
     end
   end
-
-  local ship_config = namje_byos.get_ship_config(ship_data.ship_info.ship_id)
-  if not ship_config then
-    return
-  end
-
-  --TODO: include upgrade levels in refund
-  local refund = math.floor(ship_config.price * 0.25) or 0
-  interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
-  player.addCurrency("money", refund)
 
   namje_byos.set_ship_content(slot, "")
   namje_byos.set_cargo_hold(slot, nil)

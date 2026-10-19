@@ -116,6 +116,80 @@ function namje_byos.migrate_cargo_holds()
     return migrated
 end
 
+--- salvages the ship, returning old cargo and refunds money to the player. returns the refund amt
+--- @param ship_data table
+--- @param content string
+--- @param extra_items
+--- @return number
+function namje_byos.salvage_ship(ship_data, content, extra_items)
+    if world.isServer() then
+        error("namje_byos.salvage_ship // salvage_ship cannot be called on server")
+    end
+
+    local previous_ship_content = content and #content > 0 and namje_binarySerializer.unpack_ship_data(content) or {}
+    local items = {}
+
+    if ship_data.stats then
+        for _, v in pairs(ship_data.stats.modules or {}) do
+            table.insert(items, {name = v, count = 1})
+        end
+        for _, v in pairs(ship_data.stats.cassettes or {}) do
+            table.insert(items, {name = v, count = 1})
+        end
+    end
+
+    if not isEmpty(previous_ship_content) then
+        local obj_cache = {}
+        for _, chunk in pairs (previous_ship_content[2]) do
+            if chunk.objs and not isEmpty(chunk.objs) then
+                for _, object in pairs (chunk.objs) do
+                    if type(object) == "table" then
+                        if not obj_cache[object[1]] then
+                            obj_cache[object[1]] = true
+                            local object_params = object[2]
+                            if object_params then
+                                local container_items = object_params.namje_container_items or nil
+                                if container_items then
+                                    for _, item in pairs (container_items) do
+                                        table.insert(items, item)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    for _, item in pairs(extra_items or {}) do
+        table.insert(items, item)
+    end
+
+    if not isEmpty(items) then
+        interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
+        world.sendEntityMessage(player.id(), "namje_give_cargo", items)
+    end
+
+    local ship_config = ship_data.ship_info and namje_byos.get_ship_config(ship_data.ship_info.ship_id)
+    if not ship_config then
+        sb.logInfo("namje // error during salvage: ship config not found for " .. tostring(ship_data.ship_info and ship_data.ship_info.ship_id))
+        return 0
+    end
+
+    local upg_total = 0
+    for _, level in pairs(ship_data.upgrades or {}) do
+        for i = 1, level do
+            upg_total = upg_total + math.floor(5000 * 6 ^ ((i - 1) / 4))
+        end
+    end
+
+    local refund = math.floor(((ship_config.price or 0) + upg_total) * 0.25)
+    interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
+    player.addCurrency("money", refund)
+    return refund
+end
+
 --- register a new ship for the player, overwriting/adding to a slot. use_existing is only for the starter ship when handling existing characters.
 --- if ship_type is detected as a code, builds it instead using namje_byoscompatibility as default
 --- @param slot number
@@ -207,60 +281,7 @@ function namje_byos.register_new_ship(slot, ship_type, name, icon, use_existing)
 
     --overwrite
     if old_info then
-        local old_config = namje_byos.get_ship_config(old_info.ship_id)
-        if not old_config then
-            sb.logInfo("namje // error during overwrite: old ship config not found for " .. old_info.ship_id)
-            return
-        end
-
-        local previous_ship_content = old_content and #old_content > 0 and namje_binarySerializer.unpack_ship_data(old_content) or {}
-        local items = {}
-
-        if old_stats then
-            local modules = old_stats.modules
-            for _, v in pairs(modules) do
-                local item = {name = v, count = 1}
-                table.insert(items, item)
-            end
-
-            local cassettes = old_stats.cassettes
-            for _, v in pairs(cassettes) do
-                local item = {name = v, count = 1}
-                table.insert(items, item)
-            end
-        end
-
-        if not isEmpty(previous_ship_content) then
-            local obj_cache = {}
-            for _, chunk in pairs (previous_ship_content[2]) do
-                if chunk.objs and not isEmpty(chunk.objs) then
-                    for _, object in pairs (chunk.objs) do
-                        if type(object) == "table" then
-                            if not obj_cache[object[1]] then
-                                obj_cache[object[1]] = true
-                                local object_params = object[2]
-                                if object_params then
-                                    local container_items = object_params.namje_container_items or nil
-                                    if container_items then
-                                        for slot, item in pairs (container_items) do
-                                            table.insert(items, item)
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        if not isEmpty(items) then
-            interface.queueMessage("^orange;Items left on your ship have been packaged for you.")
-            world.sendEntityMessage(player.id(), "namje_give_cargo", items)
-        end
-        --TODO: include upgrade levels in refund
-        local refund = math.floor(old_config.price * 0.25) or 0
-        interface.queueMessage("You were given ^orange;" .. refund .. "^reset; pixels for your old ship.")
-        player.addCurrency("money", refund)
+        namje_byos.salvage_ship(ship_slot, old_content)
     end
 
     return ships["slot_" .. slot]

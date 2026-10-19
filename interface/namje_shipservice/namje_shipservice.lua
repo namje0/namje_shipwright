@@ -746,6 +746,11 @@ function checkout()
     return
   end
 
+  if player.isAdmin() then
+    upg_total = 0
+    money_total = 0
+  end
+
   if player.consumeItem({name = "upgrademodule", count = upg_total}) and player.consumeCurrency("money", money_total) then
     upg_total = 0
     money_total = 0
