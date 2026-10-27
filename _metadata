@@ -8,7 +8,8 @@
     "postLoad" : [
       "/scripts/namje_removeShipBackgrounds.lua",
       "/scripts/namje_fuCompatibility.lua",
-      "/scripts/namje_overrideSail.lua"
+      "/scripts/namje_overrideSail.lua",
+      "/scripts/namje_removeQuestShipUpgrades.lua"
     ],
     "onLoad" : [
       "/scripts/namje_makeShipLicenses.lua",
