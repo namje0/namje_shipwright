@@ -350,6 +350,16 @@ local function update_info_stats(ship_config, ship_upgrades)
   widget.setText("lbl_stats_2_num", stats_2)
 end
 
+local function is_equipped_slot(slot_num)
+  return tonumber(slot_num) == tonumber(player.getProperty("namje_current_ship", 1))
+end
+
+local function update_salvage_button()
+  local ship_info = selected_ship.ship_info
+  local can_salvage = selected_ship.slot ~= nil and not isEmpty(ship_info) and not ship_info.favorited and not is_equipped_slot(selected_ship.slot)
+  widget.setButtonEnabled("btn_salvage", can_salvage)
+end
+
 local function reset_slot(slot_num)
   local ship_info = namje_byos.get_ship_info(slot_num)
   if not ship_info then
@@ -359,6 +369,7 @@ local function reset_slot(slot_num)
       upgrades = {},
       ship_config = {}
     }
+    update_salvage_button()
     return false
   end
   local ship_upgrades = namje_byos.get_upgrades(slot_num)
@@ -374,6 +385,7 @@ local function reset_slot(slot_num)
     upgrades = ship_upgrades,
     ship_config = ship_config
   }
+  update_salvage_button()
 
   for k, v in pairs(ship_upgrades) do
     local upgrade = selected_ship.ship_config.stat_upgrades[k]
@@ -415,6 +427,7 @@ function init()
   populate_ship_list()
   toggle_info(false)
   widget.setButtonEnabled("btn_checkout", false)
+  widget.setButtonEnabled("btn_salvage", false)
   toggle_shipstats(false)
 
   widget.registerMemberCallback(MODULE_SLOT_LIST, "slot", function(_, index)
@@ -771,6 +784,24 @@ function checkout()
 
     reset_slot(selected_ship.slot)
   end
+end
+
+function salvage_ship()
+  local slot = selected_ship.slot
+  if not slot or isEmpty(selected_ship.ship_info) then
+    return
+  end
+  if is_equipped_slot(slot) then
+    sb.logInfo("namje // tried to salvage the equipped ship slot %s", slot)
+    widget.setButtonEnabled("btn_salvage", false)
+    pane.playSound("/sfx/interface/clickon_error.ogg", 0, 1.5)
+    return
+  end
+
+  local salvage_pane = root.assetJson("/interface/namje_salvage/namje_salvage.config")
+  salvage_pane.slot = slot
+  player.interact("ScriptPane", salvage_pane, pane.sourceEntity())
+  pane.dismiss()
 end
 
 function import_ship()

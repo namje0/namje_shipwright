@@ -41,7 +41,6 @@ function update(dt)
   end
 end
 
---TODO: detect fu_byos world property and is_fu, offer option to retain byos ship
 function populate_ship_list()
   widget.clearListItems(scroll_area)
 

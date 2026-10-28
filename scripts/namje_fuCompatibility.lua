@@ -24,7 +24,6 @@ local new_button = {
 assets.add(sail_path, new_button)
 assets.patch("/interface/namje_sail/namje_sail.config", sail_path)
 
---TODO: FTL Drive recipe compatibility
 -- FTL Drive Compatibility
 local ftl_drive_path = "/namje_fuCompatibility_drive_patch.patch"
 assets.add(ftl_drive_path, '{"scriptDelta": 60, "scripts": ["/objects/ship/fu_shipstatmodifier.lua"], "description":"A service panel for an FTL drive. ^orange;FU detected, this will function identically to the^reset; ^cyan;Small FTL Drive^reset;"}')

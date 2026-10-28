@@ -2,6 +2,11 @@ require "/scripts/namje_byos.lua"
 
 function confirm()
   local slot = config.getParameter("slot")
+  if tonumber(slot) == tonumber(player.getProperty("namje_current_ship", 1)) then
+    sb.logInfo("namje // tried to salvage the equipped ship slot %s", slot)
+    pane.dismiss()
+    return
+  end
   local ply_ships = namje_byos.get_ship_data()
   local ship_data = ply_ships["slot_"..slot]
 
