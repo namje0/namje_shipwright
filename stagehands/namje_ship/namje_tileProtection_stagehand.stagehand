@@ -1,0 +1,8 @@
+{
+    "type" : "namje_tileProtection_stagehand",
+    "scripts" : [
+        "/stagehands/namje_ship/namje_tileProtection_stagehand.lua"
+    ],
+    "scriptDelta" : 1,
+    "uniqueId" : "namje_tileProtection_stagehand"
+}

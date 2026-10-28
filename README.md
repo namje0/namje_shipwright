@@ -108,4 +108,4 @@ The following list does not include Frackin Universe, as FU compatibility is bui
 - kazookid_, qsmaster - Ship Icon Contributions
 
 ## AI Disclaimer
-Opus 5.5 was used to help with [ship serialization](https://github.com/namje0/namje_shipwright/tree/main/scripts/namje_serialization). All other code and assets were created without AI.
+Opus 5.5 was used to help with [ship serialization](https://github.com/namje0/namje_shipwright/tree/main/scripts/namje_serialization) and a function in [namje_ai_typer.lua](https://github.com/namje0/namje_shipwright/blob/main/interface/namje_sail/namje_ai_typer.lua). All other code and assets were created without AI.

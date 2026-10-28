@@ -9,6 +9,7 @@ function init()
             stagehand.die()
             return
         end
+        namje_byos.set_tile_protection(false)
         self.coroutine = namje_byos.create_ship_from_config(ply, ship, region)
         self.ply = ply
     end)

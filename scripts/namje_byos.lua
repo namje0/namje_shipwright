@@ -683,6 +683,56 @@ function namje_byos.change_ships_from_table(ship, region)
     end
 end
 
+--- returns true if tile protection is on for the current shipworld
+--- @return boolean
+function namje_byos.is_ship_protected()
+    return world.getProperty("namje_tile_protection", false)
+end
+
+--- toggles tile protection for the whole shipworld and saves it
+--- @param enabled boolean
+function namje_byos.set_tile_protection(enabled)
+    if not world.isServer() then
+        error("namje // set_tile_protection cannot be called on client")
+    end
+    world.setProperty("namje_tile_protection", enabled)
+    namje_byos.apply_tile_protection(enabled)
+end
+
+--- toggles protection for the dungeon ids that make up the shipworld
+--- @param enabled boolean
+function namje_byos.apply_tile_protection(enabled)
+    if not world.isServer() then
+        error("namje // apply_tile_protection cannot be called on client")
+    end
+    -- unprotect what was protected last time, so ids from a previous ship arent considered
+    for _, dungeon_id in ipairs(world.getProperty("namje_protected_dungeon_ids", {})) do
+        world.setTileProtection(dungeon_id, false)
+    end
+    if not enabled then
+        world.setProperty("namje_protected_dungeon_ids", {})
+        return
+    end
+
+    local dungeon_ids = {[10101] = true, [65531] = true, [65532] = true, [65534] = true, [65535] = true}
+    for region, _ in pairs(world.getProperty("namje_region_cache", {})) do
+        local chunk = namje_util.region_decode(region)
+        for x = chunk[1], chunk[1] + CHUNK_SIZE - 1 do
+            for y = chunk[2], chunk[2] + CHUNK_SIZE - 1 do
+                local dungeon_id = world.dungeonId({x, y})
+                dungeon_ids[dungeon_id] = true
+            end
+        end
+    end
+
+    local protected_ids = {}
+    for dungeon_id, _ in pairs(dungeon_ids) do
+        world.setTileProtection(dungeon_id, true)
+        table.insert(protected_ids, dungeon_id)
+    end
+    world.setProperty("namje_protected_dungeon_ids", protected_ids)
+end
+
 --- creates a new ship using the provided .namjeship config. will clear out the ship area and then place a new ship at {1024,1024}
 --- @param ply string
 --- @param ship_config table

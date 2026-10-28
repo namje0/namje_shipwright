@@ -11,6 +11,7 @@ function init()
             stagehand.die()
             return
         end
+        namje_byos.set_tile_protection(false)
         self.coroutine = namje_tableSerializer.table_to_ship(namje_binarySerializer.unpack_ship_data(ship), region)
         self.ply = ply
     end)
