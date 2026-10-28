@@ -447,8 +447,7 @@ function namje_tableSerializer.ship_to_table(excludes)
                     end
                 end
             end
-
-            --TODO: process npcs
+            
             if not excludes.npcs then
                 local chunk_npcs = world.npcQuery({min_x, min_y}, {max_x + 1, max_y + 1}, {boundMode = "position"})
                 for _, entity_id in ipairs (chunk_npcs) do

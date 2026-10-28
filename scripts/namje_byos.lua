@@ -22,72 +22,69 @@ local VERSION_ID = "namje_shipwright"
 local PLAYER_SHIP_CAP = 8
 
 function namje_byos.get_ship_data()
-    if world.isClient() then
-        local v_json = player.getProperty("namje_ships")
-        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
-    else
-        --TODO: get on server
-        return nil
+    if world.isServer() then
+        error("namje_byos.get_ship_data // get_ship_data cannot be called on server")
     end
+    local v_json = player.getProperty("namje_ships")
+    return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
 end
 
 function namje_byos.set_ship_data(data)
-    if world.isClient() then
-        local v_json = root.makeCurrentVersionedJson(VERSION_ID, data)
-        player.setProperty("namje_ships", v_json)
+    if world.isServer() then
+        error("namje_byos.set_ship_data // set_ship_data cannot be called on server")
     end
+    local v_json = root.makeCurrentVersionedJson(VERSION_ID, data)
+    player.setProperty("namje_ships", v_json)
 end
 
 function namje_byos.get_ship_content(slot)
-    if world.isClient() then
-        local v_json = player.getProperty("namje_slot_" .. slot .. "_shipcontent")
-        local content = v_json and root.loadVersionedJson(v_json, VERSION_ID) or nil
-        -- content saved before compression was added is stored as the raw binary, so only unpack packed content
-        if namje_b64.is_packed(content) then
-            content = namje_b64.unpack(content)
-        end
-        return content
-    else
-        --TODO: get on server
-        return nil
+    if world.isServer() then
+        error("namje_byos.get_ship_content // get_ship_content cannot be called on server")
     end
+    local v_json = player.getProperty("namje_slot_" .. slot .. "_shipcontent")
+    local content = v_json and root.loadVersionedJson(v_json, VERSION_ID) or nil
+    -- content saved before compression was added is stored as the raw binary, so only unpack packed content
+    if namje_b64.is_packed(content) then
+        content = namje_b64.unpack(content)
+    end
+    return content
 end
 
 function namje_byos.set_ship_content(slot, data)
-    if world.isClient() then
-        local v_json = root.makeCurrentVersionedJson(VERSION_ID, #data > 0 and namje_b64.pack(data) or data)
-        player.setProperty("namje_slot_" .. slot .. "_shipcontent", v_json)
+    if world.isServer() then
+        error("namje_byos.set_ship_content // set_ship_content cannot be called on server")
     end
+    local v_json = root.makeCurrentVersionedJson(VERSION_ID, #data > 0 and namje_b64.pack(data) or data)
+    player.setProperty("namje_slot_" .. slot .. "_shipcontent", v_json)
 end
 
 --- returns the cargo hold items for the ship in the given slot. cargo holds are kept in their own property, outside of the ship stats
 --- @param slot number
 --- @return table
 function namje_byos.get_cargo_hold(slot)
-    if world.isClient() then
-        local v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
-        if not v_json then
-            -- the cargo hold may still be in the ship stats if it was saved before cargo holds had their own property
-            if not namje_byos.migrate_cargo_holds() then
-                return {}
-            end
-            v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
-        end
-        return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
-    else
-        --TODO: get on server
-        return nil
+    if world.isServer() then
+        error("namje_byos.get_cargo_hold // get_cargo_hold cannot be called on server")
     end
+    local v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
+    if not v_json then
+        -- the cargo hold may still be in the ship stats if it was saved before cargo holds had their own property
+        if not namje_byos.migrate_cargo_holds() then
+            return {}
+        end
+        v_json = player.getProperty("namje_slot_" .. slot .. "_cargohold")
+    end
+    return v_json and root.loadVersionedJson(v_json, VERSION_ID) or {}
 end
 
 --- sets the cargo hold items for the ship in the given slot. nil clears the cargo hold
 --- @param slot number
 --- @param cargo_hold table
 function namje_byos.set_cargo_hold(slot, cargo_hold)
-    if world.isClient() then
-        local v_json = cargo_hold and root.makeCurrentVersionedJson(VERSION_ID, cargo_hold) or nil
-        player.setProperty("namje_slot_" .. slot .. "_cargohold", v_json)
+    if world.isServer() then
+        error("namje_byos.set_cargo_hold // set_cargo_hold cannot be called on server")
     end
+    local v_json = cargo_hold and root.makeCurrentVersionedJson(VERSION_ID, cargo_hold) or nil
+    player.setProperty("namje_slot_" .. slot .. "_cargohold", v_json)
 end
 
 --- moves cargo holds saved in the ship stats by older versions into their own properties. returns true if any were moved
@@ -589,8 +586,7 @@ function namje_byos.move_all_to_ship_spawn()
     for _, player in ipairs (players) do
         world.sendEntityMessage(player, "namje_moveToShipSpawn")
     end
-    
-    --TODO: use region_cache
+
     local ship_spawn = vec2.add(world.getProperty("namje_ship_spawn", {1024, 1024}), {0, 2})
     local region_cache = world.getProperty("namje_region_cache", {})
     local regions = {}
@@ -633,12 +629,15 @@ function namje_byos.change_ships_from_config(ship_id, init, region, ship_code)
     end
     --TODO: server is never used atm, but instead of ply argument do variable arg
     if world.isServer() then
+        error("namje // tried to change ship on server")
+        --[[
         if not namje_byos.is_on_ship() then
             error("namje // tried to change ship on server while not on shipworld")
         end
 
-        --world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
-        --world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", ply, ship_config, init)
+        world.spawnStagehand({1024, 1024}, "namje_shipFromConfig_stagehand")
+        world.sendEntityMessage("namje_shipFromConfig_stagehand", "namje_swap_ship", ply, ship_config, init)
+        ]]
     else
         --for the client, spawn the stagehand which will call this function on the server
         sb.logInfo("namje // changing ship using a save on client")
@@ -662,12 +661,15 @@ function namje_byos.change_ships_from_table(ship, region)
     end
     --TODO: server is never used atm, but instead of ply argument do variable arg
     if world.isServer() then
+        error("namje // tried to change ship on server")
+        --[[
         if not namje_byos.is_on_ship() then
             error("namje // tried to change ship on server while not on shipworld")
         end
 
         world.spawnStagehand({1024, 1024}, "namje_shipFromSave_stagehand")
         world.sendEntityMessage("namje_shipFromSave_stagehand", "namje_swap_ship", player.id(), ship, region)
+        ]]
     else
         --for the client, spawn the stagehand which will call this function on the server
         sb.logInfo("namje // changing ship using a save on client")

@@ -104,7 +104,6 @@ function namje_util.region_decode(path)
     return new_table
 end
 
---- TODO: replace (requires coroutine)
 --- @return table
 function namje_util.get_filled_chunks(rect)
     local failed_regions = {}
