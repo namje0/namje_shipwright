@@ -43,7 +43,7 @@ Multiple ships can be owned by a player in this framework, and players can freel
 A new larger S.A.I.L interface that allows for custom themes via `.namjetheme` files.
 - Searches the player's save for current and previous missions instead of doing guesswork.
 - Allows for swapping between owned ships and seeing ship information.
-- Settings page for miscellaneous stuff.
+- Settings page for miscellaneous stuff such as tile protection, ship music, etc.
 - Ship Pets are no longer bound to different S.A.I.L interfaces. Ships come with no pet by default and must be slotted in using the S.A.I.L.
     - All racial ship pets for every species can be found at Terramart.
 ### New Upgrade System
