@@ -6,10 +6,8 @@ local initial_outside = false
 local on_ship = false
 local on_own_ship = false
 local promise
-local pending_music_tracks = {}
 local music_refresh_pending = false
 local music_lookup_pending = false
-local music_die_sent = false
 local MUSIC_STAGEHAND = "namje_music_stagehand"
 
 function move_to_ship_spawn()
@@ -39,6 +37,9 @@ function init()
     end
 
     music_refresh_pending = on_own_ship
+    message.setHandler("namje_refreshCassettes", function()
+        music_refresh_pending = on_own_ship
+    end)
 
     local current_slot = player.getProperty("namje_current_ship", 1)
     local ship_stats = namje_byos.get_stats(current_slot)
@@ -55,21 +56,6 @@ function init()
                 end
             end
         end
-
-        local ship_cassettes = ship_stats.cassettes
-        local tracks = {}
-
-        for k, v in pairs(ship_cassettes) do
-            if v then
-                local cassette = root.itemConfig(v)
-                if cassette then
-                    local cassette_config = cassette.config
-                    local track = cassette_config.audio
-                    table.insert(tracks, track)
-                end
-            end
-        end
-        pending_music_tracks = tracks
     end
 
     message.setHandler("namje_upgradeShip", function(_, _, ship_stats)
@@ -88,7 +74,7 @@ end
 
 function update(dt)
     promise:update()
-    try_spawn_music_stagehand()
+    sync_music_stagehand()
 
     local current_slot = player.getProperty("namje_current_ship", 1)
     if fu_atmosphere or namje_byos.has_module(current_slot, "namje_atmomodule") then
@@ -113,55 +99,49 @@ function update(dt)
     end
 end
 
-function try_spawn_music_stagehand()
-    if not music_refresh_pending then
-        return
+function get_cassette_tracks()
+    local current_slot = player.getProperty("namje_current_ship", 1)
+    local ship_stats = namje_byos.get_stats(current_slot)
+    local tracks = {}
+    if not ship_stats then
+        return tracks
     end
-    if music_lookup_pending then
+
+    for k, v in pairs(ship_stats.cassettes or {}) do
+        if v then
+            local cassette = root.itemConfig(v)
+            if cassette then
+                table.insert(tracks, cassette.config.audio)
+            end
+        end
+    end
+    return tracks
+end
+
+function sync_music_stagehand()
+    if not music_refresh_pending or music_lookup_pending then
         return
     end
 
+    music_refresh_pending = false
     music_lookup_pending = true
+    local tracks = get_cassette_tracks()
+    local function spawn_music_stagehand()
+        music_lookup_pending = false
+        if #tracks > 0 then
+            world.spawnStagehand({1024, 1024}, MUSIC_STAGEHAND, {musicTable = tracks})
+        end
+    end
     promise:add(world.findUniqueEntity(MUSIC_STAGEHAND),
         function(result)
-            music_lookup_pending = false
-            if result then
-                if not music_die_sent then
-                    music_die_sent = true
-                    promise:add(world.sendEntityMessage(MUSIC_STAGEHAND, "namje_die"), nil,
-                        function(err)
-                            sb.logInfo("namje // music stagehand die promise error: %s", tostring(err))
-                            music_die_sent = false
-                        end
-                    )
-                end
-            else
+            if not result then
                 spawn_music_stagehand()
+                return
             end
-        end,
-        function()
             music_lookup_pending = false
-            spawn_music_stagehand()
-        end
+            -- stagehand updates its music in place, or dies if there are no tracks
+            world.sendEntityMessage(MUSIC_STAGEHAND, "namje_setMusic", tracks)
+        end,
+        spawn_music_stagehand
     )
-end
-
-function spawn_music_stagehand()
-    if #pending_music_tracks > 0 then
-        world.spawnStagehand({1024, 1024}, MUSIC_STAGEHAND, {musicTable = shuffle(pending_music_tracks)})
-    end
-    music_refresh_pending = false
-    music_die_sent = false
-end
-
-function shuffle(tracks)
-    local shuffled = {}
-    for i, v in ipairs(tracks) do
-        shuffled[i] = v
-    end
-    for i = #shuffled, 2, -1 do
-        local j = math.random(1, i)
-        shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
-    end
-    return shuffled
 end

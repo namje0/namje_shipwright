@@ -116,9 +116,7 @@ function confirm()
   end
 
   if changes_made then
-    player.interact("ScriptPane", "/interface/scripted/namje_sailmusic/namje_refresh.config")
-    pane.dismiss()
-  else
-    pane.dismiss()
+    world.sendEntityMessage(player.id(), "namje_refreshCassettes")
   end
+  pane.dismiss()
 end
